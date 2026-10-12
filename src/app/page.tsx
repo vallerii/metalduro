@@ -20,7 +20,7 @@ import { guides } from "@/content/guides";
 
 function Eyebrow({ children, dark }: { children: React.ReactNode; dark?: boolean }) {
   return (
-    <div className={`label-mono flex items-center gap-2 ${dark ? "text-paper/60" : "text-muted"}`}>
+    <div className={`label-mono flex items-center gap-2 ${dark ? "text-paper/75" : "text-ink-2"}`}>
       <span className="size-2 bg-accent" />
       {children}
     </div>
@@ -46,8 +46,8 @@ export default function Home() {
     <main>
       {/* HERO */}
       <section className="border-b border-line">
-        <div className="wrap grid gap-10 py-8 lg:min-h-[calc(100svh-64px)] lg:grid-cols-[1fr_minmax(0,520px)] lg:items-center lg:gap-14 lg:py-6">
-          <div className="flex flex-col">
+        <div className="wrap grid gap-8 py-8 lg:min-h-[calc(100svh-64px)] lg:grid-cols-[1fr_minmax(0,520px)] lg:grid-rows-[1fr_auto_auto_1fr] lg:gap-x-14 lg:gap-y-0 lg:py-6">
+          <div className="lg:col-start-1 lg:row-start-2">
             <Eyebrow>Покупаем по всей Испании</Eyebrow>
             <h1 className="display mt-4 text-[clamp(36px,min(4.4vw,7.6vh),68px)]">
               Покупаем твердосплавный лом по всей Испании<span className="text-accent">.</span>
@@ -55,8 +55,14 @@ export default function Home() {
             <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-ink-2">
               Покупаем твердосплавный лом в любом виде и чистый вольфрам. Рассчитываем стоимость и принимаем материал со всей Испании.
             </p>
+          </div>
 
-            <ol className="mt-6 border-t border-line">
+          <div className="lg:col-start-2 lg:row-span-4 lg:row-start-1 lg:self-center">
+            <Calculator photos={calcPhotos} />
+          </div>
+
+          <div className="lg:col-start-1 lg:row-start-3">
+            <ol className="border-t border-line lg:mt-6">
               {[
                 ["Отправка за наш счет", "Вы отправляете материал, мы оплачиваем доставку и рассчитываемся после проверки."],
                 ["Самовывоз от 50 кг", "По выходным дням, с расчетом на месте."],
@@ -75,9 +81,7 @@ export default function Home() {
             <p className="mt-5 border-l-2 border-accent pl-4 text-[14px] text-ink-2">
               <b className="text-ink">Важно:</b> принимаем только твердосплавный лом / карбид вольфрама и чистый вольфрам. Медь, провода, HSS и обычные металлы не принимаем.
             </p>
-
           </div>
-          <Calculator photos={calcPhotos} />
         </div>
       </section>
 
@@ -112,7 +116,7 @@ export default function Home() {
                 ))}
               </div>
               <div className="mt-12 border-t border-line pt-6">
-              <div className="label-mono text-muted">Особенно интересует новый инструмент в упаковке</div>
+              <div className="label-mono text-ink-2">Особенно интересует новый инструмент в упаковке</div>
               <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[16px] font-medium tracking-tight text-ink-2">
                 {brands.map((b) => (
                   <span key={b}>{b}</span>
@@ -135,10 +139,10 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <figure className="mt-8 grid grid-cols-[140px_1fr] items-center gap-5">
-                <Pic src={photo("nobuy-1")} alt="Пример материала, который мы не принимаем" label="" className="aspect-square" sizes="140px" />
-                <figcaption className="text-[14px] leading-relaxed text-muted">
-                  <span className="label-mono mb-1 block text-ink">Пример</span>
+              <figure className="mt-8">
+                <Pic src={photo("nobuy-1")} alt="Пример материала, который мы не принимаем" label="" className="aspect-[16/9]" sizes="(min-width:1024px) 40vw, 100vw" />
+                <figcaption className="mt-3 text-[14px] leading-relaxed text-muted">
+                  <span className="label-mono mr-2 text-ink">Пример</span>
                   Такие детали мы не принимаем: кермет, керамика, крепеж и сталь в партии.
                 </figcaption>
               </figure>
@@ -163,11 +167,11 @@ export default function Home() {
 
       {/* КАК МЫ ПЛАТИМ */}
       <section className="bg-ink py-[clamp(88px,14vh,160px)] text-paper">
-        <div className="wrap grid items-end gap-16 lg:grid-cols-[1.2fr_0.8fr] lg:gap-24">
+        <div className="wrap grid items-center gap-16 lg:grid-cols-[1.2fr_0.8fr] lg:gap-24">
           <div>
             <Eyebrow dark>Как мы платим</Eyebrow>
-            <div className="display mt-10 text-[clamp(88px,14vw,220px)] leading-[0.8] tracking-[-0.055em] text-accent">2 часа</div>
-            <div className="mt-6 text-[clamp(26px,3.4vw,44px)] tracking-tight">в среднем до выплаты</div>
+            <div className="display mt-8 text-[clamp(64px,7.5vw,120px)] leading-[0.8] tracking-[-0.055em] text-accent">2 часа</div>
+            <div className="mt-4 text-[clamp(22px,2.4vw,32px)] tracking-tight">в среднем до выплаты</div>
           </div>
           <div className="text-[19px] leading-relaxed text-paper/65">
             <p>
@@ -194,7 +198,7 @@ export default function Home() {
           <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
             <div className="flex flex-col gap-5">
               <VideoPlayer
-                src="/video/unpacking.mp4"
+                src="/video/unpacking.mp4?v=34s"
                 poster="/video/unpacking-poster.jpg"
                 title="Как упаковать твердосплавный лом"
                 caption="Видеоинструкция"
@@ -208,7 +212,7 @@ export default function Home() {
                 ].map(([k, l]) => (
                   <figure key={k}>
                     <Pic src={photo(k)} alt={l} label="" className="h-[clamp(100px,15vh,170px)]" sizes="(min-width:1024px) 16vw, 33vw" />
-                    <figcaption className="label-mono mt-1.5 text-[11px] text-muted">{l}</figcaption>
+                    <figcaption className="label-mono mt-1.5 text-ink-2">{l}</figcaption>
                   </figure>
                 ))}
               </div>
@@ -229,7 +233,7 @@ export default function Home() {
                   </li>
                 ))}
               </ol>
-              <Link href="#calculator" className="mt-10 inline-block bg-ink px-6 py-4 text-paper transition-colors hover:bg-accent hover:text-ink">
+              <Link href="#calculator" className="mt-10 inline-block bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">
                 Сначала оформить заявку →
               </Link>
             </div>
@@ -246,7 +250,7 @@ export default function Home() {
             text="Показываем реальные поступления: откуда пришла отправка, что было внутри, когда мы ее получили и через сколько времени произвели оплату."
           />
           <div className="border-t border-ink">
-            <div className="label-mono hidden grid-cols-[minmax(0,1.6fr)_1fr_1fr_80px_1fr] gap-8 border-b border-line py-4 text-muted md:grid">
+            <div className="label-mono hidden grid-cols-[minmax(0,1.6fr)_1fr_1fr_80px_1fr] gap-8 border-b border-line py-4 text-ink-2 md:grid">
               <span>Фото</span><span>Получено</span><span>Материал</span><span>Вес</span><span>Выплата</span>
             </div>
             {history.map((h) => (
@@ -259,7 +263,7 @@ export default function Home() {
                 </div>
                 <div className="text-[18px] font-medium">{h.material}</div>
                 <div className="font-mono text-[22px]">
-                  <span className="label-mono mr-2 text-muted md:hidden">Вес</span>
+                  <span className="label-mono mr-2 text-ink-2 md:hidden">Вес</span>
                   {h.weight}
                 </div>
                 <div>
@@ -330,9 +334,9 @@ export default function Home() {
               <a href={contacts.phoneHref} className="mt-12 block font-mono text-[clamp(26px,2.6vw,36px)] tracking-tight hover:text-accent-deep">
                 {contacts.phone}
               </a>
-              <div className="label-mono mt-2 text-muted">Телефон / WhatsApp</div>
+              <div className="label-mono mt-2 text-ink-2">Телефон / WhatsApp</div>
               <div className="mt-10 flex flex-wrap gap-3">
-                <a href={contacts.whatsapp} className="bg-ink px-5 py-4 text-paper transition-colors hover:bg-accent hover:text-ink">Написать в WhatsApp</a>
+                <a href={contacts.whatsapp} className="bg-accent px-5 py-4 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">Написать в WhatsApp</a>
                 <Link href="#calculator" className="border border-ink px-5 py-4 transition-colors hover:bg-ink hover:text-paper">Рассчитать стоимость →</Link>
               </div>
             </div>
@@ -359,11 +363,23 @@ export default function Home() {
             </div>
           </div>
           <div>
-            <div className="flex gap-3">
-              <Element className="w-[30%]" />
-              <Element symbol="Co" number="27" name="Cobalt" mass="58.93" tone="line" className="w-[30%]" />
+            <div className="label-mono mb-4 text-ink-2">Из чего состоит твердый сплав</div>
+            <div className="grid grid-cols-2 gap-6 border-t border-ink pt-6">
+              {[
+                { el: <Element className="w-20 shrink-0" />, v: "70–90%", t: "вольфрам (в виде карбида WC) — то, ради чего лом перерабатывают" },
+                { el: <Element symbol="Co" number="27" name="Cobalt" mass="58.93" tone="line" className="w-20 shrink-0" />, v: "6–15%", t: "кобальт — металлическая связка, тоже возвращается в цикл" },
+              ].map((x) => (
+                <div key={x.v} className="flex gap-4">
+                  {x.el}
+                  <div>
+                    <div className="font-mono text-[30px] leading-none tracking-tight">{x.v}</div>
+                    <div className="mt-2 text-[14px] leading-snug text-muted">{x.t}</div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="mt-14 border-t border-ink">
+            <div className="label-mono mt-14 mb-4 text-ink-2">Переработка вольфрама</div>
+            <div className="border-t border-ink">
               {ecoStats.map((s) => (
                 <div key={s.value} className="grid grid-cols-[150px_1fr] items-baseline gap-6 border-b border-line py-7">
                   <div className="font-mono text-[34px] leading-none tracking-tight">{s.value}</div>
@@ -382,6 +398,17 @@ export default function Home() {
             <Eyebrow>FAQ</Eyebrow>
             <h2 className="display mt-6 text-[clamp(32px,3.6vw,56px)]">Частые вопросы.</h2>
             <p className="mt-6 text-[17px] text-muted">То, что обычно нужно знать перед первой продажей.</p>
+            <div className="mt-12 border-t border-ink pt-6 lg:sticky lg:top-24">
+              <div className="text-[20px] font-medium tracking-tight">Не нашли ответ?</div>
+              <p className="mt-2 text-[15px] text-muted">Спросите нас напрямую — ответим в WhatsApp или по телефону.</p>
+              <a href={contacts.phoneHref} className="mt-6 block font-mono text-[clamp(24px,2.2vw,32px)] tracking-tight hover:text-accent-deep">
+                {contacts.phone}
+              </a>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a href={contacts.whatsapp} className="bg-accent px-5 py-3.5 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">Задать вопрос в WhatsApp</a>
+                <a href={contacts.phoneHref} className="border border-ink px-5 py-3.5 transition-colors hover:bg-ink hover:text-paper">Позвонить</a>
+              </div>
+            </div>
           </div>
           <div className="border-t border-ink">
             {faq.map((f) => (
@@ -404,7 +431,7 @@ export default function Home() {
           <div className="border-t border-ink">
             {guides.map((g) => (
               <Link key={g.slug} href={`/guides/${g.slug}`} className="group grid items-baseline gap-2 border-b border-line py-9 md:grid-cols-[180px_1fr_auto] md:gap-10">
-                <span className="label-mono text-muted">{g.kind}</span>
+                <span className="label-mono text-ink-2">{g.kind}</span>
                 <span className="text-[clamp(20px,2.2vw,30px)] leading-tight font-medium tracking-tight group-hover:text-accent-deep">{g.title}</span>
                 <span className="hidden text-2xl transition-transform group-hover:translate-x-2 md:block">→</span>
               </Link>

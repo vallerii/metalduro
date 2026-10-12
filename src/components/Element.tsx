@@ -33,15 +33,13 @@ export function Element({
   );
 }
 
-/** Маленький логотип: плитка «74 W». */
-export function Logo({ className = "" }: { className?: string }) {
+/** Логотип: знак переработки с профилями + название. */
+export function Logo({ className = "", dark = false }: { className?: string; dark?: boolean }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <span className="relative grid size-9 place-items-center bg-accent text-ink">
-        <span className="absolute top-0.5 left-1 font-mono text-[8px] leading-none">74</span>
-        <span className="text-lg leading-none font-semibold">W</span>
-      </span>
-      <span className="text-[19px] font-semibold tracking-tight">Metalduro</span>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/logo-mark.png?v=3" alt="" width={48} height={48} className="size-12" />
+      <span className={`text-[19px] font-semibold tracking-tight ${dark ? "text-paper" : ""}`}>Metalduro</span>
     </span>
   );
 }

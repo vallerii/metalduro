@@ -24,10 +24,10 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
   return (
     <main>
       <article className="wrap py-12 md:py-20">
-        <Link href="/#guides" className="label-mono text-muted hover:text-accent-deep">← Полезно знать</Link>
+        <Link href="/#guides" className="label-mono text-ink-2 hover:text-accent-deep">← Полезно знать</Link>
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-end">
           <div>
-            <div className="label-mono flex items-center gap-2 text-muted">
+            <div className="label-mono flex items-center gap-2 text-ink-2">
               <span className="size-2 bg-accent" />
               {g.kind}
             </div>
@@ -40,7 +40,7 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
         <div className="mt-16 grid gap-12 lg:grid-cols-[260px_1fr]">
           <nav className="hidden lg:block">
             <div className="sticky top-24 border-t border-ink pt-4">
-              <div className="label-mono mb-3 text-muted">Содержание</div>
+              <div className="label-mono mb-3 text-ink-2">Содержание</div>
               {g.sections.map((s, i) => (
                 <a key={s.h} href={`#s${i}`} className="block py-1.5 text-[15px] text-ink-2 hover:text-accent-deep">
                   {s.h}
@@ -77,11 +77,11 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
 
       <section className="border-t border-line py-16">
         <div className="wrap">
-          <div className="label-mono mb-4 text-muted">Читайте также</div>
+          <div className="label-mono mb-4 text-ink-2">Читайте также</div>
           <div className="border-t border-ink">
             {others.map((o) => (
               <Link key={o.slug} href={`/guides/${o.slug}`} className="group grid items-baseline gap-2 border-b border-line py-6 md:grid-cols-[160px_1fr_auto] md:gap-8">
-                <span className="label-mono text-muted">{o.kind}</span>
+                <span className="label-mono text-ink-2">{o.kind}</span>
                 <span className="text-[clamp(20px,2.2vw,30px)] font-medium tracking-tight group-hover:text-accent-deep">{o.title}</span>
                 <span className="hidden text-2xl md:block">→</span>
               </Link>

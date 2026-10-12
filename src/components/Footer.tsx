@@ -6,15 +6,19 @@ export function Footer() {
   return (
     <footer className="bg-ink text-paper">
       <div className="wrap pt-20 pb-8">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr] md:grid-cols-2">
           <div>
-            <div className="display text-[clamp(56px,9vw,128px)] text-paper">Metalduro</div>
+            <div className="flex items-center gap-[0.18em] text-[clamp(40px,4.6vw,72px)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-mark.png?v=3" alt="" className="size-[1em]" />
+              <span className="display text-paper">Metalduro</span>
+            </div>
             <p className="mt-6 max-w-sm text-paper/60">
               Покупка твердосплавного и вольфрамсодержащего лома по всей Испании.
             </p>
           </div>
           <div>
-            <div className="label-mono mb-4 text-paper/50">Связаться</div>
+            <div className="label-mono mb-4 text-paper/75">Связаться</div>
             <a href={contacts.phoneHref} className="block font-mono text-lg hover:text-accent">
               {contacts.phone}
             </a>
@@ -24,7 +28,7 @@ export function Footer() {
             <div className="mt-2 text-paper/70">Склад: {contacts.city}</div>
           </div>
           <div>
-            <div className="label-mono mb-4 text-paper/50">Продать материал</div>
+            <div className="label-mono mb-4 text-paper/75">Продать материал</div>
             {[
               ["/#calculator", "Рассчитать стоимость"],
               ["/#materials", "Что покупаем"],
@@ -38,7 +42,7 @@ export function Footer() {
             ))}
           </div>
           <div>
-            <div className="label-mono mb-4 text-paper/50">Полезно знать</div>
+            <div className="label-mono mb-4 text-paper/75">Полезно знать</div>
             {guides.map((g) => (
               <Link key={g.slug} href={`/guides/${g.slug}`} className="block py-1 text-paper/70 hover:text-accent">
                 {g.title}

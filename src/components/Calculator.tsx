@@ -124,7 +124,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
   const summary = (
     <div className="mt-6 border-t border-paper/20 pt-5 text-[15px] leading-relaxed text-paper/75">
-      <div className="label-mono mb-2 text-paper/45">Ваша заявка</div>
+      <div className="label-mono mb-2 text-paper/75">Ваша заявка</div>
       <div className="font-mono text-3xl text-paper">{weight} кг</div>
       <div>{material.name}</div>
       <div>{cityValue}</div>
@@ -138,7 +138,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
     <div id="calculator" className="scroll-mt-20 bg-ink p-5 text-paper sm:p-6 xl:p-7">
       <div className="flex items-baseline justify-between">
         <div className="text-[19px] font-medium tracking-tight">Расчет стоимости</div>
-        <div className="label-mono text-paper/50">{step <= 5 ? `Шаг ${step} из 5` : "Заявка отправлена"}</div>
+        <div className="label-mono text-paper/75">{step <= 5 ? `Шаг ${step} из 5` : "Заявка отправлена"}</div>
       </div>
       <div className="mt-3 mb-5 grid grid-cols-5 gap-1">
         {[1, 2, 3, 4, 5].map((i) => (
@@ -314,7 +314,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <b className="font-medium">{meta.t}</b>
-                      {meta.tag && <span className="label-mono bg-paper px-1.5 py-0.5 text-[10px] text-ink">{meta.tag}</span>}
+                      {meta.tag && <span className="label-mono bg-paper px-1.5 py-0.5 text-ink">{meta.tag}</span>}
                     </div>
                     <div className="mt-1 text-[14px] text-paper/60">{meta.d}</div>
                     {m === "pickup" && pickupOk && (
@@ -362,7 +362,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
               ? "Оставьте телефон и данные для выплаты после проверки материала."
               : "Выберите несколько удобных дат и оставьте телефон. Мы свяжемся с вами для подтверждения."}
           </p>
-          <label className="label-mono mb-2 block text-paper/50">Контактные данные</label>
+          <label className="label-mono mb-2 block text-paper/75">Контактные данные</label>
           <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" placeholder="+34 600 000 000" className={input} />
           <label className="mt-3 flex cursor-pointer items-center gap-3 text-[14px] text-paper/80">
             <input type="checkbox" checked={workedBefore} onChange={(e) => setWorkedBefore(e.target.checked)} className="size-4 accent-[#ff5c39]" />
@@ -371,7 +371,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
           {effMethod !== "send" && (
             <div className="mt-6">
-              <label className="label-mono mb-1 block text-paper/50">Когда вам удобно?</label>
+              <label className="label-mono mb-1 block text-paper/75">Когда вам удобно?</label>
               <p className="mb-3 text-[14px] text-paper/55">Можно выбрать несколько вариантов. Мы свяжемся с вами по телефону и подтвердим дату.</p>
               <div className="flex flex-wrap gap-2">
                 {vd.map((d) => {
@@ -393,7 +393,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
           {effMethod === "send" && (
             <div className="mt-6">
-              <label className="label-mono mb-2 block text-paper/50">Данные для выплаты</label>
+              <label className="label-mono mb-2 block text-paper/75">Данные для выплаты</label>
               <input value={payName} onChange={(e) => setPayName(e.target.value)} placeholder="Имя и фамилия получателя" className={input} />
               <input value={iban} onChange={(e) => setIban(e.target.value)} placeholder="IBAN · ES00 0000 0000 0000 0000 0000" className={`${input} mt-2 font-mono text-[15px]`} />
             </div>

@@ -5,13 +5,13 @@ export type LegalSection = { h: string; p: React.ReactNode[] };
 export function LegalPage({ title, updated, intro, sections }: { title: string; updated: string; intro?: string; sections: LegalSection[] }) {
   return (
     <main className="wrap py-12 md:py-20">
-      <div className="label-mono flex flex-wrap gap-x-6 gap-y-2 text-muted">
+      <div className="label-mono flex flex-wrap gap-x-6 gap-y-2 text-ink-2">
         <Link href="/legal/aviso-legal" className="hover:text-accent-deep">Юридическая информация</Link>
         <Link href="/legal/privacidad" className="hover:text-accent-deep">Конфиденциальность</Link>
         <Link href="/legal/cookies" className="hover:text-accent-deep">Cookies</Link>
       </div>
       <h1 className="display mt-10 max-w-4xl text-[clamp(38px,5vw,72px)]">{title}</h1>
-      <div className="label-mono mt-4 text-muted">Обновлено: {updated}</div>
+      <div className="label-mono mt-4 text-ink-2">Обновлено: {updated}</div>
       {intro && <p className="mt-8 max-w-3xl text-[18px] leading-relaxed text-ink-2">{intro}</p>}
       <div className="mt-12 max-w-3xl border-t border-ink">
         {sections.map((s, i) => (

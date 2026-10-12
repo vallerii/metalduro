@@ -41,7 +41,7 @@ export function VideoPlayer({
         >
           <span className="grid size-14 place-items-center bg-accent text-xl text-ink transition-transform group-hover:scale-110">▶</span>
           <span className="mt-4 text-[22px] leading-tight font-medium tracking-tight">{title}</span>
-          {caption && <span className="label-mono mt-1 text-paper/70">{caption}</span>}
+          {caption && <span className="label-mono mt-1 text-paper/80">{caption}</span>}
         </button>
       )}
     </div>
