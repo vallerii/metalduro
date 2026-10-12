@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import { CityPicker } from "./CityPicker";
 import { cities, contacts, materials, type MaterialId } from "@/content/site";
 
 type Method = "send" | "pickup" | "warehouse";
@@ -57,10 +58,11 @@ const btnBack =
 export function Calculator({ photos }: { photos: Record<string, string | null> }) {
   const [step, setStep] = useState(1);
   const [mat, setMat] = useState<MaterialId>("solid");
-  const [weight, setWeight] = useState(20);
-  const [over100, setOver100] = useState(false);
+  const [weightText, setWeightText] = useState("20");
+  const [over100Chip, setOver100Chip] = useState(false);
+  const weight = parseInt(weightText, 10) || 0;
+  const over100 = over100Chip || weight > 100;
   const [city, setCity] = useState("");
-  const [otherCity, setOtherCity] = useState("");
   const [method, setMethod] = useState<Method>("send");
   const [pickupDate, setPickupDate] = useState<string | null>(null);
   const [visits, setVisits] = useState<string[]>([]);
@@ -73,7 +75,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
   const material = materials.find((m) => m.id === mat)!;
   const price = weight * material.rate;
-  const cityValue = city === "other" ? otherCity || "Другой город" : city || "Город не указан";
+  const cityValue = city || "Город не указан";
   const pickupOk = weight >= 50;
   const effMethod: Method = method === "pickup" && !pickupOk ? "send" : method;
 
@@ -82,8 +84,8 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
   const vd = useMemo(() => (step >= 5 ? visitDays() : []), [step]);
 
   const setW = (n: number) => {
-    setWeight(Math.max(5, Math.min(100, n)));
-    setOver100(false);
+    setWeightText(String(n));
+    setOver100Chip(false);
   };
 
   async function submit() {
@@ -198,13 +200,17 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
           </p>
           <div className="flex items-baseline gap-3 border-b border-paper/25 pb-2">
             <input
-              type="number"
-              min={5}
-              max={100}
-              step={5}
-              value={weight}
-              onChange={(e) => setW(+e.target.value || 5)}
-              className="w-full bg-transparent font-mono text-[56px] leading-none text-paper outline-none"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              maxLength={4}
+              placeholder="0"
+              value={weightText}
+              onChange={(e) => {
+                setWeightText(e.target.value.replace(/\D/g, "").replace(/^0+(?=\d)/, ""));
+                setOver100Chip(false);
+              }}
+              className="w-full bg-transparent font-mono text-[56px] leading-none text-paper outline-none placeholder:text-paper/25"
               aria-label="Вес, кг"
             />
             <span className="font-mono text-xl text-paper/50">кг</span>
@@ -214,7 +220,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
             min={5}
             max={100}
             step={5}
-            value={weight}
+            value={Math.min(100, Math.max(5, weight))}
             onChange={(e) => setW(+e.target.value)}
             className="mt-6 w-full accent-[#ff5c39]"
             aria-label="Вес, ползунок"
@@ -229,7 +235,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
                 key={n}
                 type="button"
                 onClick={() => setW(n)}
-                className={`border px-3.5 py-2 font-mono text-sm transition-colors ${weight === n && !over100 ? "border-accent text-accent" : "border-paper/25 hover:border-paper"}`}
+                className={`border px-3.5 py-2 font-mono text-sm transition-colors ${weight === n && !over100Chip ? "border-accent text-accent" : "border-paper/25 hover:border-paper"}`}
               >
                 {n} кг
               </button>
@@ -237,8 +243,8 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
             <button
               type="button"
               onClick={() => {
-                setWeight(100);
-                setOver100(true);
+                setWeightText("100");
+                setOver100Chip(true);
               }}
               className={`border px-3.5 py-2 font-mono text-sm ${over100 ? "border-accent text-accent" : "border-paper/25 hover:border-paper"}`}
             >
@@ -253,7 +259,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
           )}
           <div className="mt-5 flex gap-2">
             <button className={btnBack} onClick={() => setStep(1)} aria-label="Назад">←</button>
-            <button className={btnNext} onClick={() => setStep(3)}>Продолжить →</button>
+            <button className={btnNext} onClick={() => setStep(3)} disabled={weight < 1}>Продолжить →</button>
           </div>
         </div>
       )}
@@ -262,21 +268,9 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
         <div>
           <h2 className="text-[24px] leading-tight font-medium tracking-tight">Где находится материал?</h2>
           <p className="mt-1.5 mb-4 text-[14px] text-paper/60">
-            Выберите ближайший к вам крупный город. Если его нет в списке — укажите свой.
+            Начните вводить или выберите ближайший крупный город. Если вашего нет в списке — просто напишите его.
           </p>
-          <div className="relative">
-          <svg aria-hidden className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2" width="12" height="8"><path d="M1 1l5 5 5-5" stroke="currentColor" fill="none" /></svg>
-          <select value={city} onChange={(e) => setCity(e.target.value)} className={`${input} appearance-none pr-10`}>
-            <option value="" className="bg-ink">Выберите город</option>
-            {cities.map((c) => (
-              <option key={c} className="bg-ink">{c}</option>
-            ))}
-            <option value="other" className="bg-ink">Другой город</option>
-          </select>
-          </div>
-          {city === "other" && (
-            <input value={otherCity} onChange={(e) => setOtherCity(e.target.value)} placeholder="Введите ваш город" className={`${input} mt-2`} />
-          )}
+          <CityPicker cities={cities} value={city} onChange={setCity} />
           <div className="mt-5 flex gap-2">
             <button className={btnBack} onClick={() => setStep(2)} aria-label="Назад">←</button>
             <button className={btnNext} onClick={() => setStep(4)}>Показать стоимость →</button>
