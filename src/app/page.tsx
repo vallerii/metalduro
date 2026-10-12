@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Calculator } from "@/components/Calculator";
 import { Element } from "@/components/Element";
 import { Pic } from "@/components/Pic";
+import { VideoPlayer } from "@/components/VideoPlayer";
 import { photo } from "@/lib/photos";
 import {
   brands,
@@ -192,14 +193,13 @@ export default function Home() {
           />
           <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
             <div className="flex flex-col gap-5">
-              <div className="relative h-[clamp(260px,42vh,460px)] bg-ink">
-                <Pic src={photo("bucket")} alt="Пластины во внутренней пластиковой таре" className="absolute inset-0 opacity-60" sizes="(min-width:1024px) 50vw, 100vw" />
-                <div className="absolute inset-0 flex flex-col justify-end p-5 text-paper">
-                  <span className="grid size-14 place-items-center bg-accent text-xl text-ink">▶</span>
-                  <div className="mt-4 text-[22px] font-medium tracking-tight">Как упаковать твердосплавный лом</div>
-                  <div className="label-mono mt-1 text-paper/70">Видеоинструкция</div>
-                </div>
-              </div>
+              <VideoPlayer
+                src="/video/unpacking.mp4"
+                poster="/video/unpacking-poster.jpg"
+                title="Как упаковать твердосплавный лом"
+                caption="Видеоинструкция"
+                className="h-[clamp(260px,42vh,460px)]"
+              />
               <div className="grid grid-cols-3 gap-5">
                 {[
                   ["pack-1", "Пример упаковки"],
@@ -246,12 +246,12 @@ export default function Home() {
             text="Показываем реальные поступления: откуда пришла отправка, что было внутри, когда мы ее получили и через сколько времени произвели оплату."
           />
           <div className="border-t border-ink">
-            <div className="label-mono hidden grid-cols-[200px_1.1fr_1.2fr_100px_1fr] gap-10 border-b border-line py-4 text-muted md:grid">
+            <div className="label-mono hidden grid-cols-[minmax(0,1.6fr)_1fr_1fr_80px_1fr] gap-8 border-b border-line py-4 text-muted md:grid">
               <span>Фото</span><span>Получено</span><span>Материал</span><span>Вес</span><span>Выплата</span>
             </div>
             {history.map((h) => (
-              <article key={h.date} className="grid gap-5 border-b border-line py-8 md:grid-cols-[200px_1.1fr_1.2fr_100px_1fr] md:items-center md:gap-10">
-                <Pic src={photo(h.photo)} alt={h.material} className="aspect-[16/10]" sizes="(min-width:768px) 200px, 100vw" />
+              <article key={h.date} className="grid gap-5 border-b border-line py-8 md:grid-cols-[minmax(0,1.6fr)_1fr_1fr_80px_1fr] md:items-center md:gap-8">
+                <Pic src={photo(h.photo)} alt={h.material} className="aspect-[4/3]" sizes="(min-width:768px) 40vw, 100vw" />
                 <div>
                   <div className="font-mono text-[13px] text-muted">{h.date} · {h.received}</div>
                   <div className="mt-1 text-[26px] leading-none font-medium tracking-tight">{h.city}</div>
@@ -284,7 +284,7 @@ export default function Home() {
                 <p className="mt-4 text-[16px] leading-relaxed text-muted">{f.text}</p>
                 {f.strong && <p className="mt-3 text-[16px] font-medium text-accent-deep">{f.strong}</p>}
                 {f.link && (
-                  <Link href={f.link.href} className="mt-auto pt-6 text-[15px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
+                  <Link href={f.link.href} className="mt-auto pt-6 text-[15px] font-medium whitespace-nowrap underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
                     {f.link.label} →
                   </Link>
                 )}

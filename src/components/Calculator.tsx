@@ -342,7 +342,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
           </div>
           {effMethod === "send" && (
             <p className="mt-4 text-[14px] text-paper/65">
-              <b className="text-paper">После подтверждения заявки</b> мы покажем короткую видеоинструкцию по упаковке и дадим данные для отправки. Для выплаты запросим имя получателя и IBAN.
+              <b className="text-paper">После подтверждения заявки</b> мы пришлем инструкцию по упаковке и данные для отправки. Для выплаты запросим имя получателя и IBAN.
             </p>
           )}
           <div className="mt-5 flex gap-2">
