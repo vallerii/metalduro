@@ -220,7 +220,6 @@ export default function Home() {
         <div className="wrap">
           <SectionHead
             title={"Нам регулярно отправляют материал"}
-            text="Показываем реальные поступления: откуда пришла отправка, что было внутри, когда мы ее получили и через сколько времени произвели оплату."
           />
           <div className="flex flex-col gap-[clamp(40px,6vh,72px)]">
             {history.map((h) => (
