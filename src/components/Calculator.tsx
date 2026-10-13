@@ -138,7 +138,6 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
     <div id="calculator" className="scroll-mt-20 bg-ink p-5 text-paper sm:p-6 xl:p-7">
       <div className="flex items-baseline justify-between">
         <div className="text-[19px] font-medium tracking-tight">Расчет стоимости</div>
-        <div className="label-mono text-paper/75">{step <= 5 ? `Шаг ${step} из 5` : "Заявка отправлена"}</div>
       </div>
       <div className="mt-3 mb-5 grid grid-cols-5 gap-1">
         {[1, 2, 3, 4, 5].map((i) => (
