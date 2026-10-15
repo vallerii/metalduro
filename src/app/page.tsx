@@ -35,7 +35,7 @@ export default async function Home() {
   const h = t.home;
   const { buyList, noBuyList, packingSteps, history, flow, faq } = t;
   const guideLink = (slug: string) => `/guides/${slug}`;
-  const reviews = t.reviews.items.filter((r) => !r.mockup || isDev);
+  const reviews = t.reviews.items;
   const calcPhotos = Object.fromEntries(
     [...Object.values(materialMeta), ...history].map((m) => [m.photo, photo(m.photo)]),
   );
