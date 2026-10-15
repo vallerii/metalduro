@@ -137,13 +137,11 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
   }
 
   const summary = (
-    <div className="mt-6 border-t border-paper/20 pt-5 text-[15px] leading-relaxed text-paper/75">
-      <div className="label-mono mb-2 text-paper/75">Ваша заявка</div>
-      <div className="font-mono text-3xl text-paper">{weight} кг</div>
-      <div>{material.name}</div>
-      <div>{cityValue}</div>
-      <div className="mt-1">
-        Способ передачи: <span className="text-paper">{methodNames[effMethod]}</span>
+    <div className="mt-5 border-t border-paper/20 pt-4 text-[14px] leading-relaxed text-paper/70">
+      <div className="label-mono mb-1 text-paper/60">Ваша заявка</div>
+      <div>
+        <span className="font-mono text-paper">{weight} кг</span> · {material.name} · {cityValue} · {methodNames[effMethod]}
+        {!over100 && <span className="font-mono text-paper"> · ≈ {eur(price)}</span>}
       </div>
     </div>
   );
