@@ -351,7 +351,7 @@ export default async function Home() {
       {SHOW_REVIEWS && reviews.length > 0 && (
         <section id="reviews" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
           <div className="wrap">
-            <div className="grid gap-6 pb-12 md:grid-cols-[1.25fr_0.75fr] md:items-end md:gap-16 md:pb-20">
+            <div className="grid gap-6 pb-12 md:grid-cols-[1.25fr_0.75fr] md:items-start md:gap-16 md:pb-20">
               <h2 className="display text-[clamp(32px,3.6vw,56px)]">{t.reviews.title}</h2>
               <div className="max-w-xl">
                 <p className="text-[17px] leading-relaxed text-muted">{t.reviews.text}</p>
