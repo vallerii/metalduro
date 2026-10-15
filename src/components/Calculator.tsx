@@ -3,17 +3,10 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { CityPicker } from "./CityPicker";
-import { cities, contacts, history, materials, type MaterialId } from "@/content/site";
+import { cities, contacts, materialMeta, type MaterialId } from "@/content/site";
+import type { Dict } from "@/content/dict";
 
 type Method = "send" | "pickup" | "warehouse";
-const methodNames: Record<Method, string> = {
-  send: "Отправка",
-  pickup: "Самовывоз",
-  warehouse: "Склад Barcelona",
-};
-
-const months = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
-const days = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 
 function nextDays(weekday: number, count: number) {
   const out: Date[] = [];
@@ -26,9 +19,8 @@ function nextDays(weekday: number, count: number) {
   }
   return out;
 }
-const fmt = (d: Date) => `${d.getDate()} ${months[d.getMonth()]}`;
-
-function weekends() {
+function weekends(months: string[]) {
+  const fmt = (d: Date) => `${d.getDate()} ${months[d.getMonth()]}`;
   return nextDays(6, 3).map((sat) => {
     const sun = new Date(sat);
     sun.setDate(sat.getDate() + 1);
@@ -37,7 +29,8 @@ function weekends() {
       : `${fmt(sat)} – ${fmt(sun)}`;
   });
 }
-function visitDays() {
+function visitDays(months: string[], days: string[]) {
+  const fmt = (d: Date) => `${d.getDate()} ${months[d.getMonth()]}`;
   const fr = nextDays(5, 3);
   return fr.flatMap((f) => {
     const s = new Date(f);
@@ -46,7 +39,6 @@ function visitDays() {
   });
 }
 
-const eur = (n: number) => n.toLocaleString("ru-RU") + " €";
 
 const input =
   "w-full border border-paper/25 bg-transparent px-4 py-3.5 text-[17px] text-paper outline-none placeholder:text-paper/35 focus:border-accent";
@@ -55,7 +47,24 @@ const btnNext =
 const btnBack =
   "border border-paper/25 px-5 py-3.5 text-paper transition-colors hover:border-paper";
 
-export function Calculator({ photos }: { photos: Record<string, string | null> }) {
+export function Calculator({
+  photos,
+  t,
+  cityT,
+  materials: materialTexts,
+  history,
+  numberLocale,
+}: {
+  photos: Record<string, string | null>;
+  t: Dict["calc"];
+  cityT: Dict["city"];
+  materials: Dict["materials"];
+  history: Dict["history"];
+  numberLocale: string;
+}) {
+  const materials = materialTexts.map((m) => ({ ...m, ...materialMeta[m.id] }));
+  const eur = (n: number) => n.toLocaleString(numberLocale) + " €";
+  const methodNames = t.methodNames;
   // 0 — «С нами зарабатывают», 1 материал, 2 вес + стоимость, 3 город + способ передачи, 4 контакты, 5 готово
   const [step, setStep] = useState(0);
   const [slide, setSlide] = useState(0);
@@ -78,20 +87,20 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
   const material = materials.find((m) => m.id === mat)!;
   const price = weight * material.rate;
-  const cityValue = city || "Город не указан";
+  const cityValue = city || t.noCity;
   const pickupOk = weight >= 50;
   const effMethod: Method = method === "pickup" && !pickupOk ? "send" : method;
 
   // даты считаются только на клиенте, когда пользователь дошел до шагов 4–5
-  const wk = useMemo(() => (step >= 3 ? weekends() : []), [step]);
-  const vd = useMemo(() => (step >= 4 ? visitDays() : []), [step]);
+  const wk = useMemo(() => (step >= 3 ? weekends(t.months) : []), [step, t.months]);
+  const vd = useMemo(() => (step >= 4 ? visitDays(t.months, t.days) : []), [step, t.months, t.days]);
 
   // галерея сделок листается сама, пока пользователь не нажал стрелку
   useEffect(() => {
     if (step !== 0 || !autoplay || history.length < 2) return;
-    const t = setInterval(() => setSlide((i) => (i + 1) % history.length), 4500);
-    return () => clearInterval(t);
-  }, [step, autoplay]);
+    const timer = setInterval(() => setSlide((i) => (i + 1) % history.length), 4500);
+    return () => clearInterval(timer);
+  }, [step, autoplay, history.length]);
   const go = (d: number) => {
     setAutoplay(false);
     setSlide((i) => (i + d + history.length) % history.length);
@@ -104,7 +113,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
   async function submit() {
     if (phone.trim().length < 6) {
-      setError("Укажите телефон, чтобы мы могли связаться с вами.");
+      setError(t.errPhone);
       return;
     }
     setError(null);
@@ -130,7 +139,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
       });
       setStep(5);
     } catch {
-      setError("Не удалось отправить. Позвоните нам: " + contacts.phone);
+      setError(t.errSend + contacts.phone);
     } finally {
       setSending(false);
     }
@@ -138,18 +147,18 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
   const summary = (
     <div className="mt-5 border-t border-paper/20 pt-4 text-[14px] leading-relaxed text-paper/70">
-      <div className="label-mono mb-1 text-paper/60">Ваша заявка</div>
+      <div className="label-mono mb-1 text-paper/60">{t.summary}</div>
       <div>
-        <span className="font-mono text-paper">{weight} кг</span> · {material.name} · {cityValue} · {methodNames[effMethod]}
+        <span className="font-mono text-paper">{weight} kg</span> · {material.name} · {cityValue} · {methodNames[effMethod]}
         {!over100 && <span className="font-mono text-paper"> · ≈ {eur(price)}</span>}
       </div>
     </div>
   );
 
   const methodMeta: Record<Method, { t: string; d: string; tag: string | null }> = {
-    send: { t: "Отправить нам", d: "Без предоплаты. Доставку оплачиваем мы.", tag: "Рекомендуем" },
-    pickup: { t: "Самовывоз от 50 кг", d: pickupOk ? "Приезжаем в выходной и рассчитываемся на месте." : "Доступен от 50 кг — увеличьте вес на предыдущем шаге.", tag: null },
-    warehouse: { t: "Привезти на склад в Barcelona", d: "Удобные даты отметите на следующем шаге.", tag: null },
+    send: { t: t.methods.send.t, d: t.methods.send.d, tag: t.methods.send.tag },
+    pickup: { t: t.methods.pickup.t, d: pickupOk ? t.methods.pickup.d : t.methods.pickup.dDisabled, tag: null },
+    warehouse: { t: t.methods.warehouse.t, d: t.methods.warehouse.d, tag: null },
   };
 
   const h2 = "text-[24px] leading-tight font-medium tracking-tight";
@@ -164,7 +173,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
       {/* ШАПКА — одинаковой высоты на всех шагах */}
       <div className="shrink-0">
         <div className="flex items-baseline justify-between">
-          <div className="text-[19px] font-medium tracking-tight">{step === 0 ? "Metalduro" : "Расчет стоимости"}</div>
+          <div className="text-[19px] font-medium tracking-tight">{step === 0 ? t.brand : t.title}</div>
           {step >= 1 && step <= 4 && <div className="font-mono text-[12px] text-paper/45">{step} / 4</div>}
         </div>
         <div className={`mt-3 mb-5 grid grid-cols-4 gap-1 ${step === 0 ? "invisible" : ""}`}>
@@ -178,8 +187,8 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
       <div className="-mx-1 min-h-0 flex-1 overflow-y-auto px-1 [scrollbar-color:#5f5f63_transparent] [scrollbar-width:thin]">
         {step === 0 && (
           <div className="flex h-full flex-col">
-            <h2 className={h2}>С нами зарабатывают</h2>
-            <p className={sub}>Реальные партии последних недель: сколько отправили и сколько получили.</p>
+            <h2 className={h2}>{t.introTitle}</h2>
+            <p className={sub}>{t.introText}</p>
             <div className="relative min-h-[220px] flex-1 overflow-hidden bg-ink-2">
               {history.map((x, i) => {
                 const src = photos[x.photo];
@@ -195,15 +204,15 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
                 <div className="text-[14px] text-paper/70">{h.material}</div>
               </div>
               <div className="absolute top-3 right-3 flex gap-1">
-                <button type="button" onClick={() => go(-1)} aria-label="Предыдущая сделка" className="grid size-9 place-items-center bg-ink/80 text-paper transition-colors hover:bg-accent hover:text-ink">←</button>
-                <button type="button" onClick={() => go(1)} aria-label="Следующая сделка" className="grid size-9 place-items-center bg-ink/80 text-paper transition-colors hover:bg-accent hover:text-ink">→</button>
+                <button type="button" onClick={() => go(-1)} aria-label={t.prev} className="grid size-9 place-items-center bg-ink/80 text-paper transition-colors hover:bg-accent hover:text-ink">←</button>
+                <button type="button" onClick={() => go(1)} aria-label={t.next} className="grid size-9 place-items-center bg-ink/80 text-paper transition-colors hover:bg-accent hover:text-ink">→</button>
               </div>
             </div>
             <div className="grid shrink-0 grid-cols-3 border-b border-paper/20">
               {[
-                ["Отправили", h.weight],
-                ["Заработали", h.earned],
-                ["Выплата через", h.wait],
+                [t.sent, h.weight],
+                [t.earned, h.earned],
+                [t.paidIn, h.wait],
               ].map(([l, v], i) => (
                 <div key={l} className={`py-3 ${i > 0 ? "border-l border-paper/20 pl-3" : ""}`}>
                   <div className="label-mono text-paper/55">{l}</div>
@@ -220,7 +229,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
                     setAutoplay(false);
                     setSlide(i);
                   }}
-                  aria-label={`Сделка ${i + 1}`}
+                  aria-label={`${t.slide} ${i + 1}`}
                   className={`h-1.5 transition-all ${i === slide ? "w-6 bg-accent" : "w-1.5 bg-paper/30 hover:bg-paper/60"}`}
                 />
               ))}
@@ -230,8 +239,8 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
         {step === 1 && (
           <div>
-            <h2 className={h2}>Что у вас за материал?</h2>
-            <p className={sub}>Выберите наиболее похожий вариант. Точный состав мы проверим после получения.</p>
+            <h2 className={h2}>{t.matTitle}</h2>
+            <p className={sub}>{t.matText}</p>
             <div className="grid grid-cols-2 gap-px bg-paper/15 p-px">
               {materials.map((m) => {
                 const on = m.id === mat;
@@ -271,8 +280,8 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
         {step === 2 && (
           <div>
-            <h2 className={h2}>Укажите вес</h2>
-            <p className={sub}>Примерного веса достаточно — точный зафиксируем после получения.</p>
+            <h2 className={h2}>{t.weightTitle}</h2>
+            <p className={sub}>{t.weightText}</p>
             <div className="flex items-baseline gap-3 border-b border-paper/25 pb-2">
               <input
                 type="text"
@@ -286,9 +295,9 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
                   setOver100Chip(false);
                 }}
                 className="w-full bg-transparent font-mono text-[48px] leading-none text-paper outline-none placeholder:text-paper/25"
-                aria-label="Вес, кг"
+                aria-label={t.weightAria}
               />
-              <span className="font-mono text-xl text-paper/50">кг</span>
+              <span className="font-mono text-xl text-paper/50">kg</span>
             </div>
             <input
               type="range"
@@ -298,11 +307,11 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
               value={Math.min(100, Math.max(5, weight))}
               onChange={(e) => setW(+e.target.value)}
               className="mt-5 w-full accent-[#ff5c39]"
-              aria-label="Вес, ползунок"
+              aria-label={t.sliderAria}
             />
             <div className="mt-1 flex justify-between font-mono text-[11px] text-paper/45">
-              <span>5 кг</span>
-              <span>100 кг</span>
+              <span>5 kg</span>
+              <span>100 kg</span>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               {[5, 20, 50, 100].map((n) => (
@@ -312,7 +321,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
                   onClick={() => setW(n)}
                   className={`border px-3.5 py-2 font-mono text-sm transition-colors ${weight === n && !over100Chip ? "border-accent text-accent" : "border-paper/25 hover:border-paper"}`}
                 >
-                  {n} кг
+                  {n} kg
                 </button>
               ))}
               <button
@@ -323,17 +332,17 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
                 }}
                 className={`border px-3.5 py-2 font-mono text-sm ${over100 ? "border-accent text-accent" : "border-paper/25 hover:border-paper"}`}
               >
-                100+ кг
+                100+ kg
               </button>
             </div>
 
             <div className="mt-5 bg-accent p-4 text-ink" aria-live="polite">
-              <div className="text-[14px]">Ориентировочная стоимость вашего материала</div>
+              <div className="text-[14px]">{t.estimate}</div>
               {over100 ? (
                 <>
-                  <div className="mt-1 font-mono text-[30px] leading-none tracking-tight">индивидуально</div>
+                  <div className="mt-1 font-mono text-[30px] leading-none tracking-tight">{t.custom}</div>
                   <div className="mt-2 text-[13px]">
-                    Для объемов больше 100 кг рассчитаем условия отдельно:{" "}
+                    {t.over100}{" "}
                     <a href={contacts.phoneHref} className="font-mono underline">{contacts.phone}</a>
                   </div>
                 </>
@@ -341,7 +350,7 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
                 <>
                   <div className="mt-1 font-mono text-[40px] leading-none tracking-tight">≈ {eur(price)}</div>
                   <div className="mt-2 font-mono text-[12px] opacity-75">
-                    {material.name} · {weight} кг · ориентир {material.rate} €/кг
+                    {t.rateLine.replace("{material}", material.name).replace("{weight}", String(weight)).replace("{rate}", String(material.rate))}
                   </div>
                 </>
               )}
@@ -351,10 +360,10 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
         {step === 3 && (
           <div>
-            <h2 className={h2}>Где находится материал и как передать?</h2>
-            <p className={sub}>Укажите город — если его нет в списке, просто напишите.</p>
-            <CityPicker cities={cities} value={city} onChange={setCity} />
-            <div className="label-mono mt-5 mb-1 text-paper/75">Способ передачи</div>
+            <h2 className={h2}>{t.placeTitle}</h2>
+            <p className={sub}>{t.placeText}</p>
+            <CityPicker cities={cities} value={city} onChange={setCity} t={cityT} />
+            <div className="label-mono mt-5 mb-1 text-paper/75">{t.methodLabel}</div>
             <div className="border-t border-paper/20">
               {(["send", "pickup", "warehouse"] as Method[]).map((m) => {
                 const disabled = m === "pickup" && !pickupOk;
@@ -407,23 +416,23 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
         {step === 4 && (
           <div>
-            <h2 className={h2}>{effMethod === "send" ? "Контактные данные и выплата" : "Контактные данные и дата"}</h2>
+            <h2 className={h2}>{effMethod === "send" ? t.contactTitleSend : t.contactTitleDate}</h2>
             <p className={sub}>
-              {effMethod === "send"
-                ? "Оставьте телефон и данные для выплаты после проверки материала."
-                : "Выберите несколько удобных дат и оставьте телефон. Мы свяжемся с вами для подтверждения."}
+              {effMethod === "send" ? t.contactTextSend : t.contactTextDate}
             </p>
-            <label className="label-mono mb-2 block text-paper/75">Контактные данные</label>
+            <label className="label-mono mb-2 block text-paper/75">{t.contactLabel}</label>
             <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" placeholder="+34 600 000 000" className={input} />
             <label className="mt-3 flex cursor-pointer items-center gap-3 text-[14px] text-paper/80">
               <input type="checkbox" checked={workedBefore} onChange={(e) => setWorkedBefore(e.target.checked)} className="size-4 accent-[#ff5c39]" />
-              Я уже работал с вами ранее
+              {t.workedBefore}
             </label>
 
             {effMethod !== "send" && (
               <div className="mt-5">
-                <label className="label-mono mb-1 block text-paper/75">Когда вам удобно?</label>
-                <p className="mb-3 text-[14px] text-paper/55">Можно выбрать несколько вариантов.</p>
+                <div className="mb-2 flex flex-wrap items-baseline gap-x-2">
+                  <label className="label-mono text-paper/75">{t.whenLabel}</label>
+                  <span className="text-[13px] text-paper/55">{t.whenText}</span>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {vd.map((d) => {
                     const on = visits.includes(d);
@@ -444,9 +453,9 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
 
             {effMethod === "send" && (
               <div className="mt-5">
-                <label className="label-mono mb-2 block text-paper/75">Данные для выплаты</label>
-                <input value={payName} onChange={(e) => setPayName(e.target.value)} placeholder="Имя и фамилия получателя" className={input} />
-                <input value={iban} onChange={(e) => setIban(e.target.value)} placeholder="IBAN · ES00 0000 0000 0000 0000 0000" className={`${input} mt-2 font-mono text-[15px]`} />
+                <label className="label-mono mb-2 block text-paper/75">{t.payLabel}</label>
+                <input value={payName} onChange={(e) => setPayName(e.target.value)} placeholder={t.payName} className={input} />
+                <input value={iban} onChange={(e) => setIban(e.target.value)} placeholder={t.iban} className={`${input} mt-2 font-mono text-[15px]`} />
               </div>
             )}
 
@@ -458,21 +467,17 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
         {step === 5 && (
           <div className="flex h-full flex-col justify-center">
             <div className="grid size-14 place-items-center bg-accent text-2xl text-ink">✓</div>
-            <h2 className="mt-6 text-[34px] leading-tight font-medium tracking-tight">Спасибо за вашу заявку!</h2>
+            <h2 className="mt-6 text-[34px] leading-tight font-medium tracking-tight">{t.doneTitle}</h2>
             <p className="mt-3 max-w-md text-[16px] text-paper/70">
-              Мы получили ваши данные и свяжемся с вами по указанному номеру телефона, чтобы подтвердить следующие шаги.
+              {t.doneText}
             </p>
             <div className="mt-6 border-l-2 border-accent pl-4 text-[15px] text-paper/80">
-              <b className="text-paper">Что дальше?</b>
+              <b className="text-paper">{t.doneNext}</b>
               <br />
-              {effMethod === "send"
-                ? "Мы подтвердим заявку и отправим инструкции по упаковке и отправке материала. После получения и проверки произведем выплату."
-                : effMethod === "pickup"
-                  ? "Мы свяжемся с вами, согласуем удобную дату самовывоза и подтвердим детали."
-                  : "Мы свяжемся с вами и подтвердим дату и время, когда можно привезти материал на склад в Barcelona."}
+              {effMethod === "send" ? t.doneSend : effMethod === "pickup" ? t.donePickup : t.doneWarehouse}
             </div>
             <div className="mt-8 text-[14px] text-paper/55">
-              Если вопрос срочный: <a href={contacts.phoneHref} className="font-mono text-paper">{contacts.phone}</a>
+              {t.urgent} <a href={contacts.phoneHref} className="font-mono text-paper">{contacts.phone}</a>
             </div>
           </div>
         )}
@@ -482,19 +487,19 @@ export function Calculator({ photos }: { photos: Record<string, string | null> }
       {step < 5 && (
         <div className="mt-4 flex shrink-0 gap-2">
           {step === 0 && (
-            <button className={btnNext} onClick={() => setStep(1)}>Хотите рассчитать стоимость? →</button>
+            <button className={btnNext} onClick={() => setStep(1)}>{t.introCta}</button>
           )}
           {step >= 1 && (
-            <button className={btnBack} onClick={() => setStep(step - 1)} aria-label="Назад">←</button>
+            <button className={btnBack} onClick={() => setStep(step - 1)} aria-label={t.back}>←</button>
           )}
-          {step === 1 && <button className={btnNext} onClick={() => setStep(2)}>Продолжить →</button>}
+          {step === 1 && <button className={btnNext} onClick={() => setStep(2)}>{t.continue}</button>}
           {step === 2 && (
-            <button className={btnNext} onClick={() => setStep(3)} disabled={weight < 1}>Продолжить →</button>
+            <button className={btnNext} onClick={() => setStep(3)} disabled={weight < 1}>{t.continue}</button>
           )}
-          {step === 3 && <button className={btnNext} onClick={() => setStep(4)}>Продолжить →</button>}
+          {step === 3 && <button className={btnNext} onClick={() => setStep(4)}>{t.continue}</button>}
           {step === 4 && (
             <button className={btnNext} onClick={submit} disabled={sending}>
-              {sending ? "Отправляем…" : "Отправить заявку"}
+              {sending ? t.sending : t.submit}
             </button>
           )}
         </div>

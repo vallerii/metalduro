@@ -1,30 +1,42 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { Pic } from "@/components/Pic";
 import { photo } from "@/lib/photos";
-import { getGuide, guides } from "@/content/guides";
+import { getDict } from "@/content/dict";
+import { getT } from "@/i18n/server";
+
+// Старые русские адреса гайдов → новые испанские
+const legacySlugs: Record<string, string> = {
+  "kak-opredelit-tverdyj-splav": "como-identificar-metal-duro",
+  "kak-upakovat-lom": "como-embalar-chatarra-metal-duro",
+  "chto-takoe-karbid-volframa": "que-es-el-carburo-de-tungsteno",
+};
 
 export function generateStaticParams() {
-  return guides.map((g) => ({ slug: g.slug }));
+  return getDict("es").guides.map((g) => ({ slug: g.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/guides/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const g = getGuide(slug);
-  return g ? { title: g.title, description: g.lead } : {};
+  const { t } = await getT();
+  const g = t.guides.find((x) => x.slug === slug);
+  return g ? { title: g.title, description: g.lead, alternates: { canonical: `/guides/${g.slug}` } } : {};
 }
 
 export default async function GuidePage({ params }: PageProps<"/guides/[slug]">) {
   const { slug } = await params;
-  const g = getGuide(slug);
+  if (legacySlugs[slug]) permanentRedirect(`/guides/${legacySlugs[slug]}`);
+  const { t } = await getT();
+  const guides = t.guides;
+  const g = guides.find((x) => x.slug === slug);
   if (!g) notFound();
   const others = guides.filter((x) => x.slug !== g.slug);
 
   return (
     <main>
       <article className="wrap py-12 md:py-20">
-        <Link href="/#guides" className="label-mono text-ink-2 hover:text-accent-deep">← Полезно знать</Link>
+        <Link href="/#guides" className="label-mono text-ink-2 hover:text-accent-deep">{t.guidePage.back}</Link>
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-end">
           <div>
             <div className="label-mono flex items-center gap-2 text-ink-2">
@@ -40,7 +52,7 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
         <div className="mt-16 grid gap-12 lg:grid-cols-[260px_1fr]">
           <nav className="hidden lg:block">
             <div className="sticky top-24 border-t border-ink pt-4">
-              <div className="label-mono mb-3 text-ink-2">Содержание</div>
+              <div className="label-mono mb-3 text-ink-2">{t.guidePage.contents}</div>
               {g.sections.map((s, i) => (
                 <a key={s.h} href={`#s${i}`} className="block py-1.5 text-[15px] text-ink-2 hover:text-accent-deep">
                   {s.h}
@@ -68,8 +80,8 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
               </section>
             ))}
             <div className="mt-6 flex flex-wrap items-center justify-between gap-6 bg-ink p-8 text-paper">
-              <div className="text-[22px] font-medium tracking-tight">Узнайте стоимость вашего материала</div>
-              <Link href="/#calculator" className="bg-accent px-5 py-4 text-ink hover:bg-paper">Рассчитать →</Link>
+              <div className="text-[22px] font-medium tracking-tight">{t.guidePage.cta}</div>
+              <Link href="/#calculator" className="bg-accent px-5 py-4 text-ink hover:bg-paper">{t.guidePage.ctaBtn}</Link>
             </div>
           </div>
         </div>
@@ -77,7 +89,7 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
 
       <section className="border-t border-line py-16">
         <div className="wrap">
-          <div className="label-mono mb-4 text-ink-2">Читайте также</div>
+          <div className="label-mono mb-4 text-ink-2">{t.guidePage.readAlso}</div>
           <div className="border-t border-ink">
             {others.map((o) => (
               <Link key={o.slug} href={`/guides/${o.slug}`} className="group grid items-baseline gap-2 border-b border-line py-6 md:grid-cols-[160px_1fr_auto] md:gap-8">

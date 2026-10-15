@@ -12,10 +12,12 @@ export function CityPicker({
   cities,
   value,
   onChange,
+  t,
 }: {
   cities: string[];
   value: string;
   onChange: (city: string) => void;
+  t: { placeholder: string; clear: string; nothing: string; other: string };
 }) {
   const [query, setQuery] = useState(value);
   const [open, setOpen] = useState(false);
@@ -64,7 +66,7 @@ export function CityPicker({
           aria-controls={listId}
           aria-autocomplete="list"
           value={query}
-          placeholder="Начните вводить город"
+          placeholder={t.placeholder}
           onFocus={() => setOpen(true)}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -92,7 +94,7 @@ export function CityPicker({
         {query && (
           <button
             type="button"
-            aria-label="Очистить"
+            aria-label={t.clear}
             onClick={() => {
               setQuery("");
               onChange("");
@@ -111,7 +113,7 @@ export function CityPicker({
             role="listbox"
             className="absolute inset-x-0 top-full z-30 mt-1 max-h-[264px] overflow-y-auto border border-paper/20 bg-ink-2 py-1 shadow-[0_24px_48px_-12px_rgb(0_0_0/0.6)] [scrollbar-color:#5f5f63_transparent] [scrollbar-width:thin]"
           >
-            {options.length === 0 && <li className="px-4 py-3 text-[15px] text-paper/50">Ничего не нашлось</li>}
+            {options.length === 0 && <li className="px-4 py-3 text-[15px] text-paper/50">{t.nothing}</li>}
             {options.map((c, i) => {
               const custom = showCustom && i === options.length - 1;
               const selected = !custom && c === value;
@@ -131,7 +133,7 @@ export function CityPicker({
                   <span>
                     {custom ? (
                       <>
-                        <span className="text-paper/50">Другой город: </span>
+                        <span className="text-paper/50">{t.other}</span>
                         {c}
                       </>
                     ) : (

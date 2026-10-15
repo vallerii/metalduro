@@ -3,20 +3,10 @@ import { Calculator } from "@/components/Calculator";
 import { Element } from "@/components/Element";
 import { Pic } from "@/components/Pic";
 import { VideoPlayer } from "@/components/VideoPlayer";
+import { Rich } from "@/components/Rich";
 import { photo } from "@/lib/photos";
-import {
-  brands,
-  buyList,
-  contacts,
-  ecoStats,
-  faq,
-  flow,
-  history,
-  materials,
-  noBuyList,
-  packingSteps,
-} from "@/content/site";
-import { guides } from "@/content/guides";
+import { brands, contacts, materialMeta } from "@/content/site";
+import { getT } from "@/i18n/server";
 
 
 function SectionHead({ title, text, dark, compact }: { title: React.ReactNode; text?: string; dark?: boolean; compact?: boolean }) {
@@ -33,8 +23,13 @@ function SectionHead({ title, text, dark, compact }: { title: React.ReactNode; t
 // Блок «Простой способ превратить лом в деньги» пока скрыт
 const SHOW_TRUST = false;
 
-export default function Home() {
-  const calcPhotos = Object.fromEntries([...materials, ...history].map((m) => [m.photo, photo(m.photo)]));
+export default async function Home() {
+  const { t } = await getT();
+  const h = t.home;
+  const { buyList, noBuyList, packingSteps, history, flow, faq, ecoStats, guides } = t;
+  const calcPhotos = Object.fromEntries(
+    [...Object.values(materialMeta), ...history].map((m) => [m.photo, photo(m.photo)]),
+  );
 
   return (
     <main>
@@ -43,30 +38,26 @@ export default function Home() {
         <div className="wrap grid gap-8 py-8 lg:min-h-[calc(100svh-64px)] lg:grid-cols-[1fr_minmax(0,520px)] lg:grid-rows-[1fr_auto_auto_1fr] lg:gap-x-14 lg:gap-y-0 lg:py-6">
           <div className="lg:col-start-1 lg:row-start-2">
             <h1 className="display text-[clamp(36px,min(4.4vw,7.6vh),68px)]">
-              Покупаем твердосплавный лом по всей Испании
+              {h.h1}
             </h1>
           </div>
 
           <div className="lg:col-start-2 lg:row-span-4 lg:row-start-1 lg:self-center">
-            <Calculator photos={calcPhotos} />
+            <Calculator photos={calcPhotos} t={t.calc} cityT={t.city} materials={t.materials} history={history} numberLocale={t.numberLocale} />
           </div>
 
           <div className="lg:col-start-1 lg:row-start-3">
             <ol className="border-t border-line lg:mt-10">
-              {[
-                ["Отправка за наш счет", "Вы отправляете материал, мы оплачиваем доставку и рассчитываемся после проверки."],
-                ["Самовывоз от 50 кг", "По выходным дням, с расчетом на месте."],
-                ["Можно привезти в Барселону", "Принимаем материал на нашем складе."],
-              ].map(([t], i) => (
-                <li key={t} className="grid grid-cols-[44px_1fr] items-baseline gap-2 border-b border-line py-[clamp(14px,2.4vh,22px)]">
+              {h.heroPoints.map((p, i) => (
+                <li key={p} className="grid grid-cols-[44px_1fr] items-baseline gap-2 border-b border-line py-[clamp(14px,2.4vh,22px)]">
                   <span className="font-mono text-sm text-accent-deep">0{i + 1}</span>
-                  <div className="text-[16px] font-medium">{t}</div>
+                  <div className="text-[16px] font-medium">{p}</div>
                 </li>
               ))}
             </ol>
 
             <p className="mt-8 border-l-2 border-accent pl-4 text-[14px] text-ink-2">
-              <b className="text-ink">Важно:</b> принимаем только твердосплавный лом / карбид вольфрама и чистый вольфрам. Медь, провода, HSS и обычные металлы не принимаем.
+              <Rich text={h.heroNote} boldClass="text-ink" />
             </p>
           </div>
         </div>
@@ -77,12 +68,12 @@ export default function Home() {
         <div className="wrap">
           <SectionHead
             compact
-            title={<>Что мы покупаем — и что нет</>}
+            title={h.materialsTitle}
           />
           <div className="grid gap-16 lg:grid-cols-[1.25fr_1fr] lg:gap-0">
             <div className="lg:border-r lg:border-line lg:pr-16">
               <div className="mb-6 flex items-center gap-3 text-[20px] font-medium">
-                <span className="grid size-7 place-items-center bg-accent text-sm text-ink">✓</span> Покупаем
+                <span className="grid size-7 place-items-center bg-accent text-sm text-ink">✓</span> {h.buy}
               </div>
               <div className="grid grid-cols-2 gap-x-6 gap-y-6">
                 {buyList.map((b) => (
@@ -102,7 +93,7 @@ export default function Home() {
                 ))}
               </div>
               <div className="mt-8 border-t border-line pt-5">
-              <div className="label-mono text-ink-2">Особенно интересует новый инструмент в упаковке</div>
+              <div className="label-mono text-ink-2">{h.brandsLabel}</div>
               <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[16px] font-medium tracking-tight text-ink-2">
                 {brands.map((b) => (
                   <span key={b}>{b}</span>
@@ -112,7 +103,7 @@ export default function Home() {
             </div>
             <div className="lg:pl-16">
               <div className="mb-6 flex items-center gap-3 text-[20px] font-medium">
-                <span className="grid size-7 place-items-center bg-ink text-sm text-paper">✕</span> Не покупаем
+                <span className="grid size-7 place-items-center bg-ink text-sm text-paper">✕</span> {h.noBuy}
               </div>
               <ul className="border-t border-line">
                 {noBuyList.map((n) => (
@@ -126,7 +117,7 @@ export default function Home() {
                 ))}
               </ul>
               <p className="mt-8 text-[14px] leading-relaxed text-muted">
-                Если в партии пластин найдутся посторонние детали, применяем скидку за загрязнение <b className="text-ink">3%</b> от общего веса.
+                <Rich text={h.contamination} boldClass="text-ink" />
               </p>
             </div>
           </div>
@@ -136,18 +127,18 @@ export default function Home() {
       <section className="bg-ink py-[clamp(88px,14vh,160px)] text-paper">
         <div className="wrap grid items-center gap-16 lg:grid-cols-[1.2fr_0.8fr] lg:gap-24">
           <div>
-            <div className="display text-[clamp(64px,7.5vw,120px)] leading-[0.8] tracking-[-0.055em] text-accent">2 часа</div>
-            <div className="mt-4 text-[clamp(22px,2.4vw,32px)] tracking-tight">в среднем до выплаты</div>
+            <div className="display text-[clamp(64px,7.5vw,120px)] leading-[0.8] tracking-[-0.055em] text-accent">{h.payBig}</div>
+            <div className="mt-4 text-[clamp(22px,2.4vw,32px)] tracking-tight">{h.paySub}</div>
           </div>
           <div className="text-[19px] leading-relaxed text-paper/65">
             <p>
-              <b className="text-paper">Оплата в день получения материала.</b>
+              <b className="text-paper">{h.payLead}</b>
             </p>
             <p className="mt-4">
-              В среднем переводим деньги в течение двух часов с момента, когда материал поступил на наш склад и прошел приемку. Если вы привозите материал сами — проверяем и оплачиваем на месте.
+              {h.payText}
             </p>
             <div className="label-mono mt-8 inline-block border border-paper/25 px-3 py-2 text-paper/75">
-              Банковский перевод · физические лица и компании
+              {h.payTag}
             </div>
           </div>
         </div>
@@ -157,25 +148,25 @@ export default function Home() {
       <section className="border-b border-line bg-paper-hi py-[clamp(80px,12vh,144px)]">
         <div className="wrap">
           <SectionHead
-            title={"Нам регулярно отправляют материал"}
+            title={h.historyTitle}
           />
           <div className="flex flex-col gap-[clamp(40px,6vh,72px)]">
-            {history.map((h) => (
-              <article key={h.date} className="grid gap-6 border-t border-ink pt-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-12">
-                <Pic src={photo(h.photo)} alt={h.material} className="aspect-[4/3] md:aspect-auto md:min-h-[360px]" sizes="(min-width:768px) 50vw, 100vw" />
+            {history.map((x) => (
+              <article key={x.date} className="grid gap-6 border-t border-ink pt-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-12">
+                <Pic src={photo(x.photo)} alt={x.material} className="aspect-[4/3] md:aspect-auto md:min-h-[360px]" sizes="(min-width:768px) 50vw, 100vw" />
                 <div className="flex flex-col">
                   <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="label-mono text-ink-2">{h.date}</span>
-                    <span className="label-mono border border-ink/30 px-2.5 py-1 text-ink-2">{h.method}</span>
+                    <span className="label-mono text-ink-2">{x.date}</span>
+                    <span className="label-mono border border-ink/30 px-2.5 py-1 text-ink-2">{x.method}</span>
                   </div>
-                  <div className="mt-4 text-[clamp(30px,3vw,44px)] leading-none font-medium tracking-tight">{h.city}</div>
-                  <div className="mt-3 text-[18px] text-ink-2">{h.material}</div>
+                  <div className="mt-4 text-[clamp(30px,3vw,44px)] leading-none font-medium tracking-tight">{x.city}</div>
+                  <div className="mt-3 text-[18px] text-ink-2">{x.material}</div>
 
                   <div className="mt-8 grid grid-cols-3 border-t border-line">
                     {[
-                      ["Вес", h.weight],
-                      ["Получено", h.received],
-                      ["Оплачено", h.paid.split("· ")[1] ?? h.paid],
+                      [h.historyLabels.weight, x.weight],
+                      [h.historyLabels.received, x.received],
+                      [h.historyLabels.paid, x.paid.split("· ")[1] ?? x.paid],
                     ].map(([l, v], i) => (
                       <div key={l} className={`py-4 ${i > 0 ? "border-l border-line pl-4" : ""}`}>
                         <div className="label-mono text-ink-2">{l}</div>
@@ -185,9 +176,9 @@ export default function Home() {
                   </div>
 
                   <div className="mt-auto bg-ink px-6 py-6 text-paper">
-                    <div className="label-mono text-paper/75">От получения до выплаты</div>
+                    <div className="label-mono text-paper/75">{h.historyLabels.wait}</div>
                     <div className="mt-3 flex items-baseline justify-between gap-4">
-                      <span className="display text-[clamp(44px,4.6vw,68px)] text-accent">{h.wait}</span>
+                      <span className="display text-[clamp(44px,4.6vw,68px)] text-accent">{x.wait}</span>
                       <span className="grid size-10 shrink-0 place-items-center bg-accent text-lg text-ink">✓</span>
                     </div>
                   </div>
@@ -205,7 +196,7 @@ export default function Home() {
       >
         <div className="wrap flex items-center justify-between gap-6 py-12">
           <span className="text-[clamp(20px,2.4vw,32px)] font-medium tracking-tight">
-            Не уверены? Пришлите фото в WhatsApp — скажем, подходит ли материал.
+            {h.unsure}
           </span>
           <span className="text-3xl transition-transform group-hover:translate-x-2">→</span>
         </div>
@@ -214,7 +205,7 @@ export default function Home() {
       {/* КАК ВСЁ ПРОИСХОДИТ */}
       <section id="how" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
         <div className="wrap">
-          <SectionHead title="Как всё происходит" text="От заявки до денег — пять понятных шагов. На каждом этапе вы знаете, что делать дальше." />
+          <SectionHead title={h.howTitle} text={h.howText} />
           <ol className="grid border-t border-ink sm:grid-cols-2 lg:grid-cols-5">
             {flow.map((f, i) => (
               <li key={f.title} className={`flex min-h-[300px] flex-col border-b border-line py-10 sm:pr-8 lg:border-b-0 ${i < 4 ? "lg:border-r lg:border-line" : ""} ${i > 0 ? "lg:pl-8" : ""}`}>
@@ -224,7 +215,7 @@ export default function Home() {
                 {f.strong && <p className="mt-3 text-[16px] font-medium text-ink">{f.strong}</p>}
                 {i === 4 && (
                   <Link href="#calculator" className="mt-auto self-start bg-accent px-5 py-3.5 text-[15px] font-medium whitespace-nowrap text-ink transition-colors hover:bg-ink hover:text-paper">
-                    Оформить заявку →
+                    {h.howCta}
                   </Link>
                 )}
                 {f.link && (
@@ -242,14 +233,14 @@ export default function Home() {
       <section id="packing" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
         <div className="wrap">
           <SectionHead
-            title="Как правильно упаковать материал"
-            text="Твердосплавный лом тяжелый и с острыми кромками — плохая упаковка может порваться в дороге."
+            title={h.packTitle}
+            text={h.packText}
           />
           <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
             <div>
-              <h3 className="text-[24px] font-medium tracking-tight">Перед отправкой</h3>
+              <h3 className="text-[24px] font-medium tracking-tight">{h.packBefore}</h3>
               <p className="mt-4 text-[16px] leading-relaxed text-muted">
-                Транспортная компания не знает, что находится внутри посылки. Материал должен оставаться надежно зафиксирован даже при неаккуратной перевозке.
+                {h.packBeforeText}
               </p>
               <ol className="mt-10 border-t border-line">
                 {packingSteps.map((s, i) => (
@@ -263,23 +254,20 @@ export default function Home() {
                 ))}
               </ol>
               <Link href="#calculator" className="mt-10 inline-block bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">
-                Сначала оформить заявку →
+                {h.packCta}
               </Link>
             </div>
             <div className="flex flex-col gap-5">
               <VideoPlayer
                 src="/video/unpacking.mp4?v=34s"
                 poster="/video/unpacking-poster.jpg"
-                title="Как упаковать твердосплавный лом"
-                caption="Видеоинструкция"
+                title={h.videoTitle}
+                caption={h.videoCaption}
+                watchLabel={t.video.watch}
                 className="h-[clamp(260px,42vh,460px)]"
               />
               <div className="grid grid-cols-3 gap-5">
-                {[
-                  ["pack-1", "Пример упаковки"],
-                  ["bucket", "Внутренняя тара"],
-                  ["pack-3", "Готовая посылка"],
-                ].map(([k, l]) => (
+                {(["pack-1", "bucket", "pack-3"] as const).map((k, i) => [k, h.packPhotos[i]]).map(([k, l]) => (
                   <figure key={k}>
                     <Pic src={photo(k)} alt={l} label="" className="h-[clamp(100px,15vh,170px)]" sizes="(min-width:1024px) 16vw, 33vw" />
                     <figcaption className="label-mono mt-1.5 text-ink-2">{l}</figcaption>
@@ -296,16 +284,11 @@ export default function Home() {
         <>
       <section className="border-b border-line py-[clamp(80px,12vh,144px)]">
         <div className="wrap">
-          <SectionHead title="Простой способ превратить лом в деньги" />
+          <SectionHead title={h.trustTitle} />
           <div className="grid grid-cols-2 border-t border-ink lg:grid-cols-4">
-            {[
-              ["Физическим лицам", "и компаниям"],
-              ["По всей Испании", "отправка за наш счет"],
-              ["Без предоплаты", "платим после приемки"],
-              ["2 часа", "в среднем до выплаты"],
-            ].map(([t, d], i) => (
-              <div key={t} className={`border-b border-line py-8 lg:border-b-0 ${i % 2 ? "pl-6" : "pr-6"} ${i > 0 ? "lg:border-l lg:border-line lg:pl-8" : ""} lg:pr-8`}>
-                <div className="text-[clamp(20px,1.8vw,26px)] font-medium tracking-tight">{t}</div>
+            {h.trustItems.map(([ti, d], i) => (
+              <div key={ti} className={`border-b border-line py-8 lg:border-b-0 ${i % 2 ? "pl-6" : "pr-6"} ${i > 0 ? "lg:border-l lg:border-line lg:pl-8" : ""} lg:pr-8`}>
+                <div className="text-[clamp(20px,1.8vw,26px)] font-medium tracking-tight">{ti}</div>
                 <div className="mt-1 text-[15px] text-muted">{d}</div>
               </div>
             ))}
@@ -313,12 +296,12 @@ export default function Home() {
 
           <div className="mt-16 flex flex-col gap-8 bg-ink p-8 text-paper md:p-10 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <div className="text-[clamp(24px,2.4vw,32px)] font-medium tracking-tight">Можно сначала спросить</div>
-              <div className="mt-2 text-[16px] text-paper/70">Пришлите фото материала — скажем, подходит ли он и сколько стоит.</div>
+              <div className="text-[clamp(24px,2.4vw,32px)] font-medium tracking-tight">{h.trustAskTitle}</div>
+              <div className="mt-2 text-[16px] text-paper/70">{h.trustAskText}</div>
             </div>
             <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
               <a href={contacts.phoneHref} className="font-mono text-[clamp(22px,2vw,28px)] tracking-tight hover:text-accent">{contacts.phone}</a>
-              <a href={contacts.whatsapp} className="bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-paper">Написать в WhatsApp</a>
+              <a href={contacts.whatsapp} className="bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-paper">{h.whatsappWrite}</a>
             </div>
           </div>
         </div>
@@ -330,28 +313,28 @@ export default function Home() {
       <section id="recycling" className="scroll-mt-16 bg-paper-lo py-[clamp(80px,12vh,144px)]">
         <div className="wrap grid gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-24">
           <div>
-            <h2 className="display text-[clamp(32px,3.6vw,56px)]">Этот лом может снова стать ценным материалом</h2>
+            <h2 className="display text-[clamp(32px,3.6vw,56px)]">{h.ecoTitle}</h2>
             <p className="mt-10 max-w-2xl text-[17px] leading-relaxed text-ink-2">
-              Твердосплавный лом содержит вольфрам — металл, для которого уже существует развитая индустрия вторичной переработки. По данным International Tungsten Industry Association, около <b>35% входящего сырья</b> в глобальном производственном цикле вольфрама приходилось на лом; оценка переработки в конце жизненного цикла составляла около <b>30%</b>. Для Европы в исследованиях приводились еще более высокие показатели.
+              <Rich text={h.ecoP1} boldClass="font-bold" />
             </p>
             <p className="mt-5 max-w-2xl text-[17px] leading-relaxed text-ink-2">
-              Передавая вольфрамсодержащий лом в переработку, вы возвращаете ценный металл в производственный цикл и снижаете потребность в первичном сырье.
+              {h.ecoP2}
             </p>
-            <Link href="/o-nas" className="mt-8 inline-block text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
-              О компании Metalduro и переработке вольфрама →
+            <Link href={t.about.path} className="mt-8 inline-block text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
+              {h.ecoLink}
             </Link>
             <div className="label-mono mt-10 flex flex-wrap gap-3 text-ink-2">
-              {["Circular economy", "Повторное использование", "Ресурсосбережение", "Sustainability"].map((t) => (
-                <span key={t} className="border border-ink/30 px-2.5 py-1.5">{t}</span>
+              {h.ecoTags.map((tag) => (
+                <span key={tag} className="border border-ink/30 px-2.5 py-1.5">{tag}</span>
               ))}
             </div>
           </div>
           <div>
-            <div className="label-mono mb-4 text-ink-2">Из чего состоит твердый сплав</div>
+            <div className="label-mono mb-4 text-ink-2">{h.ecoComposition}</div>
             <div className="grid grid-cols-2 gap-6 border-t border-ink pt-6">
               {[
-                { el: <Element className="w-20 shrink-0" />, v: "70–90%", t: "вольфрам (в виде карбида WC) — то, ради чего лом перерабатывают" },
-                { el: <Element symbol="Co" number="27" name="Cobalt" mass="58.93" tone="line" className="w-20 shrink-0" />, v: "6–15%", t: "кобальт — металлическая связка, тоже возвращается в цикл" },
+                { el: <Element className="w-20 shrink-0" />, v: "70–90%", t: h.ecoW },
+                { el: <Element symbol="Co" number="27" name="Cobalt" mass="58.93" tone="line" className="w-20 shrink-0" />, v: "6–15%", t: h.ecoCo },
               ].map((x) => (
                 <div key={x.v} className="flex gap-4">
                   {x.el}
@@ -362,7 +345,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <div className="label-mono mt-14 mb-4 text-ink-2">Переработка вольфрама</div>
+            <div className="label-mono mt-14 mb-4 text-ink-2">{h.ecoRecycling}</div>
             <div className="border-t border-ink">
               {ecoStats.map((s) => (
                 <div key={s.value} className="grid grid-cols-[150px_1fr] items-baseline gap-6 border-b border-line py-7">
@@ -379,17 +362,17 @@ export default function Home() {
       <section id="faq" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
         <div className="wrap grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
           <div>
-            <h2 className="display text-[clamp(32px,3.6vw,56px)]">Частые вопросы</h2>
-            <p className="mt-6 text-[17px] text-muted">То, что обычно нужно знать перед первой продажей.</p>
+            <h2 className="display text-[clamp(32px,3.6vw,56px)]">{h.faqTitle}</h2>
+            <p className="mt-6 text-[17px] text-muted">{h.faqText}</p>
             <div className="mt-12 border-t border-ink pt-6 lg:sticky lg:top-24">
-              <div className="text-[20px] font-medium tracking-tight">Не нашли ответ?</div>
-              <p className="mt-2 text-[15px] text-muted">Спросите нас напрямую — ответим в WhatsApp или по телефону.</p>
+              <div className="text-[20px] font-medium tracking-tight">{h.faqNotFound}</div>
+              <p className="mt-2 text-[15px] text-muted">{h.faqNotFoundText}</p>
               <a href={contacts.phoneHref} className="mt-6 block font-mono text-[clamp(24px,2.2vw,32px)] tracking-tight hover:text-accent-deep">
                 {contacts.phone}
               </a>
               <div className="mt-6 flex flex-wrap gap-3">
-                <a href={contacts.whatsapp} className="bg-accent px-5 py-3.5 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">Задать вопрос в WhatsApp</a>
-                <a href={contacts.phoneHref} className="border border-ink px-5 py-3.5 transition-colors hover:bg-ink hover:text-paper">Позвонить</a>
+                <a href={contacts.whatsapp} className="bg-accent px-5 py-3.5 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">{h.faqWhatsapp}</a>
+                <a href={contacts.phoneHref} className="border border-ink px-5 py-3.5 transition-colors hover:bg-ink hover:text-paper">{h.call}</a>
               </div>
             </div>
           </div>
@@ -410,7 +393,7 @@ export default function Home() {
       {/* ГАЙДЫ */}
       <section id="guides" className="scroll-mt-16 py-[clamp(80px,12vh,144px)]">
         <div className="wrap">
-          <SectionHead title="Материалы о твердом сплаве" text="Как определить твердый сплав, как упаковать посылку и от чего зависит стоимость." />
+          <SectionHead title={h.guidesTitle} text={h.guidesText} />
           <div className="border-t border-ink">
             {guides.map((g) => (
               <Link key={g.slug} href={`/guides/${g.slug}`} className="group grid items-baseline gap-2 border-b border-line py-9 md:grid-cols-[180px_1fr_auto] md:gap-10">

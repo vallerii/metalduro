@@ -22,7 +22,7 @@ export function Pic({
         <Image src={src} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" />
       ) : (
         <div className="hatch absolute inset-0 flex items-end p-3">
-          {label !== "" && <span className="label-mono text-ink-2">{label ?? alt} · фото</span>}
+          {label !== "" && <span className="label-mono text-ink-2">{label ?? alt} · foto</span>}
         </div>
       )}
     </div>
