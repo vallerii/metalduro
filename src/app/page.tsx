@@ -30,6 +30,9 @@ function SectionHead({ title, text, dark, compact }: { title: React.ReactNode; t
   );
 }
 
+// Блок «Простой способ превратить лом в деньги» пока скрыт
+const SHOW_TRUST = false;
+
 export default function Home() {
   const calcPhotos = Object.fromEntries(materials.map((m) => [m.photo, photo(m.photo)]));
 
@@ -129,71 +132,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <a
-        href={contacts.whatsapp}
-        className="group block bg-accent text-ink transition-colors hover:bg-ink hover:text-paper"
-      >
-        <div className="wrap flex items-center justify-between gap-6 py-12">
-          <span className="text-[clamp(20px,2.4vw,32px)] font-medium tracking-tight">
-            Не уверены? Пришлите фото в WhatsApp — скажем, подходит ли материал.
-          </span>
-          <span className="text-3xl transition-transform group-hover:translate-x-2">→</span>
-        </div>
-      </a>
-
-      {/* УПАКОВКА */}
-      <section id="packing" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
-        <div className="wrap">
-          <SectionHead
-            title="Как правильно упаковать материал"
-            text="Твердосплавный лом тяжелый и с острыми кромками — плохая упаковка может порваться в дороге."
-          />
-          <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
-            <div>
-              <h3 className="text-[24px] font-medium tracking-tight">Перед отправкой</h3>
-              <p className="mt-4 text-[16px] leading-relaxed text-muted">
-                Транспортная компания не знает, что находится внутри посылки. Материал должен оставаться надежно зафиксирован даже при неаккуратной перевозке.
-              </p>
-              <ol className="mt-10 border-t border-line">
-                {packingSteps.map((s, i) => (
-                  <li key={s.title} className="grid grid-cols-[48px_1fr] border-b border-line py-6">
-                    <span className="font-mono text-sm text-accent-deep">0{i + 1}</span>
-                    <div>
-                      <div className="text-[16px] font-medium">{s.title}</div>
-                      <div className="mt-0.5 text-[14px] text-muted">{s.text}</div>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-              <Link href="#calculator" className="mt-10 inline-block bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">
-                Сначала оформить заявку →
-              </Link>
-            </div>
-            <div className="flex flex-col gap-5">
-              <VideoPlayer
-                src="/video/unpacking.mp4?v=34s"
-                poster="/video/unpacking-poster.jpg"
-                title="Как упаковать твердосплавный лом"
-                caption="Видеоинструкция"
-                className="h-[clamp(260px,42vh,460px)]"
-              />
-              <div className="grid grid-cols-3 gap-5">
-                {[
-                  ["pack-1", "Пример упаковки"],
-                  ["bucket", "Внутренняя тара"],
-                  ["pack-3", "Готовая посылка"],
-                ].map(([k, l]) => (
-                  <figure key={k}>
-                    <Pic src={photo(k)} alt={l} label="" className="h-[clamp(100px,15vh,170px)]" sizes="(min-width:1024px) 16vw, 33vw" />
-                    <figcaption className="label-mono mt-1.5 text-ink-2">{l}</figcaption>
-                  </figure>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* КАК МЫ ПЛАТИМ */}
       <section className="bg-ink py-[clamp(88px,14vh,160px)] text-paper">
         <div className="wrap grid items-center gap-16 lg:grid-cols-[1.2fr_0.8fr] lg:gap-24">
@@ -260,6 +198,19 @@ export default function Home() {
         </div>
       </section>
 
+      {/* НЕ УВЕРЕНЫ */}
+      <a
+        href={contacts.whatsapp}
+        className="group block bg-accent text-ink transition-colors hover:bg-ink hover:text-paper"
+      >
+        <div className="wrap flex items-center justify-between gap-6 py-12">
+          <span className="text-[clamp(20px,2.4vw,32px)] font-medium tracking-tight">
+            Не уверены? Пришлите фото в WhatsApp — скажем, подходит ли материал.
+          </span>
+          <span className="text-3xl transition-transform group-hover:translate-x-2">→</span>
+        </div>
+      </a>
+
       {/* КАК ВСЁ ПРОИСХОДИТ */}
       <section id="how" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
         <div className="wrap">
@@ -287,7 +238,62 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ДОВЕРИЕ */}
+      {/* УПАКОВКА */}
+      <section id="packing" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
+        <div className="wrap">
+          <SectionHead
+            title="Как правильно упаковать материал"
+            text="Твердосплавный лом тяжелый и с острыми кромками — плохая упаковка может порваться в дороге."
+          />
+          <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
+            <div>
+              <h3 className="text-[24px] font-medium tracking-tight">Перед отправкой</h3>
+              <p className="mt-4 text-[16px] leading-relaxed text-muted">
+                Транспортная компания не знает, что находится внутри посылки. Материал должен оставаться надежно зафиксирован даже при неаккуратной перевозке.
+              </p>
+              <ol className="mt-10 border-t border-line">
+                {packingSteps.map((s, i) => (
+                  <li key={s.title} className="grid grid-cols-[48px_1fr] border-b border-line py-6">
+                    <span className="font-mono text-sm text-accent-deep">0{i + 1}</span>
+                    <div>
+                      <div className="text-[16px] font-medium">{s.title}</div>
+                      <div className="mt-0.5 text-[14px] text-muted">{s.text}</div>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <Link href="#calculator" className="mt-10 inline-block bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">
+                Сначала оформить заявку →
+              </Link>
+            </div>
+            <div className="flex flex-col gap-5">
+              <VideoPlayer
+                src="/video/unpacking.mp4?v=34s"
+                poster="/video/unpacking-poster.jpg"
+                title="Как упаковать твердосплавный лом"
+                caption="Видеоинструкция"
+                className="h-[clamp(260px,42vh,460px)]"
+              />
+              <div className="grid grid-cols-3 gap-5">
+                {[
+                  ["pack-1", "Пример упаковки"],
+                  ["bucket", "Внутренняя тара"],
+                  ["pack-3", "Готовая посылка"],
+                ].map(([k, l]) => (
+                  <figure key={k}>
+                    <Pic src={photo(k)} alt={l} label="" className="h-[clamp(100px,15vh,170px)]" sizes="(min-width:1024px) 16vw, 33vw" />
+                    <figcaption className="label-mono mt-1.5 text-ink-2">{l}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ДОВЕРИЕ — временно скрыт. Чтобы вернуть, поставьте SHOW_TRUST = true */}
+      {SHOW_TRUST && (
+        <>
       <section className="border-b border-line py-[clamp(80px,12vh,144px)]">
         <div className="wrap">
           <SectionHead title="Простой способ превратить лом в деньги" />
@@ -317,6 +323,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+        </>
+      )}
 
       {/* ЭКОЛОГИЯ */}
       <section id="recycling" className="scroll-mt-16 bg-paper-lo py-[clamp(80px,12vh,144px)]">
@@ -329,6 +337,9 @@ export default function Home() {
             <p className="mt-5 max-w-2xl text-[17px] leading-relaxed text-ink-2">
               Передавая вольфрамсодержащий лом в переработку, вы возвращаете ценный металл в производственный цикл и снижаете потребность в первичном сырье.
             </p>
+            <Link href="/o-nas" className="mt-8 inline-block text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
+              О компании Metalduro и переработке вольфрама →
+            </Link>
             <div className="label-mono mt-10 flex flex-wrap gap-3 text-ink-2">
               {["Circular economy", "Повторное использование", "Ресурсосбережение", "Sustainability"].map((t) => (
                 <span key={t} className="border border-ink/30 px-2.5 py-1.5">{t}</span>

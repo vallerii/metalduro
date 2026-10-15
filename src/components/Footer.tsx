@@ -35,6 +35,7 @@ export function Footer() {
               ["/#packing", "Как упаковать"],
               ["/#how", "Как это работает"],
               ["/#faq", "FAQ"],
+              ["/o-nas", "О компании"],
             ].map(([href, label]) => (
               <Link key={href} href={href} className="block py-1 text-paper/70 hover:text-accent">
                 {label}
