@@ -51,7 +51,7 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
 
         <div className="mt-16 grid gap-12 lg:grid-cols-[260px_1fr]">
           <nav className="hidden lg:block">
-            <div className="sticky top-24 border-t border-ink pt-4">
+            <div className="sticky top-24 border-t border-line pt-4">
               <div className="label-mono mb-3 text-ink-2">{t.guidePage.contents}</div>
               {g.sections.map((s, i) => (
                 <a key={s.h} href={`#s${i}`} className="block py-1.5 text-[15px] text-ink-2 hover:text-accent-deep">
@@ -90,7 +90,7 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
       <section className="border-t border-line py-16">
         <div className="wrap">
           <div className="label-mono mb-4 text-ink-2">{t.guidePage.readAlso}</div>
-          <div className="border-t border-ink">
+          <div className="border-t border-line">
             {others.map((o) => (
               <Link key={o.slug} href={`/guides/${o.slug}`} className="group grid items-baseline gap-2 border-b border-line py-6 md:grid-cols-[160px_1fr_auto] md:gap-8">
                 <span className="label-mono text-ink-2">{o.kind}</span>

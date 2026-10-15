@@ -29,7 +29,7 @@ export function LegalPage({ doc, t }: { doc: LegalDoc; t: Dict["legal"] }) {
       <h1 className="display mt-10 max-w-4xl text-[clamp(38px,5vw,72px)]">{doc.title}</h1>
       <div className="label-mono mt-4 text-ink-2">{t.updatedLabel}: {doc.updated}</div>
       {doc.intro && <p className="mt-8 max-w-3xl text-[18px] leading-relaxed text-ink-2">{doc.intro}</p>}
-      <div className="mt-12 max-w-3xl border-t border-ink">
+      <div className="mt-12 max-w-3xl border-t border-line">
         {doc.sections.map((s, i) => (
           <section key={s.h} className="grid gap-3 border-b border-line py-7 md:grid-cols-[48px_1fr]">
             <span className="font-mono text-sm text-accent-deep">{String(i + 1).padStart(2, "0")}</span>

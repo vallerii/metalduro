@@ -73,7 +73,7 @@ export default async function Home() {
       </section>
 
       {/* ЧТО ПОКУПАЕМ */}
-      <section id="materials" className="scroll-mt-16 border-b border-line py-[clamp(48px,7vh,88px)]">
+      <section id="materials" className="scroll-mt-16 py-[clamp(48px,7vh,88px)]">
         <div className="wrap">
           <SectionHead
             compact
@@ -101,7 +101,7 @@ export default async function Home() {
                   </figure>
                 ))}
               </div>
-              <div className="mt-8 border-t border-line pt-5">
+              <div className="mt-10">
               <div className="label-mono text-ink-2">{h.brandsLabel}</div>
               <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[16px] font-medium tracking-tight text-ink-2">
                 {brands.map((b) => (
@@ -159,14 +159,14 @@ export default async function Home() {
       </section>
 
       {/* ИСТОРИЯ */}
-      <section className="border-b border-line bg-paper-hi py-[clamp(80px,12vh,144px)]">
+      <section className="bg-paper-hi py-[clamp(80px,12vh,144px)]">
         <div className="wrap">
           <SectionHead
             title={h.historyTitle}
           />
           <div className="flex flex-col gap-[clamp(40px,6vh,72px)]">
             {history.map((x) => (
-              <article key={x.date} className="grid gap-6 border-t border-ink pt-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-12">
+              <article key={x.date} className="grid gap-6 border-t border-line pt-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-12">
                 <Pic src={photo(x.photo)} alt={x.material} className="aspect-[4/3] md:aspect-auto md:min-h-[360px]" sizes="(min-width:768px) 50vw, 100vw" />
                 <div className="flex flex-col">
                   <div className="flex flex-wrap items-center justify-between gap-3">
@@ -176,7 +176,7 @@ export default async function Home() {
                   <div className="mt-4 text-[clamp(30px,3vw,44px)] leading-none font-medium tracking-tight">{x.city}</div>
                   <div className="mt-3 text-[18px] text-ink-2">{x.material}</div>
 
-                  <div className="mt-8 grid grid-cols-3 border-t border-line">
+                  <div className="mt-8 grid grid-cols-3">
                     {[
                       [h.historyLabels.weight, x.weight],
                       [h.historyLabels.received, x.received],
@@ -220,7 +220,7 @@ export default async function Home() {
       <section id="how" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
         <div className="wrap">
           <SectionHead title={h.howTitle} text={h.howText} />
-          <ol className="grid border-t border-ink sm:grid-cols-2 lg:grid-cols-5">
+          <ol className="grid border-t border-line sm:grid-cols-2 lg:grid-cols-5">
             {flow.map((f, i) => (
               <li key={f.title} className={`flex min-h-[300px] flex-col border-b border-line py-10 sm:pr-8 lg:border-b-0 ${i < 4 ? "lg:border-r lg:border-line" : ""} ${i > 0 ? "lg:pl-8" : ""}`}>
                 <span className="font-mono text-[40px] leading-none text-accent-deep">0{i + 1}</span>
@@ -239,7 +239,7 @@ export default async function Home() {
       </section>
 
       {/* УПАКОВКА */}
-      <section id="packing" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
+      <section id="packing" className="scroll-mt-16 py-[clamp(80px,12vh,144px)]">
         <div className="wrap">
           <SectionHead
             title={h.packTitle}
@@ -299,7 +299,7 @@ export default async function Home() {
       <section className="border-b border-line py-[clamp(80px,12vh,144px)]">
         <div className="wrap">
           <SectionHead title={h.trustTitle} />
-          <div className="grid grid-cols-2 border-t border-ink lg:grid-cols-4">
+          <div className="grid grid-cols-2 border-t border-line lg:grid-cols-4">
             {h.trustItems.map(([ti, d], i) => (
               <div key={ti} className={`border-b border-line py-8 lg:border-b-0 ${i % 2 ? "pl-6" : "pr-6"} ${i > 0 ? "lg:border-l lg:border-line lg:pl-8" : ""} lg:pr-8`}>
                 <div className="text-[clamp(20px,1.8vw,26px)] font-medium tracking-tight">{ti}</div>
@@ -384,12 +384,12 @@ export default async function Home() {
       )}
 
       {/* FAQ */}
-      <section id="faq" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
+      <section id="faq" className="scroll-mt-16 py-[clamp(80px,12vh,144px)]">
         <div className="wrap grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
           <div>
             <h2 className="display text-[clamp(32px,3.6vw,56px)]">{h.faqTitle}</h2>
             <p className="mt-6 text-[17px] text-muted">{h.faqText}</p>
-            <div className="mt-12 border-t border-ink pt-6 lg:sticky lg:top-24">
+            <div className="mt-12 lg:sticky lg:top-24">
               <div className="text-[20px] font-medium tracking-tight">{h.faqNotFound}</div>
               <p className="mt-2 text-[15px] text-muted">{h.faqNotFoundText}</p>
               <a href={contacts.phoneHref} className="mt-6 block font-mono text-[clamp(24px,2.2vw,32px)] tracking-tight hover:text-accent-deep">
@@ -401,7 +401,7 @@ export default async function Home() {
               </div>
             </div>
           </div>
-          <div className="border-t border-ink">
+          <div className="border-t border-line">
             {faq.map((f) => (
               <details key={f.q} className="group border-b border-line">
                 <summary className="flex items-center justify-between gap-6 py-7 text-[18px] font-medium">

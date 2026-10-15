@@ -105,7 +105,7 @@ export default async function AboutPage() {
 
         <div className="mt-16 grid gap-12 lg:grid-cols-[260px_1fr]">
           <nav className="hidden lg:block" aria-label={a.contents}>
-            <div className="sticky top-24 border-t border-ink pt-4">
+            <div className="sticky top-24 border-t border-line pt-4">
               <div className="label-mono mb-3 text-ink-2">{a.contents}</div>
               {toc.map((x) => (
                 <a key={x.id} href={`#${x.id}`} className="block py-1.5 text-[15px] text-ink-2 hover:text-accent-deep">
@@ -116,12 +116,12 @@ export default async function AboutPage() {
           </nav>
 
           <div className="max-w-3xl">
-            <section className="border-t border-line py-8">
+            <section className="pt-8 pb-10">
               <H2 id="quienes-somos">{s.who.h}</H2>
               {s.who.p.map((p) => <P key={p}>{p}</P>)}
             </section>
 
-            <section className="border-t border-line py-8">
+            <section className="pt-8 pb-10">
               <H2 id="que-compramos">{s.buy.h}</H2>
               <P>{s.buy.intro}</P>
               <ul className="mt-4">
@@ -135,10 +135,10 @@ export default async function AboutPage() {
               <P><Rich text={s.buy.outro} /></P>
             </section>
 
-            <section className="border-t border-line py-8">
+            <section className="pt-8 pb-10">
               <H2 id="como-trabajamos">{s.how.h}</H2>
               <P>{s.how.intro}</P>
-              <ol className="mt-6 border-t border-ink">
+              <ol className="mt-6 border-t border-line">
                 {t.flow.map((f, i) => (
                   <li key={f.title} className="grid grid-cols-[48px_1fr] border-b border-line py-5">
                     <span className="font-mono text-sm text-accent-deep">0{i + 1}</span>
@@ -149,7 +149,7 @@ export default async function AboutPage() {
                   </li>
                 ))}
               </ol>
-              <div className="mt-8 grid grid-cols-2 border-t border-ink sm:grid-cols-4">
+              <div className="mt-8 grid grid-cols-2 border-t border-line sm:grid-cols-4">
                 {s.how.facts.map(([ti, d]) => (
                   <div key={ti} className="border-b border-line py-5 pr-4">
                     <div className="text-[19px] font-medium tracking-tight">{ti}</div>
@@ -159,12 +159,12 @@ export default async function AboutPage() {
               </div>
             </section>
 
-            <section className="border-t border-line py-8">
+            <section className="pt-8 pb-10">
               <H2 id="reciclaje">{s.recycling.h}</H2>
               {s.recycling.p.map((p) => <P key={p}><Rich text={p} boldClass="font-bold text-ink" /></P>)}
               <Composition className="mt-10" label={t.home.ecoComposition} w={t.home.ecoW} co={t.home.ecoCo} />
               <div className="label-mono mt-12 mb-4 text-ink-2">{t.home.ecoRecycling}</div>
-              <div className="border-t border-ink">
+              <div className="border-t border-line">
                 {t.ecoStats.map((x) => (
                   <div key={x.value} className="grid grid-cols-[120px_1fr] items-baseline gap-6 border-b border-line py-5">
                     <div className="font-mono text-[28px] leading-none tracking-tight">{x.value}</div>
@@ -175,7 +175,7 @@ export default async function AboutPage() {
               <P><Rich text={s.recycling.outro} /></P>
             </section>
 
-            <section className="border-t border-line py-8">
+            <section className="pt-8 pb-10">
               <H2 id="donde-trabajamos">{s.geo.h}</H2>
               {s.geo.p.map((p) => <P key={p}><Rich text={p} vars={{ city: contacts.city }} /></P>)}
               <P>{s.geo.citiesIntro}</P>
@@ -186,10 +186,10 @@ export default async function AboutPage() {
               </div>
             </section>
 
-            <section className="border-t border-line py-8">
+            <section className="pt-8 pb-10">
               <H2 id="operaciones">{s.deals.h}</H2>
               <P>{s.deals.intro}</P>
-              <div className="mt-6 border-t border-ink">
+              <div className="mt-6 border-t border-line">
                 {t.history.map((h) => (
                   <div key={h.date} className="grid gap-1 border-b border-line py-5 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6">
                     <div>
@@ -219,7 +219,7 @@ export default async function AboutPage() {
       <section className="border-t border-line py-16">
         <div className="wrap">
           <div className="label-mono mb-4 text-ink-2">{a.useful}</div>
-          <div className="border-t border-ink">
+          <div className="border-t border-line">
             {t.guides.map((o) => (
               <Link key={o.slug} href={`/guides/${o.slug}`} className="group grid items-baseline gap-2 border-b border-line py-6 md:grid-cols-[160px_1fr_auto] md:gap-8">
                 <span className="label-mono text-ink-2">{o.kind}</span>

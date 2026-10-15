@@ -22,7 +22,7 @@ export function Composition({
   return (
     <div className={className}>
       <div className="label-mono mb-4 text-ink-2">{label}</div>
-      <div className={`grid grid-cols-1 border-t border-ink pt-6 ${stacked ? "gap-8" : "gap-6 sm:grid-cols-2"}`}>
+      <div className={`grid grid-cols-1 border-t border-line pt-6 ${stacked ? "gap-8" : "gap-6 sm:grid-cols-2"}`}>
         {items.map((x) => (
           <div key={x.v} className="flex min-w-0 gap-4">
             {x.el}
