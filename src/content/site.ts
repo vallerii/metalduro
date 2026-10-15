@@ -66,10 +66,11 @@ export const packingSteps = [
   { title: "Сфотографируйте готовую посылку", text: "Фото помогает зафиксировать состояние упаковки до передачи перевозчику." },
 ];
 
+// earned — сколько заработал клиент. TODO: заменить на реальные суммы (сейчас посчитано как вес × ставка калькулятора)
 export const history = [
-  { date: "18 сентября 2026", received: "10:42", city: "Valencia", method: "Отправили нам", material: "Твердосплавные пластины", weight: "32 кг", wait: "1 ч 18 мин", paid: "18 сентября · 12:00", photo: "inserts-3" },
-  { date: "13 сентября 2026", received: "11:15", city: "Zaragoza", method: "Забрали сами", material: "Монолитные фрезы и сверла", weight: "68 кг", wait: "42 мин", paid: "13 сентября · 11:57", photo: "solid-2" },
-  { date: "9 сентября 2026", received: "16:06", city: "Barcelona", method: "Привезли на склад", material: "Смешанный твердосплавный лом", weight: "21 кг", wait: "36 мин", paid: "9 сентября · 16:42", photo: "rings-2" },
+  { date: "18 сентября 2026", received: "10:42", city: "Valencia", method: "Отправили нам", material: "Твердосплавные пластины", weight: "32 кг", earned: "1 152 €", wait: "1 ч 18 мин", paid: "18 сентября · 12:00", photo: "inserts-3" },
+  { date: "13 сентября 2026", received: "11:15", city: "Zaragoza", method: "Забрали сами", material: "Монолитные фрезы и сверла", weight: "68 кг", earned: "2 720 €", wait: "42 мин", paid: "13 сентября · 11:57", photo: "solid-2" },
+  { date: "9 сентября 2026", received: "16:06", city: "Barcelona", method: "Привезли на склад", material: "Смешанный твердосплавный лом", weight: "21 кг", earned: "714 €", wait: "36 мин", paid: "9 сентября · 16:42", photo: "rings-2" },
 ];
 
 export const flow = [

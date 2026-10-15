@@ -34,7 +34,7 @@ function SectionHead({ title, text, dark, compact }: { title: React.ReactNode; t
 const SHOW_TRUST = false;
 
 export default function Home() {
-  const calcPhotos = Object.fromEntries(materials.map((m) => [m.photo, photo(m.photo)]));
+  const calcPhotos = Object.fromEntries([...materials, ...history].map((m) => [m.photo, photo(m.photo)]));
 
   return (
     <main>
