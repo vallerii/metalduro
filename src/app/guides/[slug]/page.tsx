@@ -36,7 +36,7 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
   return (
     <main>
       <article className="wrap py-12 md:py-20">
-        <Link href="/#guides" className="label-mono text-ink-2 hover:text-accent-deep">{t.guidePage.back}</Link>
+        <Link href="/" className="label-mono text-ink-2 hover:text-accent-deep">{t.guidePage.back}</Link>
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-end">
           <div>
             <div className="label-mono flex items-center gap-2 text-ink-2">

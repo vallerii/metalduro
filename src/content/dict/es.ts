@@ -99,12 +99,11 @@ export const es: Dict = {
     unsure: "¿No lo tienes claro? Mándanos una foto por WhatsApp y te decimos si nos sirve.",
     howTitle: "Cómo funciona",
     howText: "De la solicitud al cobro en cinco pasos claros. En cada momento sabes qué viene después.",
-    howCta: "Hacer la solicitud →",
     packTitle: "Cómo embalar bien el material",
     packText: "La chatarra de metal duro pesa mucho y tiene aristas cortantes: un mal embalaje puede romperse por el camino.",
     packBefore: "Antes del envío",
     packBeforeText: "La empresa de transporte no sabe qué hay dentro del paquete. El material tiene que quedar bien sujeto aunque el transporte no sea cuidadoso.",
-    packCta: "Primero, hacer la solicitud →",
+    packCta: "Hacer la solicitud →",
     videoTitle: "Cómo embalar chatarra de metal duro",
     videoCaption: "Vídeo explicativo",
     packPhotos: ["Ejemplo de embalaje", "Envase interior", "Paquete listo"],
@@ -119,9 +118,8 @@ export const es: Dict = {
     trustAskText: "Mándanos una foto del material y te decimos si nos sirve y cuánto vale.",
     whatsappWrite: "Escribir por WhatsApp",
     ecoTitle: "Esta chatarra puede volver a ser un material valioso",
-    ecoP1: "La chatarra de metal duro contiene wolframio, un metal que ya cuenta con una industria de reciclaje desarrollada. Según la International Tungsten Industry Association, cerca del **35% de la materia prima** del ciclo mundial de producción de wolframio procedía de chatarra, y la tasa de reciclaje al final de la vida útil rondaba el **30%**. Para Europa, los estudios recogen cifras aún más altas.",
-    ecoP2: "Al llevar a reciclar tu chatarra con wolframio, devuelves un metal valioso al ciclo productivo y reduces la necesidad de materia prima primaria.",
-    ecoLink: "Sobre Metalduro y el reciclaje de wolframio →",
+    ecoP1: "La chatarra de metal duro contiene **wolframio y cobalto**, dos materias primas críticas para la Unión Europea. Al reciclarla, estos metales vuelven a la industria en lugar de acabar en un vertedero.",
+    ecoLink: "Más sobre el reciclaje del wolframio →",
     ecoTags: ["Economía circular", "Reutilización", "Ahorro de recursos", "Sostenibilidad"],
     ecoComposition: "De qué está hecho el metal duro",
     ecoW: "wolframio (como carburo WC): es lo que se recupera al reciclar",
@@ -133,8 +131,9 @@ export const es: Dict = {
     faqNotFoundText: "Pregúntanos directamente: te respondemos por WhatsApp o por teléfono.",
     faqWhatsapp: "Preguntar por WhatsApp",
     call: "Llamar",
-    guidesTitle: "Guías sobre el metal duro",
-    guidesText: "Cómo reconocer el metal duro, cómo embalar el paquete y de qué depende el precio.",
+    guideIdentify: "Cómo identificar el metal duro →",
+    guidePack: "Guía completa de embalaje →",
+    guideCarbide: "Qué es el carburo de tungsteno y por qué tiene valor →",
   },
 
   calc: {
@@ -198,6 +197,17 @@ export const es: Dict = {
     urgent: "Si es urgente:",
   },
 
+  reviews: {
+    title: "Lo que nos escriben los clientes",
+    text: "Mensajes que nos llegan por WhatsApp después de cerrar una operación.",
+    cta: "Escríbenos por WhatsApp",
+    // TODO: mockup-*.jpg — макеты. Заменить на реальные скриншоты клиентов и убрать mockup: true
+    items: [
+      { src: "/reviews/mockup-1.jpg", alt: "Mensaje de WhatsApp de un cliente tras vender fresas y brocas de metal duro", mockup: true },
+      { src: "/reviews/mockup-2.jpg", alt: "Mensaje de WhatsApp de un cliente sobre la recogida y el pago", mockup: true },
+      { src: "/reviews/mockup-3.jpg", alt: "Mensaje de WhatsApp de un cliente tras vender plaquitas de metal duro", mockup: true },
+    ],
+  },
   city: { placeholder: "Empieza a escribir tu ciudad", clear: "Borrar", nothing: "No hemos encontrado nada", other: "Otra ciudad: " },
   video: { watch: "Ver vídeo" },
   photoPlaceholder: "foto",
@@ -240,8 +250,10 @@ export const es: Dict = {
       recycling: {
         h: "Por qué reciclar el metal duro",
         p: [
-          "El metal duro está compuesto en un 70–90% por carburo de tungsteno, y otro 6–15% corresponde al aglutinante de cobalto. Los dos son materias primas estratégicas: el wolframio y el cobalto figuran en la lista de materias primas críticas de la Unión Europea, y su extracción se concentra en muy pocos países.",
-          "El wolframio ya cuenta con una industria de reciclaje desarrollada: a partir de la chatarra se obtiene polvo con el que se vuelven a fabricar plaquitas, brocas y fresas. Cada kilo de chatarra que se recicla es metal que vuelve al ciclo productivo en lugar de acabar en un vertedero o mezclado con chatarra férrica.",
+          "El metal duro es, casi en su totalidad, carburo de tungsteno unido con cobalto. Ambos son materias primas estratégicas: el wolframio y el cobalto figuran en la lista de materias primas críticas de la Unión Europea y su extracción se concentra en muy pocos países.",
+          "Por eso el wolframio cuenta con una industria de reciclaje muy desarrollada. A partir de la chatarra se obtiene polvo con el que se vuelven a fabricar plaquitas, brocas y fresas, con mucho menos gasto de energía que extrayendo el metal del mineral.",
+          "Según la International Tungsten Industry Association, cerca del **35% de la materia prima** del ciclo mundial de producción de wolframio procedía de chatarra, y la tasa de reciclaje al final de la vida útil rondaba el **30%**. Para Europa, los estudios del JRC recogen cifras aún más altas.",
+          "Cada kilo de chatarra que nos vendes es metal que vuelve al ciclo productivo en lugar de acabar en un vertedero o mezclado con chatarra férrica, y reduce la necesidad de materia prima primaria.",
         ],
         outro: "Más sobre la composición y las propiedades del material en el artículo [«Qué es el carburo de tungsteno»](/guides/que-es-el-carburo-de-tungsteno).",
       },
@@ -262,7 +274,7 @@ export const es: Dict = {
     useful: "Guías útiles",
   },
 
-  guidePage: { back: "← Guías útiles", contents: "Contenido", cta: "Descubre cuánto vale tu material", ctaBtn: "Calcular →", readAlso: "Sigue leyendo" },
+  guidePage: { back: "← Inicio", contents: "Contenido", cta: "Descubre cuánto vale tu material", ctaBtn: "Calcular →", readAlso: "Sigue leyendo" },
 
   guides: [
     {

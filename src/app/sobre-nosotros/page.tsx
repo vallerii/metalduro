@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Composition } from "@/components/Composition";
 import { Pic } from "@/components/Pic";
 import { Rich } from "@/components/Rich";
 import { photo } from "@/lib/photos";
@@ -160,8 +161,10 @@ export default async function AboutPage() {
 
             <section className="border-t border-line py-8">
               <H2 id="reciclaje">{s.recycling.h}</H2>
-              {s.recycling.p.map((p) => <P key={p}>{p}</P>)}
-              <div className="mt-6 border-t border-ink">
+              {s.recycling.p.map((p) => <P key={p}><Rich text={p} boldClass="font-bold text-ink" /></P>)}
+              <Composition className="mt-10" label={t.home.ecoComposition} w={t.home.ecoW} co={t.home.ecoCo} />
+              <div className="label-mono mt-12 mb-4 text-ink-2">{t.home.ecoRecycling}</div>
+              <div className="border-t border-ink">
                 {t.ecoStats.map((x) => (
                   <div key={x.value} className="grid grid-cols-[120px_1fr] items-baseline gap-6 border-b border-line py-5">
                     <div className="font-mono text-[28px] leading-none tracking-tight">{x.value}</div>

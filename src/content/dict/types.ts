@@ -85,7 +85,6 @@ export type Dict = {
     unsure: string;
     howTitle: string;
     howText: string;
-    howCta: string;
     packTitle: string;
     packText: string;
     packBefore: string;
@@ -101,7 +100,6 @@ export type Dict = {
     whatsappWrite: string;
     ecoTitle: string;
     ecoP1: string;
-    ecoP2: string;
     ecoLink: string;
     ecoTags: string[];
     ecoComposition: string;
@@ -114,8 +112,9 @@ export type Dict = {
     faqNotFoundText: string;
     faqWhatsapp: string;
     call: string;
-    guidesTitle: string;
-    guidesText: string;
+    guideIdentify: string;
+    guidePack: string;
+    guideCarbide: string;
   };
 
   calc: {
@@ -177,6 +176,18 @@ export type Dict = {
     donePickup: string;
     doneWarehouse: string;
     urgent: string;
+  };
+
+  reviews: {
+    title: string;
+    text: string;
+    cta: string;
+    /**
+     * Скриншоты переписок из WhatsApp (файлы в public/reviews/).
+     * mockup: true — макет: показывается ТОЛЬКО при разработке (localhost) с пометкой,
+     * на рабочем сайте скрыт. Реальные скриншоты (с согласия клиентов) — без mockup.
+     */
+    items: { src: string; alt: string; mockup?: boolean }[];
   };
 
   city: { placeholder: string; clear: string; nothing: string; other: string };

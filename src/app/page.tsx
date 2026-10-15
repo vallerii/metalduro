@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Calculator } from "@/components/Calculator";
+import { Composition } from "@/components/Composition";
 import { Element } from "@/components/Element";
 import { Pic } from "@/components/Pic";
 import { VideoPlayer } from "@/components/VideoPlayer";
@@ -23,10 +25,17 @@ function SectionHead({ title, text, dark, compact }: { title: React.ReactNode; t
 // Блок «Простой способ превратить лом в деньги» пока скрыт
 const SHOW_TRUST = false;
 
+// Отзывы — скриншоты WhatsApp (src/content/dict/*.ts → reviews). Макеты (mockup: true)
+// видны только при разработке; на рабочем сайте блок покажет только реальные скриншоты.
+const SHOW_REVIEWS = true;
+const isDev = process.env.NODE_ENV !== "production";
+
 export default async function Home() {
   const { t } = await getT();
   const h = t.home;
-  const { buyList, noBuyList, packingSteps, history, flow, faq, ecoStats, guides } = t;
+  const { buyList, noBuyList, packingSteps, history, flow, faq } = t;
+  const guideLink = (slug: string) => `/guides/${slug}`;
+  const reviews = t.reviews.items.filter((r) => !r.mockup || isDev);
   const calcPhotos = Object.fromEntries(
     [...Object.values(materialMeta), ...history].map((m) => [m.photo, photo(m.photo)]),
   );
@@ -121,6 +130,11 @@ export default async function Home() {
               </p>
             </div>
           </div>
+          <div className="mt-12 text-center">
+            <Link href={guideLink("como-identificar-metal-duro")} className="text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
+              {h.guideIdentify}
+            </Link>
+          </div>
         </div>
       </section>
       {/* КАК МЫ ПЛАТИМ */}
@@ -213,11 +227,6 @@ export default async function Home() {
                 <h3 className="mt-10 text-[21px] font-medium tracking-tight">{f.title}</h3>
                 <p className="mt-4 text-[16px] leading-relaxed text-muted">{f.text}</p>
                 {f.strong && <p className="mt-3 text-[16px] font-medium text-ink">{f.strong}</p>}
-                {i === 4 && (
-                  <Link href="#calculator" className="mt-auto self-start bg-accent px-5 py-3.5 text-[15px] font-medium whitespace-nowrap text-ink transition-colors hover:bg-ink hover:text-paper">
-                    {h.howCta}
-                  </Link>
-                )}
                 {f.link && (
                   <Link href={f.link.href} className="mt-auto pt-6 text-[15px] font-medium whitespace-nowrap underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
                     {f.link.label} →
@@ -253,9 +262,14 @@ export default async function Home() {
                   </li>
                 ))}
               </ol>
-              <Link href="#calculator" className="mt-10 inline-block bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">
-                {h.packCta}
-              </Link>
+              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+                <Link href="#calculator" className="shrink-0 bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">
+                  {h.packCta}
+                </Link>
+                <Link href={guideLink("como-embalar-chatarra-metal-duro")} className="whitespace-nowrap text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
+                  {h.guidePack}
+                </Link>
+              </div>
             </div>
             <div className="flex flex-col gap-5">
               <VideoPlayer
@@ -309,19 +323,19 @@ export default async function Home() {
         </>
       )}
 
-      {/* ЭКОЛОГИЯ */}
+      {/* ЭКОЛОГИЯ — коротко; подробности на странице «О нас» (#reciclaje) */}
       <section id="recycling" className="scroll-mt-16 bg-paper-lo py-[clamp(80px,12vh,144px)]">
-        <div className="wrap grid gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-24">
+        <div className="wrap grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-24">
           <div>
             <h2 className="display text-[clamp(32px,3.6vw,56px)]">{h.ecoTitle}</h2>
-            <p className="mt-10 max-w-2xl text-[17px] leading-relaxed text-ink-2">
+            <p className="mt-8 max-w-2xl text-[17px] leading-relaxed text-ink-2">
               <Rich text={h.ecoP1} boldClass="font-bold" />
             </p>
-            <p className="mt-5 max-w-2xl text-[17px] leading-relaxed text-ink-2">
-              {h.ecoP2}
-            </p>
-            <Link href={t.about.path} className="mt-8 inline-block text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
+            <Link href={`${t.about.path}#reciclaje`} className="mt-8 block w-fit text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
               {h.ecoLink}
+            </Link>
+            <Link href={guideLink("que-es-el-carburo-de-tungsteno")} className="mt-3 block w-fit text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
+              {h.guideCarbide}
             </Link>
             <div className="label-mono mt-10 flex flex-wrap gap-3 text-ink-2">
               {h.ecoTags.map((tag) => (
@@ -329,34 +343,45 @@ export default async function Home() {
               ))}
             </div>
           </div>
-          <div>
-            <div className="label-mono mb-4 text-ink-2">{h.ecoComposition}</div>
-            <div className="grid grid-cols-2 gap-6 border-t border-ink pt-6">
-              {[
-                { el: <Element className="w-20 shrink-0" />, v: "70–90%", t: h.ecoW },
-                { el: <Element symbol="Co" number="27" name="Cobalt" mass="58.93" tone="line" className="w-20 shrink-0" />, v: "6–15%", t: h.ecoCo },
-              ].map((x) => (
-                <div key={x.v} className="flex gap-4">
-                  {x.el}
-                  <div>
-                    <div className="font-mono text-[30px] leading-none tracking-tight">{x.v}</div>
-                    <div className="mt-2 text-[14px] leading-snug text-muted">{x.t}</div>
-                  </div>
-                </div>
-              ))}
+          <Composition stacked label={h.ecoComposition} w={h.ecoW} co={h.ecoCo} />
+        </div>
+      </section>
+
+      {/* ОТЗЫВЫ — скриншоты переписок в WhatsApp */}
+      {SHOW_REVIEWS && reviews.length > 0 && (
+        <section id="reviews" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
+          <div className="wrap">
+            <div className="grid gap-6 pb-12 md:grid-cols-[1.25fr_0.75fr] md:items-end md:gap-16 md:pb-20">
+              <h2 className="display text-[clamp(32px,3.6vw,56px)]">{t.reviews.title}</h2>
+              <div className="max-w-xl">
+                <p className="text-[17px] leading-relaxed text-muted">{t.reviews.text}</p>
+                <a href={contacts.whatsapp} className="mt-6 inline-block bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">
+                  {t.reviews.cta} →
+                </a>
+              </div>
             </div>
-            <div className="label-mono mt-14 mb-4 text-ink-2">{h.ecoRecycling}</div>
-            <div className="border-t border-ink">
-              {ecoStats.map((s) => (
-                <div key={s.value} className="grid grid-cols-[150px_1fr] items-baseline gap-6 border-b border-line py-7">
-                  <div className="font-mono text-[34px] leading-none tracking-tight">{s.value}</div>
-                  <div className="text-[14px] text-muted">{s.text}</div>
-                </div>
+            <div className="-mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 md:pb-0 [scrollbar-width:none]">
+              {reviews.map((r) => (
+                <figure
+                  key={r.src}
+                  className="relative block w-[78vw] max-w-[360px] shrink-0 snap-center overflow-hidden border-[6px] border-ink bg-ink shadow-[0_24px_48px_-24px_rgb(33_33_35/0.5)] md:w-auto md:max-w-none"
+                >
+                  <div className="relative aspect-[9/14] overflow-hidden">
+                    <Image
+                      src={r.src}
+                      alt={r.alt}
+                      fill
+                      sizes="(min-width:768px) 30vw, 78vw"
+                      className="pointer-events-none object-cover object-top select-none"
+                      draggable={false}
+                    />
+                  </div>
+                </figure>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* FAQ */}
       <section id="faq" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
@@ -390,21 +415,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ГАЙДЫ */}
-      <section id="guides" className="scroll-mt-16 py-[clamp(80px,12vh,144px)]">
-        <div className="wrap">
-          <SectionHead title={h.guidesTitle} text={h.guidesText} />
-          <div className="border-t border-ink">
-            {guides.map((g) => (
-              <Link key={g.slug} href={`/guides/${g.slug}`} className="group grid items-baseline gap-2 border-b border-line py-9 md:grid-cols-[180px_1fr_auto] md:gap-10">
-                <span className="label-mono text-ink-2">{g.kind}</span>
-                <span className="text-[clamp(20px,2.2vw,30px)] leading-tight font-medium tracking-tight group-hover:text-accent-deep">{g.title}</span>
-                <span className="hidden text-2xl transition-transform group-hover:translate-x-2 md:block">→</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
     </main>
   );
 }
