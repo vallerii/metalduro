@@ -44,14 +44,14 @@ export default async function Home() {
   return (
     <main>
       {/* HERO */}
-      <section className="border-b border-line">
+      <section className="border-b border-line relative overflow-hidden">
          <div className="wrap py-6 md:py-8 lg:py-5">
-          <div className="flex flex-col gap-6  lg:items-center lg: lg:gap-12 lg:pt-20 lg:pb-16">
-            <h1 className="display max-w-5xl text-[clamp(34px,4.2vw,60px)] leading-[1.04] lg:text-center">
+          <div className="flex flex-col gap-6  lg:items-center lg: lg:gap-12 lg:pt-20 lg:pb-16 relative">
+            <h1 className="display max-w-5xl text-[clamp(34px,4.2vw,60px)] leading-[1.04] lg:text-center z-10">
               {h.h1}
             </h1>
 
-            <ol className="border-t border-line lg:flex gap-3 max-w-4xl w-full justify-between lg:border-t-0 lg:pt-0">
+            <ol className="border-t border-line lg:flex gap-3 max-w-4xl w-full justify-between lg:border-t-0 lg:pt-0 z-10">
               {h.heroPoints.map((p, i) => (
                 <li
                   key={p}
@@ -64,6 +64,8 @@ export default async function Home() {
                 </li>
               ))}
             </ol>
+
+            <Image src="/logo.png" alt="" width={640} height={640} className="absolute lg:top-[-40%] right-[-40%] w-[80%] object-cover opacity-20 z-[-1]" priority  />
           </div>
 
           <Calculator photos={calcPhotos} t={t.calc} cityT={t.city} materials={t.materials} history={history} numberLocale={t.numberLocale} />
@@ -142,9 +144,10 @@ export default async function Home() {
       {/* КАК МЫ ПЛАТИМ */}
       <section className="bg-ink py-[clamp(88px,14vh,160px)] text-paper">
         <div className="wrap grid items-center gap-16 lg:grid-cols-[1.2fr_0.8fr] lg:gap-24">
-          <div>
+          <div className="relative">
             <div className="display text-[clamp(64px,7.5vw,120px)] leading-[0.8] tracking-[-0.055em] text-accent">{h.payBig}</div>
             <div className="mt-4 text-[clamp(22px,2.4vw,32px)] tracking-tight">{h.paySub}</div>
+            {/* <Image src="/logo.png" alt="" width={640} height={640} className="absolute top-1/2 lg:-translate-x-1/2 -translate-y-1/2 w-[100%] object-cover opacity-20" priority  /> */}
           </div>
           <div className="text-[19px] leading-relaxed text-paper/65">
             <p>

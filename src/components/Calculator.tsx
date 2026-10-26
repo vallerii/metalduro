@@ -215,7 +215,7 @@ export function Calculator({
   return (
     <div
       id="calculator"
-      className="scroll-mt-20 flex min-h-[600px] max-h-[600px] flex-col overflow-y-auto bg-ink p-3 text-paper sm:p-4 lg:min-h-[430px] lg:max-h-[min(490px,calc(100svh-220px))] lg:p-5"
+      className="scroll-mt-20 flex min-h-[600px] max-h-[600px] flex-col overflow-y-auto bg-ink p-3 text-paper sm:p-4 lg:min-h-[430px] lg:max-h-[min(490px,calc(100svh-220px))] lg:p-5 z-10 relative"
     >
       {/* Компактная шапка */}
       <div className="flex shrink-0 items-center justify-between gap-3">
