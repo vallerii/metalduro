@@ -11,6 +11,7 @@ import { brands, contacts, materialMeta } from "@/content/site";
 import { getT } from "@/i18n/server";
 
 
+
 function SectionHead({ title, text, dark, compact }: { title: React.ReactNode; text?: string; dark?: boolean; compact?: boolean }) {
   return (
     <div className={`grid gap-6 md:grid-cols-[1.25fr_0.75fr] md:items-end md:gap-16 ${compact ? "pb-10 md:pb-12" : "pb-12 md:pb-20"}`}>
@@ -44,31 +45,32 @@ export default async function Home() {
     <main>
       {/* HERO */}
       <section className="border-b border-line">
-        <div className="wrap grid gap-8 py-8 lg:min-h-[calc(100svh-64px)] lg:grid-cols-[1fr_minmax(0,520px)] lg:grid-rows-[1fr_auto_auto_1fr] lg:gap-x-14 lg:gap-y-0 lg:py-6">
-          <div className="lg:col-start-1 lg:row-start-2">
-            <h1 className="display text-[clamp(36px,min(4.4vw,7.6vh),68px)]">
+         <div className="wrap py-6 md:py-8 lg:py-5">
+          <div className="flex flex-col gap-6  lg:items-center lg: lg:gap-12 lg:pt-20 lg:pb-16">
+            <h1 className="display max-w-5xl text-[clamp(34px,4.2vw,60px)] leading-[1.04] lg:text-center">
               {h.h1}
             </h1>
-          </div>
 
-          <div className="lg:col-start-2 lg:row-span-4 lg:row-start-1 lg:self-center">
-            <Calculator photos={calcPhotos} t={t.calc} cityT={t.city} materials={t.materials} history={history} numberLocale={t.numberLocale} />
-          </div>
-
-          <div className="lg:col-start-1 lg:row-start-3">
-            <ol className="border-t border-line lg:mt-10">
+            <ol className="border-t border-line lg:flex gap-3 max-w-4xl w-full justify-between lg:border-t-0 lg:pt-0">
               {h.heroPoints.map((p, i) => (
-                <li key={p} className="grid grid-cols-[44px_1fr] items-baseline gap-2 border-b border-line py-[clamp(14px,2.4vh,22px)]">
-                  <span className="font-mono text-sm text-accent-deep">0{i + 1}</span>
+                <li
+                  key={p}
+                  className="grid grid-cols-[44px_1fr] items-baseline gap-2 border-b border-line py-[clamp(14px,2.4vh,22px)]"
+                >
+                  <span className="font-mono text-sm text-accent-deep">
+                    0{i + 1}
+                  </span>
                   <div className="text-[16px] font-medium">{p}</div>
                 </li>
               ))}
             </ol>
-
-            <p className="mt-8 border-l-2 border-accent pl-4 text-[14px] text-ink-2">
-              <Rich text={h.heroNote} boldClass="text-ink" />
-            </p>
           </div>
+
+          <Calculator photos={calcPhotos} t={t.calc} cityT={t.city} materials={t.materials} history={history} numberLocale={t.numberLocale} />
+        
+            {/* <p className="mt-8 border-l-2 border-accent pl-4 text-[14px] text-ink-2">
+              <Rich text={h.heroNote} boldClass="text-ink" />
+            </p> */}
         </div>
       </section>
 
@@ -125,7 +127,7 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-8 text-[14px] leading-relaxed text-muted">
+              <p className="mt-8 border-l-2 border-accent pl-4 text-[14px] leading-relaxed text-muted">
                 <Rich text={h.contamination} boldClass="text-ink" />
               </p>
             </div>

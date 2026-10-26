@@ -55,6 +55,19 @@ export function CityPicker({
 
   return (
     <div ref={root}>
+       <div className="hidden mb-3 md:flex flex-wrap gap-1.5">
+        {popular.map((c) => (
+          <button
+            key={c}
+            type="button"
+            onClick={() => pick(c)}
+            className={`border px-2.5 py-1.5 text-[13px] transition-colors ${value === c ? "border-accent bg-accent text-ink" : "border-paper/20 text-paper/75 hover:border-paper/60 hover:text-paper"}`}
+          >
+            {c}
+          </button>
+        ))}
+      </div>
+
       <div className="relative">
         <svg aria-hidden className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-paper/45" width="16" height="16" viewBox="0 0 16 16" fill="none">
           <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.5" />
@@ -148,18 +161,7 @@ export function CityPicker({
         )}
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {popular.map((c) => (
-          <button
-            key={c}
-            type="button"
-            onClick={() => pick(c)}
-            className={`border px-2.5 py-1.5 text-[13px] transition-colors ${value === c ? "border-accent bg-accent text-ink" : "border-paper/20 text-paper/75 hover:border-paper/60 hover:text-paper"}`}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
+     
     </div>
   );
 }
