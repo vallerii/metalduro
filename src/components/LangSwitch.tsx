@@ -11,14 +11,14 @@ export function LangSwitch({ locale }: { locale: Locale }) {
     router.refresh();
   };
   return (
-    <div className="flex border border-ink/25 font-mono text-[12px]" title="Только для разработки">
+    <div className="flex items-center gap-0.5 rounded-full border border-paper/25 bg-white/5 p-1 text-[14px] font-semibold" title="Только для разработки">
       {(["es", "ru"] as const).map((l) => (
         <button
           key={l}
           type="button"
           onClick={() => set(l)}
           aria-pressed={locale === l}
-          className={`px-2 py-1 uppercase ${locale === l ? "bg-ink text-paper" : "text-ink-2 hover:text-ink"}`}
+          className={`rounded-full px-3.5 py-1.5 uppercase leading-none transition-colors ${locale === l ? "bg-accent text-ink" : "text-paper/85 hover:text-paper"}`}
         >
           {l}
         </button>

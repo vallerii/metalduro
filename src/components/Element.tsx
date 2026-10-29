@@ -15,12 +15,12 @@ export function Element({
   tone?: "ink" | "accent" | "line";
 }) {
   const tones = {
-    ink: "bg-ink text-paper",
+    ink: "bg-ink-2 text-paper",
     accent: "bg-accent text-ink",
-    line: "border border-ink text-ink",
+    line: "border border-paper/30 text-paper",
   };
   return (
-    <div className={`@container relative aspect-square ${tones[tone]} ${className}`}>
+    <div className={`@container relative aspect-square rounded-[14px] ${tones[tone]} ${className}`}>
       <div className="absolute inset-0 flex flex-col justify-between p-[9cqw]">
         <div className="flex justify-between font-mono text-[10cqw] leading-none">
           <span>{number}</span>

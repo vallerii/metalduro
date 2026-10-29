@@ -1,67 +1,34 @@
 import Link from "next/link";
-import { contacts } from "@/content/site";
+import { homeCopy } from "@/content/home-copy";
 import { getT } from "@/i18n/server";
 
+// Подвал из index.html (.footer): большой логотип и четыре колонки ссылок.
 export async function Footer() {
-  const { t } = await getT();
-  const f = t.footer;
+  const { locale } = await getT();
+  const f = homeCopy[locale].footer;
   return (
-    <footer className="bg-ink text-paper">
-      <div className="wrap pt-20 pb-8">
-        <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr] md:grid-cols-2">
-          <div>
-            <div className="flex items-center gap-[0.18em] text-[clamp(40px,4.6vw,72px)]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo-mark.png?v=3" alt="" className="size-[1em]" />
-              <span className="display text-paper">Metalduro</span>
+    <div className="ref-home">
+      <footer className="footer wrap">
+        <div className="footer-brand">
+          metalduro<span>.</span>
+        </div>
+        <div className="footer-columns">
+          {f.cols.map((col) => (
+            <div key={col.title} className="footer-col">
+              <h4>{col.title}</h4>
+              {col.links.map((l) => (
+                <Link key={l.label} href={l.href}>
+                  {l.label}
+                </Link>
+              ))}
             </div>
-            <p className="mt-6 max-w-sm text-paper/60">
-              {f.tagline}
-            </p>
-          </div>
-          <div>
-            <div className="label-mono mb-4 text-paper/75">{f.contact}</div>
-            <a href={contacts.phoneHref} className="block font-mono text-lg hover:text-accent">
-              {contacts.phone}
-            </a>
-            <a href={contacts.whatsapp} className="mt-2 block text-paper/70 hover:text-accent">
-              WhatsApp
-            </a>
-            <div className="mt-2 text-paper/70">{f.warehouse}: {contacts.city}</div>
-          </div>
-          <div>
-            <div className="label-mono mb-4 text-paper/75">{f.sell}</div>
-            {[
-              ["/#calculator", f.links.calc],
-              ["/#materials", f.links.materials],
-              ["/#packing", f.links.packing],
-              ["/#how", f.links.how],
-              ["/#faq", f.links.faq],
-              [t.about.path, f.links.about],
-            ].map(([href, label]) => (
-              <Link key={href} href={href} className="block py-1 text-paper/70 hover:text-accent">
-                {label}
-              </Link>
-            ))}
-          </div>
-          <div>
-            <div className="label-mono mb-4 text-paper/75">{f.useful}</div>
-            {t.guides.map((g) => (
-              <Link key={g.slug} href={`/guides/${g.slug}`} className="block py-1 text-paper/70 hover:text-accent">
-                {g.title}
-              </Link>
-            ))}
-          </div>
+          ))}
         </div>
-        <div className="mt-16 flex flex-wrap justify-between gap-4 border-t border-paper/15 pt-6 font-mono text-xs text-paper/45">
-          <span>{f.copyright}</span>
-          <span className="flex flex-wrap gap-5">
-            <Link href="/legal/aviso-legal" className="hover:text-paper">{f.legal}</Link>
-            <Link href="/legal/privacidad" className="hover:text-paper">{f.privacy}</Link>
-            <Link href="/legal/cookies" className="hover:text-paper">{f.cookies}</Link>
-          </span>
+        <div className="footer-bottom">
+          <span>{f.copy}</span>
+          <span>{f.country}</span>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
   );
 }

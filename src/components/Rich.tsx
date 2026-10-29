@@ -8,7 +8,7 @@ import { Fragment } from "react";
 export function Rich({
   text,
   vars,
-  boldClass = "font-semibold text-ink",
+  boldClass = "font-semibold text-paper",
   linkClass = "underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep",
 }: {
   text: string;

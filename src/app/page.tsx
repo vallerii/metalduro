@@ -1,425 +1,322 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
+import "./home-ref.css";
 import { Calculator } from "@/components/Calculator";
-import { Composition } from "@/components/Composition";
-import { Element } from "@/components/Element";
-import { Pic } from "@/components/Pic";
 import { VideoPlayer } from "@/components/VideoPlayer";
-import { Rich } from "@/components/Rich";
+import { SpeedClock } from "@/components/SpeedClock";
+import { CaseRail } from "@/components/CaseRail";
 import { photo } from "@/lib/photos";
-import { brands, contacts, materialMeta } from "@/content/site";
+import { materialMeta } from "@/content/site";
+import { homeCopy } from "@/content/home-copy";
 import { getT } from "@/i18n/server";
 
+// Разметка и классы перенесены из index.html (референс). Тексты — из home-copy.ts (ES + RU).
+// Калькулятор — наш компонент с прежней логикой, вставлен в блок hero.
 
-
-function SectionHead({ title, text, dark, compact }: { title: React.ReactNode; text?: string; dark?: boolean; compact?: boolean }) {
-  return (
-    <div className={`grid gap-6 md:grid-cols-[1.25fr_0.75fr] md:items-end md:gap-16 ${compact ? "pb-10 md:pb-12" : "pb-12 md:pb-20"}`}>
-      <div>
-        <h2 className="display text-[clamp(32px,3.6vw,56px)]">{title}</h2>
-      </div>
-      {text && <p className={`max-w-xl text-[17px] leading-relaxed ${dark ? "text-paper/65" : "text-muted"}`}>{text}</p>}
-    </div>
-  );
-}
-
-// Блок «Простой способ превратить лом в деньги» пока скрыт
-const SHOW_TRUST = false;
-
-// Отзывы — скриншоты WhatsApp (src/content/dict/*.ts → reviews). Макеты (mockup: true)
-// видны только при разработке; на рабочем сайте блок покажет только реальные скриншоты.
-const SHOW_REVIEWS = true;
-const isDev = process.env.NODE_ENV !== "production";
+const img = (key: string) => photo(key) ?? "";
 
 export default async function Home() {
-  const { t } = await getT();
-  const h = t.home;
-  const { buyList, noBuyList, packingSteps, history, flow, faq } = t;
-  const guideLink = (slug: string) => `/guides/${slug}`;
-  const reviews = t.reviews.items;
+  const { locale, t } = await getT();
+  const c = homeCopy[locale];
+  const { history } = t;
   const calcPhotos = Object.fromEntries(
     [...Object.values(materialMeta), ...history].map((m) => [m.photo, photo(m.photo)]),
   );
+  const [proofA, proofB] = c.proof.split(" · ");
 
   return (
-    <main>
-      {/* HERO */}
-      <section className="border-b border-line relative overflow-hidden">
-         <div className="wrap py-6 md:py-8 lg:py-5">
-          <div className="flex flex-col gap-6  lg:items-center lg: lg:gap-12 lg:pt-20 lg:pb-16 relative">
-            <h1 className="display max-w-5xl text-[clamp(34px,4.2vw,60px)] leading-[1.04] lg:text-center z-10">
-              {h.h1}
-            </h1>
+    <div className="ref-home">
+      <main>
+        {/* HERO */}
+        <section className="hero">
+          <div aria-label="Plaquitas de metal duro" className="hero-photo" role="img" />
+          <div className="hero-inner">
+            <div className="hero-copy">
+              <h1>
+                {c.heroTitle1}
+                <br />
+                <span className="accent-text">{c.heroTitle2}</span>
+              </h1>
+              <p style={{ fontSize: "clamp(17px,2vw,22px)", maxWidth: 610, color: "#e6e6e8" }}>{c.heroSub}</p>
+              <div className="hero-bullets">
+                {c.heroPoints.map((p) => (
+                  <div key={p}>
+                    <span className="check">✓</span>
+                    {p}
+                  </div>
+                ))}
+              </div>
+              <div className="hero-proof">
+                <span className="stars">★★★★★</span>
+                <span>
+                  <strong>{proofA}</strong> · {proofB}
+                </span>
+              </div>
+            </div>
 
-            <ol className="border-t border-line lg:flex gap-3 max-w-4xl w-full justify-between lg:border-t-0 lg:pt-0 z-10">
-              {h.heroPoints.map((p, i) => (
-                <li
-                  key={p}
-                  className="grid grid-cols-[44px_1fr] items-baseline gap-2 border-b border-line py-[clamp(14px,2.4vh,22px)]"
-                >
-                  <span className="font-mono text-sm text-accent-deep">
-                    0{i + 1}
-                  </span>
-                  <div className="text-[16px] font-medium">{p}</div>
-                </li>
-              ))}
-            </ol>
-
-            <Image src="/logo.png" alt="" width={640} height={640} className="absolute lg:top-[-40%] right-[-40%] w-[80%] object-cover opacity-20 z-[-1]" priority  />
+            <Calculator
+              photos={calcPhotos}
+              t={t.calc}
+              cityT={t.city}
+              materials={t.materials}
+              history={history}
+              numberLocale={t.numberLocale}
+              copy={c.calc}
+            />
           </div>
+          <div className="scroll-note">{c.scrollNote}</div>
+        </section>
 
-          <Calculator photos={calcPhotos} t={t.calc} cityT={t.city} materials={t.materials} history={history} numberLocale={t.numberLocale} />
-        
-            {/* <p className="mt-8 border-l-2 border-accent pl-4 text-[14px] text-ink-2">
-              <Rich text={h.heroNote} boldClass="text-ink" />
-            </p> */}
-        </div>
-      </section>
-
-      {/* ЧТО ПОКУПАЕМ */}
-      <section id="materials" className="scroll-mt-16 py-[clamp(48px,7vh,88px)]">
         <div className="wrap">
-          <SectionHead
-            compact
-            title={h.materialsTitle}
-          />
-          <div className="grid gap-16 lg:grid-cols-[1.25fr_1fr] lg:gap-0">
-            <div className="lg:border-r lg:border-line lg:pr-16">
-              <div className="mb-6 flex items-center gap-3 text-[20px] font-medium">
-                <span className="grid size-7 place-items-center bg-accent text-sm text-ink">✓</span> {h.buy}
-              </div>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-6">
-                {buyList.map((b) => (
-                  <figure key={b.title}>
-                    {b.photo ? (
-                      <Pic src={photo(b.photo)} alt={b.title} className="h-[clamp(100px,14vh,150px)]" sizes="(min-width:1024px) 22vw, 45vw" />
-                    ) : (
-                      <div className="flex h-[clamp(100px,14vh,150px)] items-center justify-center bg-ink">
-                        <Element tone="accent" className="h-[70%] w-auto" />
-                      </div>
-                    )}
-                    <figcaption className="mt-4">
-                      <div className="text-[16px] font-medium">{b.title}</div>
-                      <div className="text-[14px] text-muted">{b.note}</div>
-                    </figcaption>
-                  </figure>
-                ))}
-              </div>
-              <div className="mt-10">
-              <div className="label-mono text-ink-2">{h.brandsLabel}</div>
-              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[16px] font-medium tracking-tight text-ink-2">
-                {brands.map((b) => (
-                  <span key={b}>{b}</span>
-                ))}
-              </div>
-              </div>
-            </div>
-            <div className="lg:pl-16">
-              <div className="mb-6 flex items-center gap-3 text-[20px] font-medium">
-                <span className="grid size-7 place-items-center bg-ink text-sm text-paper">✕</span> {h.noBuy}
-              </div>
-              <ul className="border-t border-line">
-                {noBuyList.map((n) => (
-                  <li key={n.title} className="grid grid-cols-[36px_1fr] border-b border-line py-4">
-                    <span className="font-mono text-muted">✕</span>
-                    <div>
-                      <div className="text-[16px] font-medium">{n.title}</div>
-                      <div className="text-[14px] text-muted">{n.note}</div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-8 border-l-2 border-accent pl-4 text-[14px] leading-relaxed text-muted">
-                <Rich text={h.contamination} boldClass="text-ink" />
-              </p>
-            </div>
-          </div>
-          <div className="mt-12 text-center">
-            <Link href={guideLink("como-identificar-metal-duro")} className="text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
-              {h.guideIdentify}
-            </Link>
-          </div>
+          <p className="manifesto">
+            <span>{c.manifesto[0]}</span>
+            {c.manifesto[1]}
+            <span>{c.manifesto[2]}</span>
+          </p>
         </div>
-      </section>
-      {/* КАК МЫ ПЛАТИМ */}
-      <section className="bg-ink py-[clamp(88px,14vh,160px)] text-paper">
-        <div className="wrap grid items-center gap-16 lg:grid-cols-[1.2fr_0.8fr] lg:gap-24">
-          <div className="relative">
-            <div className="display text-[clamp(64px,7.5vw,120px)] leading-[0.8] tracking-[-0.055em] text-accent">{h.payBig}</div>
-            <div className="mt-4 text-[clamp(22px,2.4vw,32px)] tracking-tight">{h.paySub}</div>
-            {/* <Image src="/logo.png" alt="" width={640} height={640} className="absolute top-1/2 lg:-translate-x-1/2 -translate-y-1/2 w-[100%] object-cover opacity-20" priority  /> */}
-          </div>
-          <div className="text-[19px] leading-relaxed text-paper/65">
-            <p>
-              <b className="text-paper">{h.payLead}</b>
-            </p>
-            <p className="mt-4">
-              {h.payText}
-            </p>
-            <div className="label-mono mt-8 inline-block border border-paper/25 px-3 py-2 text-paper/75">
-              {h.payTag}
+
+        {/* QUÉ COMPRAMOS */}
+        <section className="section wrap" id="materiales">
+          <div className="section-head">
+            <div>
+              <h2 style={{ marginTop: 0 }}>
+                {c.materialsTitle1}
+                <span className="muted">.</span>
+              </h2>
             </div>
+            <p>{c.materialsText}</p>
           </div>
-        </div>
-      </section>
-
-      {/* ИСТОРИЯ */}
-      <section className="bg-paper-hi py-[clamp(80px,12vh,144px)]">
-        <div className="wrap">
-          <SectionHead
-            title={h.historyTitle}
-          />
-          <div className="flex flex-col gap-[clamp(40px,6vh,72px)]">
-            {history.map((x) => (
-              <article key={x.date} className="grid gap-6 border-t border-line pt-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-12">
-                <Pic src={photo(x.photo)} alt={x.material} className="aspect-[4/3] md:aspect-auto md:min-h-[360px]" sizes="(min-width:768px) 50vw, 100vw" />
-                <div className="flex flex-col">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="label-mono text-ink-2">{x.date}</span>
-                    <span className="label-mono border border-ink/30 px-2.5 py-1 text-ink-2">{x.method}</span>
-                  </div>
-                  <div className="mt-4 text-[clamp(30px,3vw,44px)] leading-none font-medium tracking-tight">{x.city}</div>
-                  <div className="mt-3 text-[18px] text-ink-2">{x.material}</div>
-
-                  <div className="mt-8 grid grid-cols-3">
-                    {[
-                      [h.historyLabels.weight, x.weight],
-                      [h.historyLabels.received, x.received],
-                      [h.historyLabels.paid, x.paid.split("· ")[1] ?? x.paid],
-                    ].map(([l, v], i) => (
-                      <div key={l} className={`py-4 ${i > 0 ? "border-l border-line pl-4" : ""}`}>
-                        <div className="label-mono text-ink-2">{l}</div>
-                        <div className="mt-1.5 font-mono text-[22px] tracking-tight">{v}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-auto bg-ink px-6 py-6 text-paper">
-                    <div className="label-mono text-paper/75">{h.historyLabels.wait}</div>
-                    <div className="mt-3 flex items-baseline justify-between gap-4">
-                      <span className="display text-[clamp(44px,4.6vw,68px)] text-accent">{x.wait}</span>
-                      <span className="grid size-10 shrink-0 place-items-center bg-accent text-lg text-ink">✓</span>
-                    </div>
-                  </div>
-                </div>
+          <div className="materials-grid">
+            {c.materialCards.map((m, i) => (
+              <article key={m.title} className="photo-card">
+                <img alt={m.title} loading="lazy" src={img(["inserts-2", "solid-4", "wear-1", "rings-2"][i])} />
+                <span className="tag">{m.tag}</span>
+                <h3>{m.title}</h3>
               </article>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* НЕ УВЕРЕНЫ */}
-      <a
-        href={contacts.whatsapp}
-        className="group block bg-accent text-ink transition-colors hover:bg-ink hover:text-paper"
-      >
-        <div className="wrap flex items-center justify-between gap-6 py-12">
-          <span className="text-[clamp(20px,2.4vw,32px)] font-medium tracking-tight">
-            {h.unsure}
-          </span>
-          <span className="text-3xl transition-transform group-hover:translate-x-2">→</span>
-        </div>
-      </a>
-
-      {/* КАК ВСЁ ПРОИСХОДИТ */}
-      <section id="how" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
-        <div className="wrap">
-          <SectionHead title={h.howTitle} text={h.howText} />
-          <ol className="grid border-t border-line sm:grid-cols-2 lg:grid-cols-5">
-            {flow.map((f, i) => (
-              <li key={f.title} className={`flex min-h-[300px] flex-col border-b border-line py-10 sm:pr-8 lg:border-b-0 ${i < 4 ? "lg:border-r lg:border-line" : ""} ${i > 0 ? "lg:pl-8" : ""}`}>
-                <span className="font-mono text-[40px] leading-none text-accent-deep">0{i + 1}</span>
-                <h3 className="mt-10 text-[21px] font-medium tracking-tight">{f.title}</h3>
-                <p className="mt-4 text-[16px] leading-relaxed text-muted">{f.text}</p>
-                {f.strong && <p className="mt-3 text-[16px] font-medium text-ink">{f.strong}</p>}
-                {f.link && (
-                  <Link href={f.link.href} className="mt-auto pt-6 text-[15px] font-medium whitespace-nowrap underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
-                    {f.link.label} →
-                  </Link>
-                )}
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* УПАКОВКА */}
-      <section id="packing" className="scroll-mt-16 py-[clamp(80px,12vh,144px)]">
-        <div className="wrap">
-          <SectionHead
-            title={h.packTitle}
-            text={h.packText}
-          />
-          <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
-            <div>
-              <h3 className="text-[24px] font-medium tracking-tight">{h.packBefore}</h3>
-              <p className="mt-4 text-[16px] leading-relaxed text-muted">
-                {h.packBeforeText}
-              </p>
-              <ol className="mt-10 border-t border-line">
-                {packingSteps.map((s, i) => (
-                  <li key={s.title} className="grid grid-cols-[48px_1fr] border-b border-line py-6">
-                    <span className="font-mono text-sm text-accent-deep">0{i + 1}</span>
-                    <div>
-                      <div className="text-[16px] font-medium">{s.title}</div>
-                      <div className="mt-0.5 text-[14px] text-muted">{s.text}</div>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
-                <Link href="#calculator" className="shrink-0 bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">
-                  {h.packCta}
-                </Link>
-                <Link href={guideLink("como-embalar-chatarra-metal-duro")} className="whitespace-nowrap text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
-                  {h.guidePack}
-                </Link>
-              </div>
-            </div>
-            <div className="flex flex-col gap-5">
-              <VideoPlayer
-                src="/video/unpacking.mp4?v=34s"
-                poster="/video/unpacking-poster.jpg"
-                title={h.videoTitle}
-                caption={h.videoCaption}
-                watchLabel={t.video.watch}
-                className="h-[clamp(260px,42vh,460px)]"
-              />
-              <div className="grid grid-cols-3 gap-5">
-                {(["pack-1", "bucket", "pack-3"] as const).map((k, i) => [k, h.packPhotos[i]]).map(([k, l]) => (
-                  <figure key={k}>
-                    <Pic src={photo(k)} alt={l} label="" className="h-[clamp(100px,15vh,170px)]" sizes="(min-width:1024px) 16vw, 33vw" />
-                    <figcaption className="label-mono mt-1.5 text-ink-2">{l}</figcaption>
-                  </figure>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ДОВЕРИЕ — временно скрыт. Чтобы вернуть, поставьте SHOW_TRUST = true */}
-      {SHOW_TRUST && (
-        <>
-      <section className="border-b border-line py-[clamp(80px,12vh,144px)]">
-        <div className="wrap">
-          <SectionHead title={h.trustTitle} />
-          <div className="grid grid-cols-2 border-t border-line lg:grid-cols-4">
-            {h.trustItems.map(([ti, d], i) => (
-              <div key={ti} className={`border-b border-line py-8 lg:border-b-0 ${i % 2 ? "pl-6" : "pr-6"} ${i > 0 ? "lg:border-l lg:border-line lg:pl-8" : ""} lg:pr-8`}>
-                <div className="text-[clamp(20px,1.8vw,26px)] font-medium tracking-tight">{ti}</div>
-                <div className="mt-1 text-[15px] text-muted">{d}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-16 flex flex-col gap-8 bg-ink p-8 text-paper md:p-10 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="text-[clamp(24px,2.4vw,32px)] font-medium tracking-tight">{h.trustAskTitle}</div>
-              <div className="mt-2 text-[16px] text-paper/70">{h.trustAskText}</div>
-            </div>
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-              <a href={contacts.phoneHref} className="font-mono text-[clamp(22px,2vw,28px)] tracking-tight hover:text-accent">{contacts.phone}</a>
-              <a href={contacts.whatsapp} className="bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-paper">{h.whatsappWrite}</a>
-            </div>
-          </div>
-        </div>
-      </section>
-        </>
-      )}
-
-      {/* ЭКОЛОГИЯ — коротко; подробности на странице «О нас» (#reciclaje) */}
-      <section id="recycling" className="scroll-mt-16 bg-paper-lo py-[clamp(80px,12vh,144px)]">
-        <div className="wrap grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-24">
-          <div>
-            <h2 className="display text-[clamp(32px,3.6vw,56px)]">{h.ecoTitle}</h2>
-            <p className="mt-8 max-w-2xl text-[17px] leading-relaxed text-ink-2">
-              <Rich text={h.ecoP1} boldClass="font-bold" />
-            </p>
-            <Link href={`${t.about.path}#reciclaje`} className="mt-8 block w-fit text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
-              {h.ecoLink}
-            </Link>
-            <Link href={guideLink("que-es-el-carburo-de-tungsteno")} className="mt-3 block w-fit text-[16px] font-medium underline decoration-accent decoration-2 underline-offset-4 hover:text-accent-deep">
-              {h.guideCarbide}
-            </Link>
-            <div className="label-mono mt-10 flex flex-wrap gap-3 text-ink-2">
-              {h.ecoTags.map((tag) => (
-                <span key={tag} className="border border-ink/30 px-2.5 py-1.5">{tag}</span>
-              ))}
-            </div>
-          </div>
-          <Composition stacked label={h.ecoComposition} w={h.ecoW} co={h.ecoCo} />
-        </div>
-      </section>
-
-      {/* ОТЗЫВЫ — скриншоты переписок в WhatsApp */}
-      {SHOW_REVIEWS && reviews.length > 0 && (
-        <section id="reviews" className="scroll-mt-16 border-b border-line py-[clamp(80px,12vh,144px)]">
-          <div className="wrap">
-            <div className="grid gap-6 pb-12 md:grid-cols-[1.25fr_0.75fr] md:items-start md:gap-16 md:pb-20">
-              <h2 className="display text-[clamp(32px,3.6vw,56px)]">{t.reviews.title}</h2>
-              <div className="max-w-xl">
-                <p className="text-[17px] leading-relaxed text-muted">{t.reviews.text}</p>
-                <a href={contacts.whatsapp} className="mt-6 inline-block bg-accent px-6 py-4 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">
-                  {t.reviews.cta} →
-                </a>
-              </div>
-            </div>
-            <div className="-mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 md:pb-0 [scrollbar-width:none]">
-              {reviews.map((r) => (
-                <figure
-                  key={r.src}
-                  className="relative block w-[78vw] max-w-[360px] shrink-0 snap-center overflow-hidden border-[6px] border-ink bg-ink shadow-[0_24px_48px_-24px_rgb(33_33_35/0.5)] md:w-auto md:max-w-none"
-                >
-                  <div className="relative aspect-[9/14] overflow-hidden">
-                    <Image
-                      src={r.src}
-                      alt={r.alt}
-                      fill
-                      sizes="(min-width:768px) 30vw, 78vw"
-                      className="pointer-events-none object-cover object-top select-none"
-                      draggable={false}
-                    />
-                  </div>
-                </figure>
+          <div className="not-buy">
+            <span className="eyebrow">✕ {c.noBuyLabel}</span>
+            <div className="chips">
+              {c.noBuyChips.map((x) => (
+                <span key={x} className="chip">
+                  <b>✕</b>
+                  {x}
+                </span>
               ))}
             </div>
           </div>
         </section>
-      )}
 
-      {/* FAQ */}
-      <section id="faq" className="scroll-mt-16 py-[clamp(80px,12vh,144px)]">
-        <div className="wrap grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
-          <div>
-            <h2 className="display text-[clamp(32px,3.6vw,56px)]">{h.faqTitle}</h2>
-            <p className="mt-6 text-[17px] text-muted">{h.faqText}</p>
-            <div className="mt-12 lg:sticky lg:top-24">
-              <div className="text-[20px] font-medium tracking-tight">{h.faqNotFound}</div>
-              <p className="mt-2 text-[15px] text-muted">{h.faqNotFoundText}</p>
-              <a href={contacts.phoneHref} className="mt-6 block font-mono text-[clamp(24px,2.2vw,32px)] tracking-tight hover:text-accent-deep">
-                {contacts.phone}
-              </a>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a href={contacts.whatsapp} className="bg-accent px-5 py-3.5 font-medium text-ink transition-colors hover:bg-ink hover:text-paper">{h.faqWhatsapp}</a>
-                <a href={contacts.phoneHref} className="border border-ink px-5 py-3.5 transition-colors hover:bg-ink hover:text-paper">{h.call}</a>
+        {/* RECIBIMOS · REVISAMOS · PAGAMOS */}
+        <div className="wrap">
+          <section className="speed">
+            <img alt="" src={img("solid-2")} />
+            <div className="speed-title">
+              <h2>
+                {c.speedWords[0]}
+                <br />
+                {c.speedWords[1]}
+                <br />
+                <span className="accent-text">{c.speedWords[2]}</span>
+              </h2>
+            </div>
+            <div className="speed-bento">
+              <div className="speed-explainer">
+                <h3>{c.speedTitle}</h3>
+                <p>{c.speedText}</p>
+                <div className="speed-mini">✓ &nbsp; {c.speedMini}</div>
+              </div>
+              <div className="speed-timer">
+                <span className="speed-check">✓</span>
+                <SpeedClock label="2 horas" />
+                <span className="clock-caption">{c.speedCaption}</span>
               </div>
             </div>
+          </section>
+        </div>
+
+        {/* CASOS */}
+        <section className="section wrap" id="casos">
+          <div className="cases-head">
+            <h2 style={{ marginTop: 0 }}>
+              {c.casesTitle1}
+              <br />
+              <span className="muted">{c.casesTitle2}</span>
+            </h2>
+            <p className="muted" style={{ marginTop: 20 }}>
+              {c.casesText}
+            </p>
           </div>
-          <div className="border-t border-line">
-            {faq.map((f) => (
-              <details key={f.q} className="group border-b border-line">
-                <summary className="flex items-center justify-between gap-6 py-7 text-[18px] font-medium">
-                  {f.q}
-                  <span className="font-mono text-2xl text-accent-deep transition-transform group-open:rotate-45">+</span>
-                </summary>
-                <p className="max-w-2xl pb-8 text-[16px] leading-relaxed text-muted">{f.a}</p>
+          <CaseRail prevLabel="Anterior" nextLabel="Siguiente">
+            {history.map((x) => (
+              <article key={x.date + x.city} className="case-card">
+                <img alt={x.material} src={img(x.photo)} />
+                <span className="case-city">
+                  {x.city} · {x.method}
+                </span>
+                <div className="case-content">
+                  <h3>{x.material}</h3>
+                  <div className="case-metadata">
+                    <span>{x.weight}</span>
+                    <span>{x.received}</span>
+                  </div>
+                  <p style={{ fontSize: 11, color: "#bbb" }}>{c.casesFromLabel.toUpperCase()}</p>
+                  <div className="big-time">{x.wait}</div>
+                </div>
+              </article>
+            ))}
+            {c.futureCases.map((f) => (
+              <article key={f.city + f.material} className="case-card future-case">
+                <img alt={f.material} loading="lazy" src={img(f.photo)} />
+                <span className="case-city">{f.city}</span>
+                <div className="case-content">
+                  <span className="draft-tag">{c.futureDraft}</span>
+                  <h3>{f.material}</h3>
+                  <p className="future-caption">{c.futureCaption}</p>
+                </div>
+              </article>
+            ))}
+          </CaseRail>
+        </section>
+
+        {/* CÓMO FUNCIONA */}
+        <section className="section wrap" id="proceso">
+          <div className="section-head">
+            <div>
+              <h2 style={{ marginTop: 0 }}>
+                {c.processTitle1}
+                <br />
+                <span className="muted">{c.processTitle2}</span>
+              </h2>
+            </div>
+            <p>{c.processText}</p>
+          </div>
+          <div className="process-grid">
+            {c.steps.map((s, i) => (
+              <article key={s.title} className="process-card">
+                <span className="step">{i + 1}</span>
+                <div>
+                  <h3>{s.title}</h3>
+                  <p>{s.text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* EMBALAJE */}
+        <section className="section wrap pack-section">
+          <div className="pack-image" style={{ height: 510 }}>
+            <VideoPlayer
+              src="/video/unpacking.mp4?v=34s"
+              poster="/video/unpacking-poster.jpg"
+              title={c.videoTitle}
+              caption={c.videoCaption}
+              watchLabel={t.video.watch}
+              className="h-full"
+            />
+          </div>
+          <div className="pack-copy">
+            <h2 style={{ marginTop: 0 }}>
+              {c.packTitle1}
+              <br />
+              <span className="muted">{c.packTitle2}</span>
+            </h2>
+            <p>{c.packText}</p>
+            <div className="pack-tips">
+              {c.packTips.map((tip, i) => (
+                <div key={tip}>
+                  <b>{i + 1}</b>
+                  <span>{tip}</span>
+                </div>
+              ))}
+            </div>
+            <Link className="btn btn-secondary" href="/guides/como-embalar-chatarra-metal-duro" style={{ marginTop: 32 }}>
+              {c.packCta} <span className="arrow">↗</span>
+            </Link>
+          </div>
+        </section>
+
+        {/* RECICLAJE */}
+        <div className="wrap">
+          <section className="recycle recycle-updated" id="reciclaje">
+            <div className="recycle-text">
+              <h2>{c.recycleTitle}</h2>
+              <p className="recycle-lead">{c.recycleLead}</p>
+              <p>{c.recycleText}</p>
+              <div className="recycle-facts">
+                {c.facts.map((f) => (
+                  <div key={f.symbol} className="recycle-fact">
+                    <strong>{f.symbol}</strong>
+                    <span>
+                      <b>{f.name}</b>
+                      <small>{f.text}</small>
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="recycle-end">
+                <p>
+                  {c.recycleEnd1} <strong>{c.recycleEnd2}</strong>
+                </p>
+                <Link className="btn recycle-button" href="/#calculator">
+                  {c.recycleCta} <span className="arrow">↗</span>
+                </Link>
+              </div>
+            </div>
+            <div className="recycle-image">
+              <img alt="" src={img("inserts-2")} />
+            </div>
+          </section>
+        </div>
+
+        {/* GUÍAS */}
+        <section className="section wrap blog-home" id="blog">
+          <div className="section-head">
+            <div>
+              <h2>
+                {c.blogTitle1} <span className="muted">{c.blogTitle2}</span>
+              </h2>
+            </div>
+            <p>{c.blogText}</p>
+          </div>
+          <div className="blog-grid">
+            {c.blogCards.map((b, i) => (
+              <Link
+                key={b.slug}
+                href={`/guides/${b.slug}`}
+                className={`blog-card ${i === 0 ? "blog-feature" : ""}`}
+              >
+                <img alt="" loading="lazy" src={img(["inserts-3", "wear-1", "inserts-2"][i])} />
+                <div className="blog-card-body">
+                  <h3>{b.title}</h3>
+                  <span>{c.blogRead} ↗</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="section wrap faq" id="faq">
+          <div>
+            <h2 style={{ marginTop: 0 }}>
+              {c.faqTitle1}
+              <br />
+              <span className="muted">{c.faqTitle2}</span>
+            </h2>
+          </div>
+          <div>
+            {c.faq.map((f) => (
+              <details key={f.q}>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
               </details>
             ))}
           </div>
-        </div>
-      </section>
-
-    </main>
+        </section>
+      </main>
+    </div>
   );
 }

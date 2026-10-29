@@ -2,8 +2,6 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
-const popular = ["Madrid", "Barcelona", "Valencia", "Sevilla", "Zaragoza", "Bilbao"];
-
 // без учета регистра и акцентов: «malaga» найдет «Málaga»
 const norm = (s: string) =>
   s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
@@ -55,20 +53,7 @@ export function CityPicker({
 
   return (
     <div ref={root}>
-       <div className="hidden mb-3 md:flex flex-wrap gap-1.5">
-        {popular.map((c) => (
-          <button
-            key={c}
-            type="button"
-            onClick={() => pick(c)}
-            className={`border px-2.5 py-1.5 text-[13px] transition-colors ${value === c ? "border-accent bg-accent text-ink" : "border-paper/20 text-paper/75 hover:border-paper/60 hover:text-paper"}`}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
-
-      <div className="relative">
+            <div className="relative">
         <svg aria-hidden className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-paper/45" width="16" height="16" viewBox="0 0 16 16" fill="none">
           <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.5" />
           <path d="M11 11l3.5 3.5" stroke="currentColor" strokeWidth="1.5" />
@@ -124,7 +109,7 @@ export function CityPicker({
             id={listId}
             ref={list}
             role="listbox"
-            className="absolute inset-x-0 top-full z-30 mt-1 max-h-[264px] overflow-y-auto border border-paper/20 bg-ink-2 py-1 shadow-[0_24px_48px_-12px_rgb(0_0_0/0.6)] [scrollbar-color:#5f5f63_transparent] [scrollbar-width:thin]"
+            className="rounded-[14px] absolute inset-x-0 top-full z-30 mt-1 max-h-[264px] overflow-y-auto border border-paper/20 bg-ink-2 py-1 shadow-[0_24px_48px_-12px_rgb(0_0_0/0.6)] [scrollbar-color:#5f5f63_transparent] [scrollbar-width:thin]"
           >
             {options.length === 0 && <li className="px-4 py-3 text-[15px] text-paper/50">{t.nothing}</li>}
             {options.map((c, i) => {
