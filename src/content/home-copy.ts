@@ -106,6 +106,14 @@ const es = {
     { label: "Guías", href: "/#blog" },
   ],
   navCalc: "Calcular",
+  navAuth: {
+    menu: "Cuenta",
+    login: "Iniciar sesión",
+    register: "Registrarse",
+    account: "Mi cuenta",
+    admin: "Panel de administración",
+    signOut: "Cerrar sesión",
+  },
   footer: {
     cols: [
       { title: "MATERIALES", links: [
@@ -256,6 +264,14 @@ const ru: HomeCopy = {
     { label: "Гайды", href: "/#blog" },
   ],
   navCalc: "Рассчитать",
+  navAuth: {
+    menu: "Аккаунт",
+    login: "Войти",
+    register: "Регистрация",
+    account: "Мой кабинет",
+    admin: "Админ-панель",
+    signOut: "Выйти",
+  },
   footer: {
     cols: [
       { title: "МАТЕРИАЛЫ", links: [

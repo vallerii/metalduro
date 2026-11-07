@@ -1,0 +1,56 @@
+project_id = "metalduro"
+
+[api]
+enabled = true
+port = 54621
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54622
+shadow_port = 54620
+major_version = 17
+
+[db.seed]
+enabled = false
+
+[studio]
+enabled = true
+port = 54623
+api_url = "http://127.0.0.1"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = [
+  "http://localhost:3000/auth/confirm",
+  "http://localhost:3001",
+]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
+secure_password_change = true
+max_frequency = "1m0s"
+otp_length = 6
+otp_expiry = 3600
+
+[auth.email.template.confirmation]
+subject = "Confirma tu cuenta de Metalduro"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Restablece tu contraseña de Metalduro"
+content_path = "./supabase/templates/recovery.html"
+
+[auth.email.template.invite]
+subject = "Invitación al equipo de Metalduro"
+content_path = "./supabase/templates/invite.html"
+
+[storage]
+enabled = true
+file_size_limit = "10MiB"

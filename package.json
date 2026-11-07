@@ -7,15 +7,33 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "photos": "node scripts/prepare-photos.mjs"
+    "photos": "node scripts/prepare-photos.mjs",
+    "test:supabase:db": "supabase test db",
+    "test:supabase:integration": "node scripts/test-supabase-integration.mjs",
+    "test:supabase:concurrency": "pwsh -File supabase/tests/concurrency_claim.ps1",
+    "notifications:process": "node scripts/process-notification-outbox.mjs",
+    "test:email:templates": "node --no-warnings --conditions=react-server --experimental-strip-types scripts/test-email-templates.mjs",
+    "test:email:provider": "node --no-warnings --conditions=react-server --experimental-strip-types scripts/test-email-provider.mjs",
+    "test:email:integration": "node scripts/test-email-notifications.mjs",
+    "test:auth:registration-ux": "node --no-warnings --experimental-strip-types scripts/test-auth-registration-ux.mjs",
+    "test:auth:registration-browser": "node scripts/test-auth-registration-browser.mjs",
+    "test:auth:recovery-ux": "node --no-warnings --experimental-strip-types scripts/test-auth-recovery-ux.mjs",
+    "test:auth:recovery-browser": "node scripts/test-auth-recovery-browser.mjs",
+    "test:calculator:application": "node --no-warnings --conditions=react-server --experimental-strip-types scripts/test-calculator-application.mjs",
+    "test:calculator:draft": "node --no-warnings --experimental-strip-types scripts/test-calculator-draft.mjs",
+    "test:calculator:account-browser": "node scripts/test-account-application-browser.mjs",
+    "test:staging:cleanup-plan": "node scripts/test-staging-cleanup-plan.mjs"
   },
   "dependencies": {
     "@fontsource-variable/onest": "^5.3.1",
     "@fontsource/jetbrains-mono": "^5.3.0",
-    "next": "16.4.0",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.118.0",
+    "next": "16.4.3",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
@@ -23,10 +41,14 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.4.0",
+    "eslint-config-next": "16.4.3",
     "heic-convert": "^2.1.0",
     "sharp": "^0.35.5",
+    "supabase": "^2.122.0",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "minimatch": "^11.0.1"
   }
 }

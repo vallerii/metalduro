@@ -1,27 +1,31 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import "./home-ref.css";
 import { Calculator } from "@/components/Calculator";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { SpeedClock } from "@/components/SpeedClock";
 import { CaseRail } from "@/components/CaseRail";
 import { photo } from "@/lib/photos";
-import { materialMeta } from "@/content/site";
 import { homeCopy } from "@/content/home-copy";
 import { getT } from "@/i18n/server";
+import { getAuthenticatedUser } from "@/lib/auth";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 // Разметка и классы перенесены из index.html (референс). Тексты — из home-copy.ts (ES + RU).
 // Калькулятор — наш компонент с прежней логикой, вставлен в блок hero.
 
 const img = (key: string) => photo(key) ?? "";
 
+export const instant = false;
+
 export default async function Home() {
-  const { locale, t } = await getT();
+  const [{ locale, t }, auth] = await Promise.all([
+    getT(),
+    isSupabaseConfigured()
+      ? getAuthenticatedUser().catch(() => null)
+      : Promise.resolve(null),
+  ]);
   const c = homeCopy[locale];
   const { history } = t;
-  const calcPhotos = Object.fromEntries(
-    [...Object.values(materialMeta), ...history].map((m) => [m.photo, photo(m.photo)]),
-  );
   const [proofA, proofB] = c.proof.split(" · ");
 
   return (
@@ -55,13 +59,12 @@ export default async function Home() {
             </div>
 
             <Calculator
-              photos={calcPhotos}
               t={t.calc}
               cityT={t.city}
               materials={t.materials}
-              history={history}
               numberLocale={t.numberLocale}
               copy={c.calc}
+              viewerRole={auth?.profile.role ?? null}
             />
           </div>
           <div className="scroll-note">{c.scrollNote}</div>

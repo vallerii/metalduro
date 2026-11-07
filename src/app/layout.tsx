@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./home-ref.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { getT } from "@/i18n/server";
@@ -22,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const { t } = await getT();
   return (
-    <html lang={t.htmlLang}>
+    <html lang={t.htmlLang} data-scroll-behavior="smooth">
       <body className="flex min-h-screen flex-col">
         <Header />
         <div className="flex-1">{children}</div>
