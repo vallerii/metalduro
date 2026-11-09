@@ -17,12 +17,12 @@ export const contacts = {
 
 export type MaterialId = "inserts" | "solid" | "scrap" | "mixed";
 
-/** Ставка (€/кг), фото и код для калькулятора. Названия — в словарях. */
-export const materialMeta: Record<MaterialId, { rate: number; photo: string; code: string }> = {
-  inserts: { rate: 36, photo: "inserts-1", code: "WC-Co" },
-  solid: { rate: 40, photo: "solid-1", code: "WC" },
-  scrap: { rate: 34, photo: "rings-1", code: "WC" },
-  mixed: { rate: 30, photo: "mixed-1", code: "W·?" },
+/** Только визуальные метаданные. Ставки всегда загружаются из public.materials. */
+export const materialMeta: Record<MaterialId, { photo: string; code: string }> = {
+  inserts: { photo: "inserts-1", code: "WC-Co" },
+  solid: { photo: "solid-1", code: "WC" },
+  scrap: { photo: "rings-1", code: "WC" },
+  mixed: { photo: "mixed-1", code: "W·?" },
 };
 
 export const cities = [

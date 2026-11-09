@@ -129,7 +129,7 @@ for (const template of [confirmationTemplate, recoveryTemplate, inviteTemplate])
 const origins = [
   "http://localhost:3000",
   "http://localhost:3001",
-  "https://metalduro-feature-client-admin-cabinets-agenturro.vercel.app",
+  "https://metalduro-git-feature-client-admin-cabinets-agenturro.vercel.app",
 ];
 
 for (const origin of origins) {

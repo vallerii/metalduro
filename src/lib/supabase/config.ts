@@ -7,6 +7,15 @@ export class SupabaseConfigurationError extends Error {
   }
 }
 
+export class SiteUrlConfigurationError extends Error {
+  constructor() {
+    super(
+      "NEXT_PUBLIC_SITE_URL must be an absolute HTTPS URL outside local development.",
+    );
+    this.name = "SiteUrlConfigurationError";
+  }
+}
+
 function readPublicConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
   const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
@@ -38,10 +47,22 @@ export function getSupabasePublicConfig() {
 }
 
 export function getSiteUrl() {
-  const value = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000";
+  const value = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  const onVercel = process.env.VERCEL === "1";
+  const deployed = process.env.NODE_ENV === "production" || onVercel;
+  if (!value) {
+    if (deployed) throw new SiteUrlConfigurationError();
+    return "http://localhost:3000";
+  }
+
   try {
-    return new URL(value).origin;
+    const url = new URL(value);
+    const local = url.hostname === "localhost" || url.hostname === "127.0.0.1";
+    if (onVercel && local) throw new SiteUrlConfigurationError();
+    if (url.protocol !== "https:" && !local) throw new SiteUrlConfigurationError();
+    return url.origin;
   } catch {
+    if (deployed) throw new SiteUrlConfigurationError();
     return "http://localhost:3000";
   }
 }

@@ -5,6 +5,7 @@ export type AdminView = "new" | "mine" | "other";
 export type AdminSort = "created_desc" | "created_asc" | "updated_desc";
 
 export type AdminCopy = {
+  navigation: { applications: string; pricing: string };
   dashboard: {
     kicker: string;
     title: string;
@@ -85,11 +86,44 @@ export type AdminCopy = {
     forbidden: string;
     generic: string;
   };
+  pricing: {
+    kicker: string;
+    title: string;
+    lead: string;
+    publicTitle: string;
+    publicLead: string;
+    publicRate: string;
+    publicDate: string;
+    preview: string;
+    informational: string;
+    materialsTitle: string;
+    materialsLead: string;
+    materialId: string;
+    rate: string;
+    status: string;
+    active: string;
+    inactive: string;
+    updated: string;
+    save: string;
+    saving: string;
+    confirm: string;
+    saved: string;
+    validationError: string;
+    saveError: string;
+    forbidden: string;
+    historyTitle: string;
+    historyEmpty: string;
+    changedBy: string;
+    target: string;
+    change: string;
+    publicTarget: string;
+  };
   roles: { client: string; admin: string };
   steps: Record<ApplicationStatus, string>;
 };
 
 const es: AdminCopy = {
+  navigation: { applications: "Solicitudes", pricing: "Precios" },
   dashboard: {
     kicker: "Panel de empleados",
     title: "Gestión de solicitudes",
@@ -170,6 +204,38 @@ const es: AdminCopy = {
     forbidden: "No tienes permiso para modificar esta solicitud.",
     generic: "No se ha podido completar la operación. Inténtalo de nuevo.",
   },
+  pricing: {
+    kicker: "Configuración comercial",
+    title: "Precios y tarifas",
+    lead: "Actualiza la referencia pública y las tarifas utilizadas para nuevas solicitudes, con auditoría automática.",
+    publicTitle: "Precio público",
+    publicLead: "Referencia informativa visible en la web. No sustituye las tarifas específicas de cada material.",
+    publicRate: "Precio €/kg",
+    publicDate: "Fecha de referencia",
+    preview: "Vista previa",
+    informational: "Precio informativo. El cálculo real se realiza con la tarifa de la categoría seleccionada.",
+    materialsTitle: "Tarifas de materiales",
+    materialsLead: "Estas tarifas son la fuente de verdad del calculador y solo se aplican a nuevas solicitudes.",
+    materialId: "ID",
+    rate: "Tarifa €/kg",
+    status: "Estado",
+    active: "Activo",
+    inactive: "Inactivo",
+    updated: "Última actualización",
+    save: "Guardar",
+    saving: "Guardando…",
+    confirm: "¿Confirmas este cambio de precio? Se registrará en el historial.",
+    saved: "El precio se ha guardado correctamente.",
+    validationError: "Introduce un valor positivo con un máximo de dos decimales y una fecha válida.",
+    saveError: "No se ha podido guardar. Los datos anteriores siguen vigentes.",
+    forbidden: "Solo un administrador activo puede cambiar los precios.",
+    historyTitle: "Historial de cambios",
+    historyEmpty: "Todavía no se han registrado cambios.",
+    changedBy: "Responsable",
+    target: "Elemento",
+    change: "Cambio",
+    publicTarget: "Precio público",
+  },
   roles: { client: "Cliente", admin: "Empleado" },
   steps: {
     new: "Asignar responsable",
@@ -183,6 +249,7 @@ const es: AdminCopy = {
 };
 
 const ru: AdminCopy = {
+  navigation: { applications: "Заявки", pricing: "Цены" },
   dashboard: {
     kicker: "Панель сотрудника",
     title: "Управление заявками",
@@ -262,6 +329,38 @@ const ru: AdminCopy = {
     changedElsewhere: "Статус изменился в другой сессии. Проверьте обновлённые данные.",
     forbidden: "У вас нет прав изменять эту заявку.",
     generic: "Не удалось выполнить операцию. Попробуйте ещё раз.",
+  },
+  pricing: {
+    kicker: "Коммерческие настройки",
+    title: "Цены и тарифы",
+    lead: "Обновляйте публичную справочную цену и тарифы новых заявок с автоматическим аудитом.",
+    publicTitle: "Публичная цена",
+    publicLead: "Справочная цена на сайте. Она не заменяет отдельные тарифы категорий материала.",
+    publicRate: "Цена €/кг",
+    publicDate: "Дата цены",
+    preview: "Предпросмотр",
+    informational: "Цена справочная. Расчёт заявки выполняется по тарифу выбранной категории.",
+    materialsTitle: "Тарифы материалов",
+    materialsLead: "Это единый источник тарифов калькулятора. Новые значения применяются только к новым заявкам.",
+    materialId: "ID",
+    rate: "Тариф €/кг",
+    status: "Статус",
+    active: "Активен",
+    inactive: "Неактивен",
+    updated: "Последнее изменение",
+    save: "Сохранить",
+    saving: "Сохранение…",
+    confirm: "Подтвердить изменение цены? Оно будет записано в историю.",
+    saved: "Цена успешно сохранена.",
+    validationError: "Введите положительное значение максимум с двумя знаками и корректную дату.",
+    saveError: "Не удалось сохранить. Предыдущие данные остаются действующими.",
+    forbidden: "Изменять цены может только активный администратор.",
+    historyTitle: "История изменений",
+    historyEmpty: "Изменений пока нет.",
+    changedBy: "Кто изменил",
+    target: "Объект",
+    change: "Изменение",
+    publicTarget: "Публичная цена",
   },
   roles: { client: "Клиент", admin: "Сотрудник" },
   steps: {

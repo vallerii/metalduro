@@ -168,6 +168,14 @@ pass("invalid weight, IBAN and payment recipient are rejected before RPC");
   pass("changed trusted rate requires a fresh confirmation before RPC");
 }
 
+{
+  const mock = harness({ rateEur: 41 });
+  const result = await processCalculatorApplication(input({ previewRateEur: 41 }), es.calc, mock.dependencies);
+  assert.deepEqual(result, { status: "success", applicationId });
+  assert.equal(mock.rpcCalls[0].p_expected_rate_eur, 41);
+  pass("a reconfirmed current material rate is passed to the protected creation RPC");
+}
+
 for (const copy of [es.calc, ru.calc]) {
   const mock = harness();
   const result = await processCalculatorApplication(input({ paymentIban: "bad" }), copy, mock.dependencies);

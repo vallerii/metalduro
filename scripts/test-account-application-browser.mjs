@@ -1,20 +1,26 @@
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { mkdir, rm, writeFile } from "node:fs/promises";
-import { spawn, spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 
-const appPort = 3005;
-const cdpPort = 9231;
+const appPort = 31_000 + (process.pid % 10_000);
+const cdpPort = 42_000 + (process.pid % 10_000);
 const appDir = process.cwd();
 const nextBin = join(appDir, "node_modules/next/dist/bin/next");
 const chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const runRoot = join(process.env.LOCALAPPDATA || appDir, "MetalduroStage55BrowserQa");
-const chromeProfile = join(runRoot, `chrome-${process.pid}`);
+const chromeProfile = join(runRoot, `chrome-${process.pid}-${Date.now()}`);
 const desktopScreenshot = join(runRoot, "navigation-checkout-desktop.png");
 const mobileScreenshot = join(runRoot, "navigation-checkout-mobile.png");
 const adminScreenshot = join(runRoot, "admin-dashboard-desktop.png");
+const pricingScreenshot = join(runRoot, "admin-pricing-desktop.png");
+const pricingMobileScreenshot = join(runRoot, "admin-pricing-mobile.png");
+const userMenuScreenshot = join(runRoot, "header-user-menu-desktop.png");
+const publicPriceScreenshots = Object.fromEntries(
+  [1440, 1280, 768, 390, 375].map((width) => [width, join(runRoot, `public-price-${width}.png`)]),
+);
 const userId = "55555555-5555-4555-8555-555555555555";
 const applicationId = "66666666-6666-4666-8666-666666666666";
 const now = new Date().toISOString();
@@ -28,6 +34,9 @@ const rpcBodies = [];
 let simulatedTransientFailures = 0;
 let claimRequests = 0;
 let signupRequests = 0;
+let materialRateUpdateRequests = 0;
+let publicPriceUpdateRequests = 0;
+let failNextMaterialRateUpdate = false;
 const consoleProblems = [];
 const networkRequests = new Map();
 const networkFailures = [];
@@ -67,6 +76,19 @@ const profile = {
   role: "client",
   active: true,
 };
+const materialRows = [
+  { id: "inserts", name: "Plaquitas", rate_eur: 36, active: true, updated_at: now },
+  { id: "mixed", name: "Metal duro mixto", rate_eur: 30, active: true, updated_at: now },
+  { id: "scrap", name: "Restos de metal duro", rate_eur: 34, active: true, updated_at: now },
+  { id: "solid", name: "Metal duro entero", rate_eur: 40, active: true, updated_at: now },
+];
+let publicPricingRow = {
+  id: "default",
+  price_eur_per_kg: 25,
+  price_date: "2026-11-09",
+  updated_at: now,
+};
+const pricingHistory = [];
 
 function sendJson(response, status, body, extraHeaders = {}) {
   response.writeHead(status, {
@@ -161,11 +183,90 @@ function startMockSupabase() {
       return;
     }
     if (request.method === "GET" && url.pathname === "/rest/v1/profiles") {
-      sendJson(response, 200, profile);
+      const wantsObject = request.headers.accept?.includes("application/vnd.pgrst.object");
+      sendJson(response, 200, wantsObject ? profile : [profile]);
       return;
     }
     if (request.method === "GET" && url.pathname === "/rest/v1/materials") {
-      sendJson(response, 200, { rate_eur: 40 });
+      const wantsObject = request.headers.accept?.includes("application/vnd.pgrst.object");
+      const requestedId = url.searchParams.get("id")?.replace(/^eq\./, "");
+      const selected = materialRows.find((row) => row.id === requestedId) ?? materialRows[0];
+      sendJson(response, 200, wantsObject || requestedId ? selected : materialRows);
+      return;
+    }
+    if (request.method === "GET" && url.pathname === "/rest/v1/site_public_pricing") {
+      sendJson(response, 200, publicPricingRow);
+      return;
+    }
+    if (request.method === "GET" && url.pathname === "/rest/v1/pricing_change_history") {
+      sendJson(response, 200, pricingHistory);
+      return;
+    }
+    if (request.method === "POST" && url.pathname === "/rest/v1/rpc/update_material_rate") {
+      materialRateUpdateRequests += 1;
+      const body = await readJson(request);
+      if (profile.role !== "admin") {
+        sendJson(response, 403, { message: "admin_required" });
+        return;
+      }
+      if (failNextMaterialRateUpdate) {
+        failNextMaterialRateUpdate = false;
+        await delay(250);
+        sendJson(response, 500, { message: "database_unavailable" });
+        return;
+      }
+      const material = materialRows.find((row) => row.id === body?.p_material_id);
+      if (!material) {
+        sendJson(response, 400, { message: "material_not_found" });
+        return;
+      }
+      const previous = material.rate_eur;
+      material.rate_eur = Number(body.p_new_rate_eur);
+      material.updated_at = new Date().toISOString();
+      if (previous !== material.rate_eur) {
+        pricingHistory.unshift({
+          id: pricingHistory.length + 1,
+          target_kind: "material_rate",
+          material_id: material.id,
+          changed_by: userId,
+          old_rate_eur: previous,
+          new_rate_eur: material.rate_eur,
+          old_price_date: null,
+          new_price_date: null,
+          created_at: material.updated_at,
+        });
+      }
+      await delay(450);
+      sendJson(response, 200, material);
+      return;
+    }
+    if (request.method === "POST" && url.pathname === "/rest/v1/rpc/update_public_pricing") {
+      publicPriceUpdateRequests += 1;
+      const body = await readJson(request);
+      if (profile.role !== "admin") {
+        sendJson(response, 403, { message: "admin_required" });
+        return;
+      }
+      const previous = { ...publicPricingRow };
+      publicPricingRow = {
+        ...publicPricingRow,
+        price_eur_per_kg: Number(body.p_price_eur_per_kg),
+        price_date: body.p_price_date,
+        updated_at: new Date().toISOString(),
+      };
+      pricingHistory.unshift({
+        id: pricingHistory.length + 1,
+        target_kind: "public_price",
+        material_id: null,
+        changed_by: userId,
+        old_rate_eur: previous.price_eur_per_kg,
+        new_rate_eur: publicPricingRow.price_eur_per_kg,
+        old_price_date: previous.price_date,
+        new_price_date: publicPricingRow.price_date,
+        created_at: publicPricingRow.updated_at,
+      });
+      await delay(450);
+      sendJson(response, 200, publicPricingRow);
       return;
     }
     if (request.method === "POST" && url.pathname === "/rest/v1/rpc/create_application") {
@@ -238,14 +339,7 @@ function startProcess(command, args, options) {
 
 function stopProcessTree(child) {
   if (!child?.pid) return;
-  if (process.platform === "win32") {
-    spawnSync("taskkill", ["/PID", String(child.pid), "/T", "/F"], {
-      stdio: "ignore",
-      windowsHide: true,
-    });
-  } else {
-    child.kill("SIGTERM");
-  }
+  child.kill("SIGTERM");
 }
 
 async function waitFor(check, message, timeoutMs = 30_000) {
@@ -423,11 +517,34 @@ try {
 
   await navigate(cdp, "/");
   assert.equal(await evaluate(cdp, `Boolean(document.querySelector("#calculator"))`), true);
-  const guestHeader = await evaluate(cdp, `document.querySelector("header").innerText`);
+  assert.equal(await evaluate(cdp, `Boolean(document.querySelector('.lang-switch'))`), false);
+  assert.equal(await evaluate(cdp, `document.querySelector('.header-phone').getAttribute('href')`), "tel:+34603623275");
+  assert.match(await evaluate(cdp, `document.querySelector('.public-price-chip').innerText`), /25\s*€\/kg/);
+  assert.match(await evaluate(cdp, `document.querySelector('.public-price-card-hero').innerText`), /9 de noviembre de 2026/);
+  const guestHeader = await evaluate(cdp, `document.querySelector(".header-user-menu").textContent`);
   assert.match(guestHeader, /Iniciar sesión/);
   assert.match(guestHeader, /Registrarse/);
   assert.doesNotMatch(guestHeader, /Mi cuenta|Panel de administración/);
-  pass("guest header exposes login and registration without an incorrect role flash");
+  await delay(300);
+  await click(cdp, ".header-user-menu summary");
+  assert.equal(await evaluate(cdp, `document.querySelector(".header-user-menu").open`), true);
+  await screenshot(cdp, userMenuScreenshot);
+  await click(cdp, ".header-user-menu summary");
+  pass("guest header exposes the phone, managed public price and correct account menu without the language switch");
+
+  for (const [width, height] of [[1440, 1000], [1280, 900], [768, 900], [390, 844], [375, 812]]) {
+    await cdp.send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: width < 600 });
+    await screenshot(cdp, publicPriceScreenshots[width]);
+    assert.equal(await evaluate(cdp, `document.documentElement.scrollWidth - document.documentElement.clientWidth`), 0);
+    assert.equal(await evaluate(cdp, `document.querySelector('.public-price-chip').getBoundingClientRect().width > 0`), true);
+  }
+  await cdp.send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+  pass("header and hero price variants remain visible without overflow at 1440/1280/768/390/375px");
+
+  await cdp.send("Page.navigate", { url: `http://localhost:${appPort}/admin/pricing` });
+  await waitFor(() => evaluate(cdp, `location.pathname === "/auth/login"`), "Anonymous user was not rejected from admin pricing");
+  pass("anonymous users cannot open /admin/pricing");
+  await navigate(cdp, "/");
 
   await click(cdp, ".calc-action");
   await waitFor(() => evaluate(cdp, `document.body.innerText.includes("¿Dónde está el material")`), "Guest step 2 did not open");
@@ -459,7 +576,7 @@ try {
     () => evaluate(cdp, `location.pathname === "/" && location.search === "?checkout=1" && Boolean(document.querySelector('input[type="tel"]'))`),
     `Login did not restore the public calculator.\n${nextOutput}`,
   );
-  const clientHeader = await evaluate(cdp, `document.querySelector("header").innerText`);
+  const clientHeader = await evaluate(cdp, `document.querySelector(".header-user-menu").textContent`);
   assert.match(clientHeader, /Mi cuenta/);
   assert.doesNotMatch(clientHeader, /Panel de administración/);
   assert.equal(await evaluate(cdp, `localStorage.getItem("metalduro:calculator-draft:v2") !== null`), true);
@@ -515,10 +632,16 @@ try {
   pass("form remains keyboard focusable");
 
   await evaluate(cdp, `(() => {
-    const button = [...document.querySelectorAll("button")].find((item) => item.textContent.includes("Enviar solicitud"));
+    const button = document.querySelector(".calc-inline-actions button.btn");
     button.click(); button.click();
   })()`);
-  await waitFor(() => rpcRequests === 1, "RPC was not called once");
+  await waitFor(
+    async () => rpcRequests === 1 || await evaluate(cdp, `Boolean(document.querySelector(".calc-error"))`),
+    "RPC did not start and the UI did not report a validation error",
+  );
+  if (rpcRequests !== 1) {
+    throw new Error(`RPC was not called: ${await evaluate(cdp, `document.querySelector(".calc-error")?.innerText`)}`);
+  }
   await waitFor(
     () => evaluate(cdp, `Boolean(document.querySelector(".calc-error"))`),
     "Transient RPC failure was not shown",
@@ -526,7 +649,7 @@ try {
   assert.equal(rpcRequests, 1);
   pass("double click during a failed request still produces one RPC");
 
-  await evaluate(cdp, `[...document.querySelectorAll("button")].find((item) => item.textContent.includes("Enviar solicitud"))?.click()`);
+  await click(cdp, ".calc-inline-actions button.btn");
   await waitFor(() => rpcRequests === 2, "Unchanged retry did not call RPC once");
   await waitFor(
     () => evaluate(cdp, `Boolean(document.querySelector(".calc-error"))`),
@@ -537,7 +660,7 @@ try {
 
   await setInput(cdp, 'input[type="tel"]', "+34 600 000 000");
   await evaluate(cdp, `(() => {
-    const button = [...document.querySelectorAll("button")].find((item) => item.textContent.includes("Enviar solicitud"));
+    const button = document.querySelector(".calc-inline-actions button.btn");
     button.click(); button.click();
   })()`);
   await waitFor(() => rpcRequests === 3, "Changed intent did not call RPC exactly once");
@@ -584,7 +707,7 @@ try {
     const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;
     setter.call(inputs[0], "Cliente Cuenta"); inputs[0].dispatchEvent(new Event("input", { bubbles: true }));
     setter.call(inputs[1], "ES9121000418450200051332"); inputs[1].dispatchEvent(new Event("input", { bubbles: true }));
-    const button = [...document.querySelectorAll("button")].find((item) => item.textContent.includes("Enviar solicitud"));
+    const button = document.querySelector(".calc-inline-actions button.btn");
     button.click(); button.click();
   })()`);
   await waitFor(() => rpcRequests === 4, "Account calculator did not call RPC exactly once");
@@ -640,10 +763,13 @@ try {
   await cdp.send("Page.navigate", { url: `http://localhost:${appPort}/admin` });
   await waitFor(() => evaluate(cdp, `location.pathname === "/account"`), "Client was not rejected from admin");
   pass("client cannot open the admin route");
+  await cdp.send("Page.navigate", { url: `http://localhost:${appPort}/admin/pricing` });
+  await waitFor(() => evaluate(cdp, `location.pathname === "/account"`), "Client was not rejected from admin pricing");
+  pass("client cannot open /admin/pricing");
 
   profile.role = "admin";
   await navigate(cdp, "/");
-  const adminHeader = await evaluate(cdp, `document.querySelector("header").innerText`);
+  const adminHeader = await evaluate(cdp, `document.querySelector(".header-user-menu").textContent`);
   assert.match(adminHeader, /Panel de administración/);
   assert.doesNotMatch(adminHeader, /Mi cuenta/);
   pass("admin header exposes only the administration destination and sign-out");
@@ -663,6 +789,66 @@ try {
   await screenshot(cdp, adminScreenshot);
   pass("admin dashboard renders the new queue and primary claim action");
 
+  await navigate(cdp, "/admin/pricing");
+  await waitFor(
+    () => evaluate(cdp, `document.body.innerText.includes("Precios y tarifas") && document.querySelectorAll('input[name="rateEur"]').length === 4`),
+    `Admin pricing did not render managed values.\n${nextOutput}`,
+  );
+  assert.match(await evaluate(cdp, `document.body.innerText`), /Precio informativo/);
+  assert.equal(
+    await evaluate(cdp, `document.querySelector('form:has(input[name="materialId"][value="solid"]) input[name="rateEur"]').value`),
+    "40.00",
+  );
+  await screenshot(cdp, pricingScreenshot);
+  pass("admin pricing renders the public reference separately from four material rates");
+
+  await evaluate(cdp, `window.confirm = () => true`);
+  await setInput(cdp, 'form:has(input[name="materialId"][value="solid"]) input[name="rateEur"]', "41.00");
+  await evaluate(cdp, `document.querySelector('form:has(input[name="materialId"][value="solid"])').requestSubmit()`);
+  await waitFor(
+    () => evaluate(cdp, `document.querySelector('form:has(input[name="materialId"][value="solid"]) button[type="submit"]').disabled`),
+    "Material save did not enter a pending state",
+  );
+  await click(cdp, 'form:has(input[name="materialId"][value="solid"]) button[type="submit"]');
+  await waitFor(() => materialRateUpdateRequests === 1, "Material rate RPC was not called once");
+  await waitFor(() => evaluate(cdp, `document.body.innerText.includes("El precio se ha guardado correctamente")`), "Material success state missing");
+  assert.equal(materialRateUpdateRequests, 1);
+  pass("material rate save is pending-safe and one double click cannot create a second change");
+
+  failNextMaterialRateUpdate = true;
+  await setInput(cdp, 'form:has(input[name="materialId"][value="solid"]) input[name="rateEur"]', "42.00");
+  await evaluate(cdp, `document.querySelector('form:has(input[name="materialId"][value="solid"])').requestSubmit()`);
+  await waitFor(() => materialRateUpdateRequests === 2, "Material error RPC was not called once");
+  await waitFor(() => evaluate(cdp, `document.body.innerText.includes("No se ha podido guardar")`), "Material database error was not shown");
+  assert.equal(materialRows.find((row) => row.id === "solid").rate_eur, 41);
+  pass("database errors remain visible and never produce false success or mutate the prior rate");
+
+  await setInput(cdp, 'input[name="priceEurPerKg"]', "26.50");
+  await setInput(cdp, 'input[name="priceDate"]', "2026-11-10");
+  await evaluate(cdp, `document.querySelector('input[name="priceEurPerKg"]').closest("form").requestSubmit()`);
+  await waitFor(
+    () => evaluate(cdp, `document.querySelector('input[name="priceEurPerKg"]').closest("form").querySelector('button[type="submit"]').disabled`),
+    "Public price save did not enter a pending state",
+  );
+  await waitFor(() => publicPriceUpdateRequests === 1, "Public price RPC was not called once");
+  await waitFor(() => evaluate(cdp, `document.body.innerText.includes("26,5 €/kg")`), "Public price preview was not refreshed");
+  assert.equal(publicPriceUpdateRequests, 1);
+  assert.equal(pricingHistory.length, 2);
+  pass("public price and date update independently and both changes appear in the audit history");
+
+  await cdp.send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await screenshot(cdp, pricingMobileScreenshot);
+  assert.equal(await evaluate(cdp, `document.documentElement.scrollWidth - document.documentElement.clientWidth`), 0);
+  pass("admin pricing remains usable at 390px without horizontal page overflow");
+  await cdp.send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+
+  await navigate(cdp, "/");
+  await waitFor(() => evaluate(cdp, `document.querySelector("#price").innerText.includes("820")`), "Calculator did not receive the changed material rate");
+  assert.match(await evaluate(cdp, `document.querySelector('.public-price-chip').innerText`), /26,5\s*€\/kg/);
+  pass("new public visits receive the updated DB-backed material rate and public price without a deploy");
+
+  await navigate(cdp, "/admin");
+
   await evaluate(cdp, `[...document.querySelectorAll("button")].find((button) => button.textContent.includes("Tomar"))?.click()`);
   await waitFor(() => claimRequests === 1, "Admin claim RPC was not called once");
   await waitFor(
@@ -678,6 +864,8 @@ try {
     `Admin application detail or history did not render.\n${nextOutput}`,
   );
   assert.match(await evaluate(cdp, `document.body.innerText`), /historial de estados/i);
+  assert.match(await evaluate(cdp, `document.body.innerText`), /40(?:[,.]00)?\s*€\s*\/\s*kg/);
+  pass("an existing application retains its 40 €/kg historical snapshot after the live rate becomes 41 €/kg");
   pass("admin application detail renders client data and the shared status history");
 
   await cdp.send("Network.setCookie", {
@@ -689,7 +877,7 @@ try {
     sameSite: "Lax",
   });
   await navigate(cdp, "/");
-  await waitFor(() => evaluate(cdp, `document.documentElement.lang === "ru" && document.querySelector("header").innerText.includes("Админ-панель")`), "Russian navigation did not render");
+  await waitFor(() => evaluate(cdp, `document.documentElement.lang === "ru" && document.querySelector(".header-user-menu").textContent.includes("Админ-панель")`), "Russian navigation did not render");
   pass("ES/RU role-aware navigation renders correctly");
 
   await delay(300);
@@ -700,13 +888,25 @@ try {
   );
   assert.deepEqual(unexpectedNetworkFailures, []);
   pass("browser console and application requests have no unexpected warnings or errors");
+  assert.doesNotMatch(
+    nextOutput,
+    /blocking-prerender-current-time|unstable value `(?:Date\.now\(\)|new Date\(\))` while prerendering/,
+  );
+  pass("Next.js prerender logs contain no request-time clock diagnostics");
   process.stdout.write(`SCREENSHOT_DESKTOP=${desktopScreenshot}\n`);
   process.stdout.write(`SCREENSHOT_MOBILE=${mobileScreenshot}\n`);
   process.stdout.write(`SCREENSHOT_ADMIN=${adminScreenshot}\n`);
+  process.stdout.write(`SCREENSHOT_ADMIN_PRICING=${pricingScreenshot}\n`);
+  process.stdout.write(`SCREENSHOT_ADMIN_PRICING_MOBILE=${pricingMobileScreenshot}\n`);
+  process.stdout.write(`SCREENSHOT_USER_MENU=${userMenuScreenshot}\n`);
+  for (const [width, path] of Object.entries(publicPriceScreenshots)) {
+    process.stdout.write(`SCREENSHOT_PUBLIC_PRICE_${width}=${path}\n`);
+  }
 } finally {
   socket?.close();
   stopProcessTree(chromeProcess);
   stopProcessTree(nextProcess);
   await new Promise((resolve) => mock.close(resolve));
-  await rm(chromeProfile, { recursive: true, force: true });
+  await delay(1_000);
+  await rm(chromeProfile, { recursive: true, force: true }).catch(() => {});
 }

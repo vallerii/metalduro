@@ -1,13 +1,19 @@
 import { execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
+import path from "node:path";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 
 const siteUrl = process.env.TEST_SITE_URL || "http://127.0.0.1:3000";
-const statusCommand = process.platform === "win32" ? process.env.ComSpec || "cmd.exe" : "npx";
-const statusArguments = process.platform === "win32"
-  ? ["/d", "/s", "/c", "npx supabase status -o env"]
-  : ["supabase", "status", "-o", "env"];
+const supabaseTestWorkdir = process.env.SUPABASE_TEST_WORKDIR?.trim();
+const statusCommand = process.execPath;
+const statusArguments = [
+  path.join(process.cwd(), "node_modules", "supabase", "dist", "supabase.js"),
+  "status",
+  "-o",
+  "env",
+  ...(supabaseTestWorkdir ? ["--workdir", supabaseTestWorkdir] : []),
+];
 const statusOutput = execFileSync(statusCommand, statusArguments, {
   cwd: process.cwd(),
   encoding: "utf8",
@@ -277,7 +283,7 @@ try {
   const { data: authenticatedUser, error: authenticatedUserError } = await signupClient.auth.getUser();
   if (authenticatedUserError) throw authenticatedUserError;
   assert(authenticatedUser.user?.id === signupData.user.id, "Confirmed user session is invalid.");
-  assert(authenticatedUser.user.user_metadata.auth_next === null, "Transient auth_next metadata was not cleared.");
+  assert(authenticatedUser.user.user_metadata.auth_next == null, "Transient auth_next metadata was not cleared.");
   pass("confirmed client has a valid server-verifiable session");
   pass("confirmation clears transient auth_next metadata");
 

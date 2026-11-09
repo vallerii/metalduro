@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { CSSProperties } from "react";
 import { createCalculatorApplicationAction } from "@/app/actions/calculator";
 import {
@@ -54,18 +54,24 @@ function visitDays(months: string[], days: string[]) {
   });
 }
 
+function subscribeToHydration() {
+  return () => {};
+}
+
 export function Calculator({
   t,
   cityT,
   materials: materialTexts,
   numberLocale,
   copy,
+  materialRates,
   viewerRole = null,
 }: {
   t: Dict["calc"];
   cityT: Dict["city"];
   materials: Dict["materials"];
   numberLocale: string;
+  materialRates: Partial<Record<MaterialId, number>>;
   copy: {
     title: string;
     materials: string[];
@@ -80,6 +86,7 @@ export function Calculator({
   const materials = materialTexts.map((material) => ({
     ...material,
     ...materialMeta[material.id],
+    rate: materialRates[material.id] ?? null,
   }));
   const [step, setStep] = useState(1);
   const [mat, setMat] = useState<MaterialId>("solid");
@@ -98,6 +105,11 @@ export function Calculator({
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [authRequired, setAuthRequired] = useState(false);
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
 
   useEffect(() => {
     const restoreTimer = window.setTimeout(() => {
@@ -129,12 +141,13 @@ export function Calculator({
   const effectiveMethod: Method =
     method === "pickup" && !pickupOk ? "send" : method;
   const material = materials.find((item) => item.id === mat) ?? materials[0];
-  const rate = rateOverrides[mat] ?? material?.rate ?? 0;
-  const price = safeWeight * rate;
+  const rate = rateOverrides[mat] ?? material?.rate ?? null;
+  const pricingAvailable = rate !== null && Number.isFinite(rate) && rate > 0;
+  const price = safeWeight * (rate ?? 0);
   const cityValue = city.trim() || t.noCity;
   const visitOptions = useMemo(
-    () => visitDays(t.months, t.days),
-    [t.months, t.days],
+    () => (hydrated ? visitDays(t.months, t.days) : []),
+    [hydrated, t.months, t.days],
   );
   const euro = (value: number) =>
     `${value.toLocaleString(numberLocale, { maximumFractionDigits: 2 })} €`;
@@ -195,6 +208,10 @@ export function Calculator({
 
   async function submit() {
     if (submitLock.current) return;
+    if (!pricingAvailable) {
+      setError(t.errUnavailable);
+      return;
+    }
     if (!Number.isFinite(safeWeight) || safeWeight < 5 || safeWeight > 100000) {
       setError(t.errWeight);
       return;
@@ -233,7 +250,7 @@ export function Calculator({
         paymentIban: effectiveMethod === "send" ? normalizedIban : "",
         preferredVisitDates: effectiveMethod === "send" ? [] : visits,
         idempotencyKey: requestKey,
-        previewRateEur: rate,
+        previewRateEur: rate ?? 0,
       });
 
       if (result.status === "success") {
@@ -321,8 +338,11 @@ export function Calculator({
             <div className="range-label"><span>5 kg</span><span>100 kg</span></div>
             <div className="price-box">
               <span>{copy.priceLabel}</span>
-              <div className="price-num" id="price">≈ {euro(price)}</div>
+              <div className="price-num" id="price">
+                {pricingAvailable ? `≈ ${euro(price)}` : "—"}
+              </div>
               <div className="price-disclaimer">{copy.disclaimer}</div>
+              {!pricingAvailable ? <p className="calc-error" role="alert">{t.errUnavailable}</p> : null}
             </div>
             <button
               type="button"
@@ -331,7 +351,7 @@ export function Calculator({
                 setError(null);
                 setStep(2);
               }}
-              disabled={safeWeight < 5}
+              disabled={safeWeight < 5 || !pricingAvailable}
             >
               {copy.continue} <span className="arrow">↗</span>
             </button>
@@ -423,7 +443,7 @@ export function Calculator({
               <div><b>{t.matTitle}</b><span>{material.name}</span></div>
               <div><b>{t.placeTitle}</b><span>{cityValue}</span></div>
               <div><b>{t.methodLabel}</b><span>{t.methodNames[effectiveMethod]}</span></div>
-              <div><b>{t.estimate}</b><span>≈ {euro(price)}</span></div>
+              <div><b>{t.estimate}</b><span>{pricingAvailable ? `≈ ${euro(price)}` : "—"}</span></div>
             </div>
             <div className="calc-field-label" style={{ marginTop: 20 }}>{t.contactLabel}</div>
             <input

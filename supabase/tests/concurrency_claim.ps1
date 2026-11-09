@@ -1,8 +1,16 @@
 $ErrorActionPreference = "Stop"
 
-$container = docker ps --filter "name=supabase_db_metalduro" --format "{{.Names}}" | Select-Object -First 1
+$container = if ($env:SUPABASE_TEST_DB_CONTAINER) {
+  $env:SUPABASE_TEST_DB_CONTAINER
+} else {
+  docker ps --format "{{.Names}}" | Where-Object { $_ -eq "supabase_db_metalduro" } | Select-Object -First 1
+}
 if (-not $container) {
   throw "Local Supabase database container is not running."
+}
+$runningContainer = docker ps --format "{{.Names}}" | Where-Object { $_ -eq $container } | Select-Object -First 1
+if (-not $runningContainer) {
+  throw "Configured Supabase database container is not running: $container"
 }
 
 $applicationId = "50000000-0000-0000-0000-000000000001"

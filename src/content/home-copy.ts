@@ -2,20 +2,24 @@
 // Калькулятор, шапка и подвал берут тексты из словарей (src/content/dict).
 
 const es = {
-  heroTitle1: "Tu metal duro.",
-  heroTitle2: "Su valor real.",
-  heroSub: "Compramos chatarra de metal duro en toda España.",
+  heroTitle1: "Metal duro.",
+  heroTitle2: "Precio en España.",
+  heroSub: "Compramos chatarra limpia de widia y carburo de tungsteno en toda España.",
   heroPoints: [
-    "Envío a nuestro cargo",
-    "Recogida desde 50 kg",
-    "Puedes traerlo a Barcelona, con cita previa",
+    "Solo carburo limpio, sin acero ni HSS",
+    "Recogida en toda España desde 50 kg",
+    "Evaluación rápida antes del envío",
   ],
-  proof: "5,0 / 5 en Google · 34 reseñas",
+  proof: "Toda España · Particulares y empresas",
+  publicPrice: {
+    label: "Precio público informativo",
+    note: "La tarifa final depende del tipo de material y de su revisión.",
+  },
 
   manifesto: ["De piezas que ya no utilizas", " a un material que todavía tiene mucho valor. ", "Nosotros nos ocupamos del resto."],
 
   materialsTitle1: "Qué compramos.",
-  materialsText: "Trabajamos con metal duro y wolframio. Sin listados interminables: identifica tu material de un vistazo.",
+  materialsText: "Compramos chatarra limpia de carburo de tungsteno: sin portaherramientas de acero y sin insertos soldados.",
   materialCards: [
     { title: "Plaquitas de metal duro", tag: "Compramos ↗" },
     { title: "Brocas y fresas enterizas", tag: "Compramos ↗" },
@@ -23,7 +27,7 @@ const es = {
     { title: "Wolframio puro", tag: "Consultar composición" },
   ],
   noBuyLabel: "No compramos",
-  noBuyChips: ["HSS / acero rápido", "Cobre y cables", "Acero común", "Metal duro soldado", "Cermet y cerámica", "Chatarra mezclada / sucia"],
+  noBuyChips: ["HSS / acero rápido", "Aluminio, cobre y latón", "Acero y fundición", "Carburo soldado", "Cermet y cerámica", "Chatarra mezclada / sucia"],
 
   speedWords: ["RECIBIMOS.", "REVISAMOS.", "PAGAMOS."],
   speedTitle: "De media hasta el pago",
@@ -160,20 +164,24 @@ const es = {
 export type HomeCopy = typeof es;
 
 const ru: HomeCopy = {
-  heroTitle1: "Ваш твёрдый сплав.",
-  heroTitle2: "Его реальная ценность.",
-  heroSub: "Скупаем лом твёрдого сплава по всей Испании.",
+  heroTitle1: "Твёрдый сплав.",
+  heroTitle2: "Цена в Испании.",
+  heroSub: "Покупаем чистый лом видиа и карбида вольфрама по всей Испании.",
   heroPoints: [
-    "Доставка за наш счёт",
-    "Самовывоз от 50 кг",
-    "Можно привезти в Барселону, по предварительной записи",
+    "Только чистый карбид, без стали и HSS",
+    "Самовывоз по всей Испании от 50 кг",
+    "Быстрая оценка перед отправкой",
   ],
-  proof: "5,0 / 5 в Google · 34 отзыва",
+  proof: "Вся Испания · Частные лица и компании",
+  publicPrice: {
+    label: "Публичная справочная цена",
+    note: "Итоговая ставка зависит от типа материала и результатов проверки.",
+  },
 
   manifesto: ["От ненужных деталей", " к материалу, который всё ещё многого стоит. ", "Остальное берём на себя."],
 
   materialsTitle1: "Что покупаем.",
-  materialsText: "Работаем с твёрдым сплавом и вольфрамом. Без бесконечных списков: узнайте свой материал с первого взгляда.",
+  materialsText: "Покупаем чистый лом карбида вольфрама: без стальных держателей и напаянных пластин.",
   materialCards: [
     { title: "Пластины из твёрдого сплава", tag: "Покупаем ↗" },
     { title: "Сверла и цельные фрезы", tag: "Покупаем ↗" },
@@ -181,7 +189,7 @@ const ru: HomeCopy = {
     { title: "Чистый вольфрам", tag: "Уточняем состав" },
   ],
   noBuyLabel: "Не покупаем",
-  noBuyChips: ["HSS / быстрорежущая сталь", "Медь и кабели", "Обычная сталь", "Твёрдый сплав с пайкой", "Керметы и керамика", "Смешанный или грязный лом"],
+  noBuyChips: ["HSS / быстрорежущая сталь", "Алюминий, медь и латунь", "Сталь и чугун", "Напаянный карбид", "Керметы и керамика", "Смешанный или грязный лом"],
 
   speedWords: ["ПРИНИМАЕМ.", "ПРОВЕРЯЕМ.", "ПЛАТИМ."],
   speedTitle: "В среднем до оплаты",

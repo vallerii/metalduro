@@ -26,6 +26,10 @@ payment countdown.
 snapshots in status history, cross-admin read access, and the prohibition on reclaiming,
 reassigning, advancing, or rewriting another manager's work.
 
+`database/008_pricing_management.sql` verifies admin-only rate changes, immutable audit
+history, public price visibility, two-decimal validation, idempotent repeated saves, and
+preservation of historical application snapshots.
+
 The migration implements claiming as one conditional `UPDATE`:
 
 ```sql

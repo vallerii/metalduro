@@ -21,6 +21,8 @@
     "test:auth:recovery-browser": "node scripts/test-auth-recovery-browser.mjs",
     "test:calculator:application": "node --no-warnings --conditions=react-server --experimental-strip-types scripts/test-calculator-application.mjs",
     "test:calculator:draft": "node --no-warnings --experimental-strip-types scripts/test-calculator-draft.mjs",
+    "test:pricing": "node --no-warnings --experimental-strip-types scripts/test-pricing-management.mjs",
+    "test:pricing:integration": "node scripts/test-pricing-integration.mjs",
     "test:calculator:account-browser": "node scripts/test-account-application-browser.mjs",
     "test:staging:cleanup-plan": "node scripts/test-staging-cleanup-plan.mjs"
   },

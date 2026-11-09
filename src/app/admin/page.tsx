@@ -5,6 +5,7 @@ import { AdminApplicationsList } from "@/components/admin/AdminApplicationsList"
 import { AdminDashboardNav } from "@/components/admin/AdminDashboardNav";
 import { AdminFilters } from "@/components/admin/AdminFilters";
 import { AdminPagination } from "@/components/admin/AdminPagination";
+import { AdminSectionNav } from "@/components/admin/AdminSectionNav";
 import { SupabaseSetupNotice } from "@/components/auth/SupabaseSetupNotice";
 import { applicationStatuses, getAccountCopy, type ApplicationStatus } from "@/content/account";
 import { getAdminCopy, type AdminSort, type AdminView } from "@/content/admin";
@@ -45,6 +46,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         <div className="flex items-center gap-3"><span className="hidden max-w-72 truncate text-[13px] text-muted sm:block">{copy.dashboard.signedInAs}: {dashboard.profile.email}</span><form action={signOutAction}><button className="rounded-full border border-white/20 px-4 py-2.5 text-[13px] font-semibold hover:border-accent">{authCopy.common.signOut}</button></form></div>
       </div>
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_0.65fr] lg:items-end"><h1 className="display text-[clamp(44px,6vw,84px)]">{copy.dashboard.title}</h1><p className="text-[18px] leading-relaxed text-muted">{copy.dashboard.lead}</p></div>
+      <AdminSectionNav active="applications" applicationsLabel={copy.navigation.applications} pricingLabel={copy.navigation.pricing} />
       {notice === "claimed" ? <p className="mt-8 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 px-5 py-4 text-emerald-200" role="status">{copy.dashboard.noticeClaimed}</p> : null}
       <AdminDashboardNav active={view} counts={dashboard.counts} copy={copy} />
       <AdminFilters view={view} status={status} sort={sort} query={query} copy={copy} accountCopy={accountCopy} />

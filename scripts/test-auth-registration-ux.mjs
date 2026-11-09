@@ -73,6 +73,32 @@ execFileSync(
 );
 pass("safe return route remains internal");
 
+const configModuleUrl = pathToFileURL(join(process.cwd(), "src/lib/supabase/config.ts")).href;
+execFileSync(
+  process.execPath,
+  [
+    "--no-warnings",
+    "--experimental-strip-types",
+    "--input-type=module",
+    "--eval",
+    `import { getSiteUrl, SiteUrlConfigurationError } from ${JSON.stringify(configModuleUrl)};
+     process.env.NODE_ENV = "production";
+     delete process.env.VERCEL;
+     delete process.env.NEXT_PUBLIC_SITE_URL;
+     try { getSiteUrl(); process.exit(1); } catch (error) { if (!(error instanceof SiteUrlConfigurationError)) process.exit(2); }
+     process.env.NEXT_PUBLIC_SITE_URL = "not-a-url";
+     try { getSiteUrl(); process.exit(3); } catch (error) { if (!(error instanceof SiteUrlConfigurationError)) process.exit(4); }
+     process.env.NEXT_PUBLIC_SITE_URL = "http://localhost:3000";
+     if (getSiteUrl() !== "http://localhost:3000") process.exit(5);
+     process.env.VERCEL = "1";
+     try { getSiteUrl(); process.exit(6); } catch (error) { if (!(error instanceof SiteUrlConfigurationError)) process.exit(7); }
+     process.env.NEXT_PUBLIC_SITE_URL = "https://metalduro-git-feature-client-admin-cabinets-agenturro.vercel.app/path";
+     if (getSiteUrl() !== "https://metalduro-git-feature-client-admin-cabinets-agenturro.vercel.app") process.exit(8);`,
+  ],
+  { stdio: "pipe" },
+);
+pass("deployed Auth redirects fail closed without a valid site URL and accept the exact Preview origin");
+
 const componentPath = join(process.cwd(), "src/components/auth/RegistrationSuccess.tsx");
 const compiledPath = join(process.cwd(), ".next/registration-success-test.mjs");
 const componentSource = await readFile(componentPath, "utf8");

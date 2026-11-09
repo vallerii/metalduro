@@ -4,8 +4,14 @@ import { setTimeout as delay } from "node:timers/promises";
 import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 
-const statusCommand = process.platform === "win32" ? process.env.ComSpec || "cmd.exe" : "npx";
-const statusArguments = process.platform === "win32" ? ["/d", "/s", "/c", "npx supabase status -o env"] : ["supabase", "status", "-o", "env"];
+const supabaseTestWorkdir = process.env.SUPABASE_TEST_WORKDIR?.trim();
+const configuredDbContainer = process.env.SUPABASE_TEST_DB_CONTAINER?.trim();
+if (supabaseTestWorkdir && !configuredDbContainer) {
+  throw new Error("SUPABASE_TEST_DB_CONTAINER is required with an isolated Supabase workdir.");
+}
+const testDbContainer = configuredDbContainer || "supabase_db_metalduro";
+const statusCommand = process.execPath;
+const statusArguments = [path.join(process.cwd(), "node_modules", "supabase", "dist", "supabase.js"), "status", "-o", "env", ...(supabaseTestWorkdir ? ["--workdir", supabaseTestWorkdir] : [])];
 const statusOutput = execFileSync(statusCommand, statusArguments, { cwd: process.cwd(), encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
 const localEnvironment = Object.fromEntries(statusOutput.split(/\r?\n/).map((line) => line.match(/^([A-Z0-9_]+)=(.*)$/)).filter(Boolean).map((match) => {
   const value = match[2].trim();
@@ -149,7 +155,7 @@ async function claimAndMoveToPayment(applicationId, client, admin) {
 function makePaymentOverdue(applicationId) {
   if (!/^[0-9a-f-]{36}$/i.test(applicationId)) throw new Error("Invalid test application id.");
   const sql = `begin; alter table public.applications disable trigger applications_enforce_transition; update public.applications set payment_started_at = statement_timestamp() - interval '3 hours', payment_due_at = statement_timestamp() - interval '1 hour' where id = '${applicationId}'::uuid; alter table public.applications enable trigger applications_enforce_transition; commit;`;
-  execFileSync("docker", ["exec", "supabase_db_metalduro", "psql", "-U", "postgres", "-d", "postgres", "-v", "ON_ERROR_STOP=1", "-c", sql], { stdio: ["ignore", "pipe", "pipe"] });
+  execFileSync("docker", ["exec", testDbContainer, "psql", "-U", "postgres", "-d", "postgres", "-v", "ON_ERROR_STOP=1", "-c", sql], { stdio: ["ignore", "pipe", "pipe"] });
 }
 
 async function cleanup() {

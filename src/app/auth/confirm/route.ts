@@ -5,7 +5,16 @@ import { getSiteUrl, isSupabaseConfigured } from "@/lib/supabase/config";
 import { safeNextPath } from "@/lib/safe-next-path";
 
 export async function GET(request: NextRequest) {
-  const redirectUrl = new URL("/auth/login?error=confirmation_failed", getSiteUrl());
+  let siteUrl: string;
+  try {
+    siteUrl = getSiteUrl();
+  } catch {
+    return NextResponse.json(
+      { error: "Authentication callback is not configured." },
+      { status: 500 },
+    );
+  }
+  const redirectUrl = new URL("/auth/login?error=confirmation_failed", siteUrl);
 
   if (!isSupabaseConfigured()) return NextResponse.redirect(redirectUrl);
 
@@ -33,6 +42,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  const successUrl = new URL(nextPath, getSiteUrl());
+  const successUrl = new URL(nextPath, siteUrl);
   return NextResponse.redirect(successUrl);
 }

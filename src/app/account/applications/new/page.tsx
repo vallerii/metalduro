@@ -8,6 +8,7 @@ import { homeCopy } from "@/content/home-copy";
 import { getT } from "@/i18n/server";
 import { requireUser } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { getPublicPricingSnapshot } from "@/lib/pricing";
 
 export const instant = false;
 
@@ -27,6 +28,7 @@ export default async function NewApplicationPage() {
   if (auth.profile.role !== "client") {
     redirect("/account?error=client_required");
   }
+  const pricing = await getPublicPricingSnapshot();
 
   return (
     <div className="ref-home">
@@ -58,6 +60,7 @@ export default async function NewApplicationPage() {
             materials={t.materials}
             numberLocale={t.numberLocale}
             copy={homeCopy[locale].calc}
+            materialRates={pricing.materialRates}
             viewerRole={auth.profile.role}
           />
         </div>

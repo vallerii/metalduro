@@ -6,6 +6,7 @@ import { getAuthCopy } from "@/content/auth";
 import { getLocale } from "@/i18n/server";
 import {
   getSiteUrl,
+  SiteUrlConfigurationError,
   SupabaseConfigurationError,
 } from "@/lib/supabase/config";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -26,7 +27,7 @@ async function actionContext() {
 }
 
 function configurationError(error: unknown, message: string): AuthActionState | null {
-  if (error instanceof SupabaseConfigurationError) {
+  if (error instanceof SupabaseConfigurationError || error instanceof SiteUrlConfigurationError) {
     return { status: "error", message };
   }
   return null;
@@ -104,13 +105,23 @@ export async function signUpAction(
     };
   }
 
+  let siteUrl;
+  try {
+    siteUrl = getSiteUrl();
+  } catch (error) {
+    return configurationError(error, copy.messages.configMissing) ?? {
+      status: "error",
+      message: copy.messages.genericError,
+    };
+  }
+
   const { error } = await registerClient(supabase.auth, {
     email: parsed.data.email,
     password: parsed.data.password,
     displayName: parsed.data.displayName,
     locale,
     nextPath,
-    siteUrl: getSiteUrl(),
+    siteUrl,
   });
 
   if (error) return { status: "error", message: copy.messages.genericError };
@@ -141,7 +152,17 @@ export async function forgotPasswordAction(
     };
   }
 
-  const { error } = await requestPasswordRecovery(supabase.auth, parsed.data, getSiteUrl());
+  let siteUrl;
+  try {
+    siteUrl = getSiteUrl();
+  } catch (error) {
+    return configurationError(error, copy.messages.configMissing) ?? {
+      status: "error",
+      message: copy.messages.genericError,
+    };
+  }
+
+  const { error } = await requestPasswordRecovery(supabase.auth, parsed.data, siteUrl);
   if (error) return { status: "error", message: copy.messages.genericError };
 
   return { status: "success", message: copy.messages.recoverySent };

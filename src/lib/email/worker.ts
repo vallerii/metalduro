@@ -9,6 +9,7 @@ import {
 } from "./providers";
 import { renderNotificationEmail } from "./templates";
 import { NOTIFICATION_EVENT_TYPES, type EmailProvider, type NotificationJob } from "./types";
+import { getSiteUrl } from "@/lib/supabase/config";
 
 export type NotificationWorkerResult = {
   overdueEnqueued: number;
@@ -66,7 +67,7 @@ export async function runNotificationWorker(options?: { batchSize?: number; prov
   assertEmailDeliveryTarget(deliveryPolicy, process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || "");
   const provider = options?.provider || createEmailProvider();
   const supabase = getWorkerSupabaseClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000";
+  const siteUrl = getSiteUrl();
   const configuredBatch = options?.batchSize ?? Number(process.env.EMAIL_WORKER_BATCH_SIZE) ?? 10;
   const batchSize = Math.min(Math.max(Number(configuredBatch) || 10, 1), 50);
   const result: NotificationWorkerResult = { overdueEnqueued: 0, claimed: 0, sent: 0, retried: 0, failed: 0, cancelled: 0, leaseLost: 0 };
