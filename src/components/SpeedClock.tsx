@@ -17,8 +17,8 @@ export function SpeedClock({ label }: { label: string }) {
     const el = ref.current;
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setM(TOTAL_MIN);
-      return;
+      const reducedMotionRaf = requestAnimationFrame(() => setM(TOTAL_MIN));
+      return () => cancelAnimationFrame(reducedMotionRaf);
     }
     let raf = 0;
     const run = () => {

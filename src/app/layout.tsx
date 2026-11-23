@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const { t } = await getT();
   return (
-    <html lang={t.htmlLang}>
+    <html lang={t.htmlLang} data-scroll-behavior="smooth">
       <body className="flex min-h-screen flex-col">
         <Header />
         <div className="flex-1">{children}</div>

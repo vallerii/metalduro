@@ -11,6 +11,10 @@ const es = {
     "Puedes traerlo a Barcelona, con cita previa",
   ],
   proof: "5,0 / 5 en Google · 34 reseñas",
+  publicPrice: {
+    label: "Precio público informativo",
+    note: "La tarifa final depende del tipo de material y de su revisión.",
+  },
 
   manifesto: ["De piezas que ya no utilizas", " a un material que todavía tiene mucho valor. ", "Nosotros nos ocupamos del resto."],
 
@@ -106,6 +110,14 @@ const es = {
     { label: "Guías", href: "/#blog" },
   ],
   navCalc: "Calcular",
+  navAuth: {
+    menu: "Cuenta",
+    login: "Iniciar sesión",
+    register: "Registrarse",
+    account: "Mi cuenta",
+    admin: "Panel de administración",
+    signOut: "Cerrar sesión",
+  },
   footer: {
     cols: [
       { title: "MATERIALES", links: [
@@ -161,6 +173,10 @@ const ru: HomeCopy = {
     "Можно привезти в Барселону, по предварительной записи",
   ],
   proof: "5,0 / 5 в Google · 34 отзыва",
+  publicPrice: {
+    label: "Публичная справочная цена",
+    note: "Итоговая ставка зависит от типа материала и результатов проверки.",
+  },
 
   manifesto: ["От ненужных деталей", " к материалу, который всё ещё многого стоит. ", "Остальное берём на себя."],
 
@@ -256,6 +272,14 @@ const ru: HomeCopy = {
     { label: "Гайды", href: "/#blog" },
   ],
   navCalc: "Рассчитать",
+  navAuth: {
+    menu: "Аккаунт",
+    login: "Войти",
+    register: "Регистрация",
+    account: "Мой кабинет",
+    admin: "Админ-панель",
+    signOut: "Выйти",
+  },
   footer: {
     cols: [
       { title: "МАТЕРИАЛЫ", links: [
