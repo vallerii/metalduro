@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import "./home-ref.css";
 import { Calculator } from "@/components/Calculator";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { SpeedClock } from "@/components/SpeedClock";
