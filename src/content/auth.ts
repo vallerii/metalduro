@@ -102,7 +102,7 @@ const es: AuthCopy = {
   login: {
     kicker: "Acceso",
     title: "Entrar en Metalduro",
-    lead: "Accede con el correo y la contraseña de tu cuenta.",
+    lead: "Entra con tu correo y tu contraseña.",
     submit: "Entrar",
     register: "Crear una cuenta de cliente",
     forgot: "He olvidado la contraseña",
@@ -124,11 +124,11 @@ const es: AuthCopy = {
   },
   forgot: {
     kicker: "Recuperación",
-    title: "Restablecer contraseña",
-    lead: "Si existe una cuenta, enviaremos un enlace seguro al correo indicado.",
+    title: "Recuperar contraseña",
+    lead: "Escribe tu correo y, si tienes cuenta, te enviaremos un enlace para crear una contraseña nueva.",
     submit: "Enviar enlace",
     pending: "Enviando enlace...",
-    login: "Volver al acceso",
+    login: "Volver a iniciar sesión",
     success: {
       title: "¡Revisa tu correo!",
       instruction:
@@ -139,8 +139,8 @@ const es: AuthCopy = {
   },
   update: {
     kicker: "Nueva contraseña",
-    title: "Actualizar contraseña",
-    lead: "Introduce una nueva contraseña para tu cuenta.",
+    title: "Crea una contraseña nueva",
+    lead: "Elige la contraseña que usarás a partir de ahora.",
     submit: "Guardar contraseña",
   },
   account: {
@@ -172,9 +172,9 @@ const es: AuthCopy = {
     displayNameLength: "El nombre debe tener entre 2 y 120 caracteres.",
     invalidCredentials: "Correo o contraseña incorrectos.",
     signupSuccess: "Revisa tu correo y confirma la cuenta antes de entrar.",
-    recoverySent: "Si la cuenta existe, recibirás un enlace de recuperación.",
+    recoverySent: "Si tienes cuenta con este correo, te llegará un enlace para recuperar la contraseña.",
     genericError: "No se ha podido completar la operación. Inténtalo de nuevo.",
-    missingSession: "El enlace ha caducado o la sesión no es válida.",
+    missingSession: "El enlace ha caducado o ya no es válido. Pide uno nuevo.",
     configMissing: "Supabase no está configurado en este entorno.",
   },
 };

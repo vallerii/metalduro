@@ -8,12 +8,12 @@ const es = {
   heroPoints: [
     "Envío a nuestro cargo",
     "Recogida desde 50 kg",
-    "Puedes traerlo a Barcelona, con cita previa",
+    "Puedes traerlo a Barcelona con cita previa",
   ],
   proof: "5,0 / 5 en Google · 34 reseñas",
   publicPrice: {
     label: "Precio actual",
-    note: "El importe final se confirma tras la revisión.",
+    note: "El importe final te lo confirmamos tras revisar el material.",
   },
 
   manifesto: ["De piezas que ya no utilizas", " a un material que todavía tiene mucho valor. ", "Nosotros nos ocupamos del resto."],
@@ -31,7 +31,7 @@ const es = {
 
   speedWords: ["RECIBIMOS.", "REVISAMOS.", "PAGAMOS."],
   speedTitle: "De media hasta el pago",
-  speedText: "Transferencia bancaria el mismo día, tras recibir y revisar tu material. También puedes entregarlo personalmente con cita previa.",
+  speedText: "En cuanto recibimos y revisamos tu material, te hacemos la transferencia ese mismo día: el valor del metal más los gastos de envío. También puedes traérnoslo en persona con cita previa.",
   speedMini: "Particulares y empresas",
   speedCaption: "HORAS · DE MEDIA",
 
@@ -56,17 +56,17 @@ const es = {
     { title: "Embálalo.", text: "Te explicamos cómo preparar el material para transportarlo con seguridad." },
     { title: "Envíalo.", text: "Organizamos el envío o la recogida según el caso." },
     { title: "Lo revisamos.", text: "Registramos la recepción, pesamos y verificamos el contenido." },
-    { title: "Te pagamos.", text: "Transferencia bancaria tras la revisión." },
+    { title: "Te pagamos.", text: "Una vez recibido y revisado, te transferimos el valor del metal y te abonamos los gastos de envío." },
   ],
 
   packTitle1: "Bien embalado.",
   packTitle2: "Bien recibido.",
-  packText: "El metal duro es pesado y tiene bordes cortantes. Protegerlo adecuadamente ayuda a que llegue seguro y sin pérdidas.",
+  packText: "El metal duro pesa mucho y corta. Si lo embalas bien, llega entero y no se pierde nada por el camino.",
   packTips: [
-    "Introduce el material en un envase interior de plástico resistente.",
-    "Coloca ese envase en una caja de transporte y fíjalo bien.",
-    "Fotografía el peso neto del material antes de cerrar.",
-    "Fotografía el paquete terminado antes de enviarlo.",
+    "Mete el material en un recipiente de plástico resistente.",
+    "Pon ese recipiente dentro de una caja y sujétalo bien para que no se mueva.",
+    "Haz una foto del material en la báscula antes de cerrar la caja.",
+    "Haz una foto del paquete ya cerrado antes de enviarlo.",
   ],
   packCta: "Ver instrucciones completas",
   videoTitle: "Cómo embalar chatarra de metal duro",
@@ -89,7 +89,7 @@ const es = {
   blogCards: [
     { title: "Cómo identificar el metal duro", slug: "como-identificar-metal-duro" },
     { title: "Cómo embalar chatarra de metal duro", slug: "como-embalar-chatarra-metal-duro" },
-    { title: "Por qué el tungsteno se recicla", slug: "que-es-el-carburo-de-tungsteno" },
+    { title: "Por qué se recicla el tungsteno", slug: "que-es-el-carburo-de-tungsteno" },
   ],
   blogRead: "Leer artículo",
 
@@ -98,9 +98,9 @@ const es = {
   faqText: "Preguntas frecuentes sobre materiales, precios y pagos.",
   faq: [
     { q: "¿Qué materiales compráis?", a: "Plaquitas, brocas y fresas enterizas, chatarra de metal duro y determinadas formas de wolframio. La composición se verifica durante la revisión." },
-    { q: "¿Cómo se calcula el precio?", a: "Pagamos un precio único por kilo para todo el metal duro: plaquitas, brocas, fresas y chatarra. El importe es el peso por el precio; el definitivo se confirma tras pesar y revisar el material." },
-    { q: "¿Podéis recoger mi material?", a: "La recogida está disponible a partir de 50 kg. También puedes enviarlo o traerlo a Barcelona con cita previa." },
-    { q: "¿Cuándo recibo el pago?", a: "El pago se realiza por transferencia tras recibir y revisar el material. Según la información publicada, la media habitual es inferior a dos horas." },
+    { q: "¿Cómo se calcula el precio?", a: "Pagamos lo mismo por kilo por todo el metal duro: plaquitas, brocas, fresas o chatarra. El importe es el peso por el precio del kilo, y la cifra final te la confirmamos cuando lo hemos pesado y revisado." },
+    { q: "¿Podéis recoger mi material?", a: "Sí, a partir de 50 kg. Si tienes menos, puedes enviárnoslo o traerlo a Barcelona con cita previa." },
+    { q: "¿Cuándo recibo el pago?", a: "En cuanto recibimos y revisamos el material, te transferimos lo que vale y te abonamos los gastos de envío. De media, el pago llega en menos de dos horas." },
   ],
   navItems: [
     { label: "Materiales", href: "/#materiales" },
@@ -142,7 +142,7 @@ const es = {
       ] },
       { title: "METALDURO", links: [
         { label: "Sobre nosotros", href: "/#blog" },
-        { label: "Contactar", href: "/#calculator" },
+        { label: "Contacto", href: "/#calculator" },
         { label: "Aviso legal", href: "/legal/aviso-legal" },
         { label: "Política de privacidad", href: "/legal/privacidad" },
       ] },
@@ -156,7 +156,7 @@ const es = {
     materials: ["Plaquitas de metal duro", "Brocas / fresas", "Chatarra de metal duro", "Todo mezclado / otro"],
     weight: "Peso aproximado",
     priceLabel: "Precio orientativo de tu material",
-    disclaimer: "Estimación orientativa; el importe final se confirma tras pesar y revisar el material.",
+    disclaimer: "Es un cálculo orientativo: el importe final te lo confirmamos tras pesar y revisar el material.",
     continue: "Continuar",
   },
 };
@@ -193,7 +193,7 @@ const ru: HomeCopy = {
 
   speedWords: ["ПРИНИМАЕМ.", "ПРОВЕРЯЕМ.", "ПЛАТИМ."],
   speedTitle: "В среднем до оплаты",
-  speedText: "Банковский перевод в тот же день, после получения и проверки материала. Также можно передать его лично по предварительной записи.",
+  speedText: "После получения и проверки материала в тот же день переводим сумму за металл и стоимость доставки. Также можно передать его лично по предварительной записи.",
   speedMini: "Частные лица и компании",
   speedCaption: "ЧАСОВ · В СРЕДНЕМ",
 
@@ -218,7 +218,7 @@ const ru: HomeCopy = {
     { title: "Упакуйте.", text: "Расскажем, как подготовить материал к безопасной перевозке." },
     { title: "Отправьте.", text: "Организуем отправку или самовывоз в зависимости от случая." },
     { title: "Мы проверяем.", text: "Регистрируем получение, взвешиваем и проверяем содержимое." },
-    { title: "Вы получаете оплату.", text: "Банковский перевод после проверки." },
+    { title: "Вы получаете оплату.", text: "После получения и проверки материала переводим сумму за металл и стоимость доставки." },
   ],
 
   packTitle1: "Правильно упаковано.",
@@ -262,7 +262,7 @@ const ru: HomeCopy = {
     { q: "Какие материалы вы покупаете?", a: "Пластины, сверла и цельные фрезы, лом твёрдого сплава и отдельные формы вольфрама. Состав проверяется при осмотре." },
     { q: "Как рассчитывается цена?", a: "Мы платим одну цену за килограмм для всего твёрдого сплава: пластин, свёрл, фрез и лома. Сумма — это вес, умноженный на цену; окончательную подтверждаем после взвешивания и проверки." },
     { q: "Вы можете забрать мой материал?", a: "Самовывоз доступен от 50 кг. Также можно отправить или привезти в Барселону по предварительной записи." },
-    { q: "Когда я получу оплату?", a: "Оплата производится переводом после получения и проверки материала. По опубликованной информации, обычно это меньше двух часов." },
+    { q: "Когда я получу оплату?", a: "После получения и проверки материала переводим на ваш счёт сумму за металл и возмещаем стоимость доставки. По опубликованной информации, обычно это меньше двух часов." },
   ],
   navItems: [
     { label: "Материалы", href: "/#materiales" },

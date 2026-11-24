@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Calculator } from "@/components/Calculator";
+import { PublicPriceCard } from "@/components/PublicPriceCard";
 import { SupabaseSetupNotice } from "@/components/auth/SupabaseSetupNotice";
 import { getAccountCopy } from "@/content/account";
 import { getAuthCopy } from "@/content/auth";
@@ -43,13 +44,32 @@ export default async function NewApplicationPage() {
         </Link>
 
         <div className="mt-8 grid gap-10 lg:grid-cols-[1.04fr_0.86fr] lg:gap-16">
-          <div className="hero-copy lg:sticky lg:top-32 lg:self-start">
+          {/* Column stretches to the calculator height; the price card sits at its bottom. */}
+          <div className="hero-copy flex flex-col">
             <h1>
               {copy.create.title}
+              <br />
+              <span className="accent-text">{copy.create.titleAccent}</span>
             </h1>
-            <p style={{ fontSize: "clamp(17px,2vw,22px)", maxWidth: 610, color: "#e6e6e8" }}>
-              {copy.create.lead}
-            </p>
+            <div className="hero-bullets">
+              {homeCopy[locale].heroPoints.map((point) => (
+                <div key={point}>
+                  <span className="check">✓</span>
+                  {point}
+                </div>
+              ))}
+            </div>
+            {pricing.publicPrice ? (
+              <div className="pt-10 lg:mt-auto">
+                <PublicPriceCard
+                  price={pricing.publicPrice}
+                  locale={locale}
+                  variant="hero"
+                  label={homeCopy[locale].publicPrice.label}
+                  note={homeCopy[locale].publicPrice.note}
+                />
+              </div>
+            ) : null}
           </div>
 
           <Calculator
