@@ -44,6 +44,19 @@ function publicPriceFromMaterials(materials: MaterialPricing[]): PublicPrice | n
   };
 }
 
+type PublicPriceRow = {
+  price_eur_per_kg: number | string;
+  price_date: string;
+  updated_at: string;
+};
+
+function publicPriceFromRow(row: PublicPriceRow | null): PublicPrice | null {
+  if (!row) return null;
+  const priceEurPerKg = Number(row.price_eur_per_kg);
+  if (!Number.isFinite(priceEurPerKg) || priceEurPerKg <= 0) return null;
+  return { priceEurPerKg, priceDate: row.price_date, updatedAt: row.updated_at };
+}
+
 export const getPublicPricingSnapshot = cache(async (): Promise<PricingSnapshot> => {
   if (!isSupabaseConfigured()) {
     return { publicPrice: null, materials: [], materialRates: {} };
@@ -54,12 +67,18 @@ export const getPublicPricingSnapshot = cache(async (): Promise<PricingSnapshot>
   // this read within the current React render via cache().
   await connection();
   const supabase = await createServerSupabaseClient();
-  const materialsResult = await
+  const [materialsResult, priceResult] = await Promise.all([
     supabase
       .from("materials")
       .select("id,name,rate_eur,active,updated_at")
       .eq("active", true)
-      .order("id");
+      .order("id"),
+    supabase
+      .from("site_public_pricing")
+      .select("price_eur_per_kg,price_date,updated_at")
+      .eq("id", "default")
+      .maybeSingle(),
+  ]);
 
   const materials = materialsResult.error
     ? []
@@ -71,9 +90,9 @@ export const getPublicPricingSnapshot = cache(async (): Promise<PricingSnapshot>
   ) as Partial<Record<MaterialId, number>>;
 
   return {
-    // The headline price is derived from the admin-managed material rates so the
-    // header, hero and calculator always show the same source of truth.
-    publicPrice: publicPriceFromMaterials(materials),
+    // One price for all carbide: the admin edits site_public_pricing and the
+    // RPC keeps every materials.rate_eur equal to it.
+    publicPrice: publicPriceFromRow(priceResult.data) ?? publicPriceFromMaterials(materials),
     materials,
     materialRates,
   };

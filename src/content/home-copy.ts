@@ -12,8 +12,8 @@ const es = {
   ],
   proof: "5,0 / 5 en Google · 34 reseñas",
   publicPrice: {
-    label: "Precio máximo actual",
-    note: "La tarifa final depende del tipo de material y de su revisión.",
+    label: "Precio actual",
+    note: "Mismo precio para todo el metal duro. El importe final se confirma tras la revisión.",
   },
 
   manifesto: ["De piezas que ya no utilizas", " a un material que todavía tiene mucho valor. ", "Nosotros nos ocupamos del resto."],
@@ -98,7 +98,7 @@ const es = {
   faqText: "Preguntas frecuentes sobre materiales, precios y pagos.",
   faq: [
     { q: "¿Qué materiales compráis?", a: "Plaquitas, brocas y fresas enterizas, chatarra de metal duro y determinadas formas de wolframio. La composición se verifica durante la revisión." },
-    { q: "¿Cómo se calcula el precio?", a: "Depende del tipo de material, el peso y su composición. El cálculo inicial es orientativo; el importe definitivo se confirma después de revisarlo." },
+    { q: "¿Cómo se calcula el precio?", a: "Pagamos un precio único por kilo para todo el metal duro: plaquitas, brocas, fresas y chatarra. El importe es el peso por el precio; el definitivo se confirma tras pesar y revisar el material." },
     { q: "¿Podéis recoger mi material?", a: "La recogida está disponible a partir de 50 kg. También puedes enviarlo o traerlo a Barcelona con cita previa." },
     { q: "¿Cuándo recibo el pago?", a: "El pago se realiza por transferencia tras recibir y revisar el material. Según la información publicada, la media habitual es inferior a dos horas." },
   ],
@@ -156,7 +156,7 @@ const es = {
     materials: ["Plaquitas de metal duro", "Brocas / fresas", "Chatarra de metal duro", "Todo mezclado / otro"],
     weight: "Peso aproximado",
     priceLabel: "Precio orientativo de tu material",
-    disclaimer: "Estimación visual para este prototipo; el precio final depende del material y su revisión.",
+    disclaimer: "Estimación orientativa; el importe final se confirma tras pesar y revisar el material.",
     continue: "Continuar",
   },
 };
@@ -174,8 +174,8 @@ const ru: HomeCopy = {
   ],
   proof: "5,0 / 5 в Google · 34 отзыва",
   publicPrice: {
-    label: "Максимальная ставка сейчас",
-    note: "Итоговая ставка зависит от типа материала и результатов проверки.",
+    label: "Цена сейчас",
+    note: "Одна цена для всего твёрдого сплава. Итоговую сумму подтверждаем после проверки.",
   },
 
   manifesto: ["От ненужных деталей", " к материалу, который всё ещё многого стоит. ", "Остальное берём на себя."],
@@ -260,7 +260,7 @@ const ru: HomeCopy = {
   faqText: "Частые вопросы о материалах, ценах и оплате.",
   faq: [
     { q: "Какие материалы вы покупаете?", a: "Пластины, сверла и цельные фрезы, лом твёрдого сплава и отдельные формы вольфрама. Состав проверяется при осмотре." },
-    { q: "Как рассчитывается цена?", a: "Зависит от типа материала, веса и состава. Первоначальный расчёт ориентировочный; окончательную сумму подтверждаем после проверки." },
+    { q: "Как рассчитывается цена?", a: "Мы платим одну цену за килограмм для всего твёрдого сплава: пластин, свёрл, фрез и лома. Сумма — это вес, умноженный на цену; окончательную подтверждаем после взвешивания и проверки." },
     { q: "Вы можете забрать мой материал?", a: "Самовывоз доступен от 50 кг. Также можно отправить или привезти в Барселону по предварительной записи." },
     { q: "Когда я получу оплату?", a: "Оплата производится переводом после получения и проверки материала. По опубликованной информации, обычно это меньше двух часов." },
   ],
@@ -318,7 +318,7 @@ const ru: HomeCopy = {
     materials: ["Пластины из твёрдого сплава", "Сверла / фрезы", "Лом твёрдого сплава", "Всё смешано / другое"],
     weight: "Примерный вес",
     priceLabel: "Ориентировочная цена вашего материала",
-    disclaimer: "Визуальная оценка для этого прототипа; окончательная цена зависит от материала и его проверки.",
+    disclaimer: "Ориентировочная оценка; окончательную сумму подтверждаем после взвешивания и проверки.",
     continue: "Продолжить",
   },
 };

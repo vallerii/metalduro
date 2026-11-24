@@ -2,14 +2,10 @@
 
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
-import {
-  updateMaterialRateAction,
-  updatePublicPricingAction,
-  type PricingActionState,
-} from "@/app/admin/pricing/actions";
+import { updateUnifiedPriceAction, type PricingActionState } from "@/app/admin/pricing/actions";
 import { PublicPriceCard } from "@/components/PublicPriceCard";
 import type { AdminCopy } from "@/content/admin";
-import type { MaterialPricing, PublicPrice } from "@/lib/pricing-types";
+import type { PublicPrice } from "@/lib/pricing-types";
 import { formatRateInput } from "@/lib/pricing-management";
 
 const idle: PricingActionState = { status: "idle" };
@@ -40,7 +36,7 @@ function ActionNotice({ state }: { state: PricingActionState }) {
   );
 }
 
-export function PublicPricingForm({
+export function UnifiedPriceForm({
   price,
   copy,
   locale,
@@ -49,14 +45,12 @@ export function PublicPricingForm({
   copy: AdminCopy["pricing"];
   locale: "es" | "ru";
 }) {
-  const [state, action] = useActionState(updatePublicPricingAction, idle);
+  const [state, action] = useActionState(updateUnifiedPriceAction, idle);
   const [rate, setRate] = useState(formatRateInput(price.priceEurPerKg));
-  const [date, setDate] = useState(price.priceDate);
   const numericRate = Number(rate.replace(",", "."));
   const preview: PublicPrice = {
+    ...price,
     priceEurPerKg: Number.isFinite(numericRate) && numericRate > 0 ? numericRate : price.priceEurPerKg,
-    priceDate: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : price.priceDate,
-    updatedAt: price.updatedAt,
   };
 
   return (
@@ -67,7 +61,7 @@ export function PublicPricingForm({
           <p className="mt-3 max-w-2xl leading-relaxed text-muted">{copy.publicLead}</p>
           <form
             action={action}
-            className="mt-7 grid gap-5 sm:grid-cols-2"
+            className="mt-7 grid max-w-sm gap-5"
             onSubmit={(event) => {
               if (!window.confirm(copy.confirm)) event.preventDefault();
             }}
@@ -81,23 +75,10 @@ export function PublicPricingForm({
                 inputMode="decimal"
                 required
                 pattern="\d+(?:[.,]\d{1,2})?"
-                className="rounded-xl border border-white/15 bg-ink px-4 py-3 outline-none focus:border-accent"
+                className="rounded-xl border border-white/15 bg-ink px-4 py-3 text-lg outline-none focus:border-accent"
               />
             </label>
-            <label className="grid gap-2 text-sm font-semibold">
-              {copy.publicDate}
-              <input
-                name="priceDate"
-                type="date"
-                value={date}
-                onChange={(event) => setDate(event.target.value)}
-                required
-                min="2000-01-01"
-                max="2100-12-31"
-                className="rounded-xl border border-white/15 bg-ink px-4 py-3 outline-none focus:border-accent"
-              />
-            </label>
-            <div className="sm:col-span-2">
+            <div>
               <SaveButton copy={copy} />
               <ActionNotice state={state} />
             </div>
@@ -115,68 +96,5 @@ export function PublicPricingForm({
         </div>
       </div>
     </section>
-  );
-}
-
-function MaterialRateForm({ material, copy, locale }: {
-  material: MaterialPricing;
-  copy: AdminCopy["pricing"];
-  locale: "es" | "ru";
-}) {
-  const [state, action] = useActionState(updateMaterialRateAction, idle);
-  const updated = new Intl.DateTimeFormat(locale === "ru" ? "ru-RU" : "es-ES", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(material.updatedAt));
-
-  return (
-    <article className="rounded-2xl border border-white/10 bg-ink/45 p-5">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h3 className="text-xl font-semibold">{material.name}</h3>
-          <p className="mt-1 font-mono text-xs text-muted">{copy.materialId}: {material.id}</p>
-        </div>
-        <span className={`rounded-full px-3 py-1 text-xs font-bold ${material.active ? "bg-emerald-300/10 text-emerald-200" : "bg-white/10 text-muted"}`}>
-          {material.active ? copy.active : copy.inactive}
-        </span>
-      </div>
-      <p className="mt-4 text-xs text-muted">{copy.updated}: {updated}</p>
-      <form
-        action={action}
-        className="mt-5 flex flex-wrap items-end gap-3"
-        onSubmit={(event) => {
-          if (!window.confirm(copy.confirm)) event.preventDefault();
-        }}
-      >
-        <input type="hidden" name="materialId" value={material.id} />
-        <label className="grid min-w-44 flex-1 gap-2 text-sm font-semibold">
-          {copy.rate}
-          <input
-            name="rateEur"
-            defaultValue={formatRateInput(material.rateEur)}
-            inputMode="decimal"
-            required
-            pattern="\d+(?:[.,]\d{1,2})?"
-            className="rounded-xl border border-white/15 bg-surface px-4 py-3 outline-none focus:border-accent"
-          />
-        </label>
-        <SaveButton copy={copy} />
-      </form>
-      <ActionNotice state={state} />
-    </article>
-  );
-}
-
-export function MaterialRateForms({ materials, copy, locale }: {
-  materials: MaterialPricing[];
-  copy: AdminCopy["pricing"];
-  locale: "es" | "ru";
-}) {
-  return (
-    <div className="grid gap-4 md:grid-cols-2">
-      {materials.map((material) => (
-        <MaterialRateForm key={material.id} material={material} copy={copy} locale={locale} />
-      ))}
-    </div>
   );
 }
