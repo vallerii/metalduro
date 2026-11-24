@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { signOutAction } from "@/app/auth/actions";
-import { MaterialRateForms, PublicPricingForm } from "@/components/admin/AdminPricingForms";
+import { MaterialRateForms } from "@/components/admin/AdminPricingForms";
 import { AdminSectionNav } from "@/components/admin/AdminSectionNav";
 import { SupabaseSetupNotice } from "@/components/auth/SupabaseSetupNotice";
 import { getAdminCopy } from "@/content/admin";
@@ -48,8 +48,6 @@ export default async function AdminPricingPage() {
       <AdminSectionNav active="pricing" applicationsLabel={copy.navigation.applications} pricingLabel={copy.navigation.pricing} />
 
       <div className="mt-10 space-y-10">
-        <PublicPricingForm price={data.publicPrice} copy={copy.pricing} locale={locale} />
-
         <section>
           <h2 className="text-3xl font-semibold">{copy.pricing.materialsTitle}</h2>
           <p className="mt-3 max-w-3xl leading-relaxed text-muted">{copy.pricing.materialsLead}</p>

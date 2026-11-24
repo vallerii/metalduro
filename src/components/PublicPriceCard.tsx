@@ -4,6 +4,10 @@ import {
   type PublicPrice,
 } from "@/lib/pricing-types";
 
+function upTo(value: string, locale: "es" | "ru") {
+  return locale === "ru" ? `до ${value}` : `hasta ${value}`;
+}
+
 export function PublicPriceCard({
   price,
   locale,
@@ -19,8 +23,8 @@ export function PublicPriceCard({
 }) {
   if (variant === "header") {
     return (
-      <span className="public-price-chip" aria-label={`${label}: ${formatPricePerKg(price.priceEurPerKg, locale)}`}>
-        <strong>{formatPricePerKg(price.priceEurPerKg, locale)}</strong>
+      <span className="public-price-chip" aria-label={`${label}: ${upTo(formatPricePerKg(price.priceEurPerKg, locale), locale)}`}>
+        <strong>{upTo(formatPricePerKg(price.priceEurPerKg, locale), locale)}</strong>
       </span>
     );
   }
@@ -28,7 +32,7 @@ export function PublicPriceCard({
   return (
     <div className={`public-price-card public-price-card-${variant}`}>
       <span className="public-price-kicker">{label}</span>
-      <strong>{formatPricePerKg(price.priceEurPerKg, locale)}</strong>
+      <strong>{upTo(formatPricePerKg(price.priceEurPerKg, locale), locale)}</strong>
       <time dateTime={price.priceDate}>{formatPublicPriceDate(price.priceDate, locale)}</time>
       {note ? <small>{note}</small> : null}
     </div>
