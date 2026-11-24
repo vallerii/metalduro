@@ -101,7 +101,7 @@ for (const locale of ["es", "ru"]) {
     }
     if (eventType === "application_claimed" && locale === "es") {
       assert.equal(rendered.subject, "Tu solicitud está en proceso · #A1B2C3D4");
-      assert.match(rendered.text, /Ya estamos trabajando en tu solicitud/);
+      assert.match(rendered.text, /Ya estamos con tu solicitud/);
     }
     pass(`${locale} template renders safely for ${eventType}`);
   }
