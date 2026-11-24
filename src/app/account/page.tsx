@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { signOutAction } from "@/app/auth/actions";
 import { ApplicationsList } from "@/components/account/ApplicationsList";
 import { SupabaseSetupNotice } from "@/components/auth/SupabaseSetupNotice";
 import { getAccountCopy } from "@/content/account";
@@ -34,19 +33,7 @@ export default async function AccountPage({
 
   return (
     <main className="wrap pb-20 pt-36 md:pb-28 md:pt-44">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="label-mono flex items-center gap-2 text-accent">
-          <span className="size-2 rounded-full bg-accent" />
-          {copy.overview.kicker}
-        </div>
-        <form action={signOutAction}>
-          <button className="rounded-full border border-white/20 px-4 py-2.5 text-[13px] font-semibold transition-colors hover:border-accent hover:text-accent">
-            {authCopy.common.signOut}
-          </button>
-        </form>
-      </div>
-
-      <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_0.7fr] lg:items-end">
+      <div className="grid gap-8 lg:grid-cols-[1fr_0.7fr] lg:items-end">
         <div>
           <h1 className="display max-w-4xl text-[clamp(44px,6vw,84px)]">
             {copy.overview.title}

@@ -31,8 +31,10 @@ export default async function NewApplicationPage() {
   const pricing = await getPublicPricingSnapshot();
 
   return (
-    <div className="ref-home">
-      <main className="wrap pb-20 pt-36 md:pb-28 md:pt-44">
+    <div className="ref-home relative overflow-hidden">
+      {/* Same photo background as the home hero. */}
+      <div className="hero-photo" aria-hidden="true" />
+      <main className="wrap relative pb-20 pt-36 md:pb-28 md:pt-44">
         <Link
           href="/account"
           className="text-[14px] text-muted underline decoration-accent decoration-2 underline-offset-4 hover:text-paper"
@@ -40,16 +42,12 @@ export default async function NewApplicationPage() {
           ← {copy.common.backToAccount}
         </Link>
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-          <div className="lg:sticky lg:top-32 lg:self-start">
-            <div className="label-mono flex items-center gap-2 text-accent">
-              <span className="size-2 rounded-full bg-accent" />
-              {copy.create.kicker}
-            </div>
-            <h1 className="display mt-5 text-[clamp(42px,5.5vw,72px)]">
+        <div className="mt-8 grid gap-10 lg:grid-cols-[1.04fr_0.86fr] lg:gap-16">
+          <div className="hero-copy lg:sticky lg:top-32 lg:self-start">
+            <h1>
               {copy.create.title}
             </h1>
-            <p className="mt-6 max-w-xl text-[18px] leading-relaxed text-muted">
+            <p style={{ fontSize: "clamp(17px,2vw,22px)", maxWidth: 610, color: "#e6e6e8" }}>
               {copy.create.lead}
             </p>
           </div>

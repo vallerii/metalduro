@@ -28,10 +28,7 @@ export default async function AdminPricingPage() {
 
   return (
     <main className="wrap pb-20 pt-36 md:pb-28 md:pt-44">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="label-mono flex items-center gap-2 text-accent">
-          <span className="size-2 rounded-full bg-accent" />{copy.pricing.kicker}
-        </div>
+      <div className="flex flex-wrap items-center justify-end gap-4">
         <div className="flex items-center gap-3">
           <span className="hidden max-w-72 truncate text-[13px] text-muted sm:block">{admin.profile.email}</span>
           <form action={signOutAction}>

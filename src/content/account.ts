@@ -26,6 +26,7 @@ export type AccountCopy = {
     status: string;
     manager: string;
     unassignedManager: string;
+    assignedManager: string;
     rate: string;
     actions: string;
     view: string;
@@ -58,6 +59,9 @@ export type AccountCopy = {
   };
   detail: {
     kicker: string;
+    now: string;
+    openReceipt: string;
+    nextSteps: Record<ApplicationStatus, { title: string; text: string }>;
     title: string;
     createdSuccess: string;
     summary: string;
@@ -128,6 +132,7 @@ const es: AccountCopy = {
     status: "Estado",
     manager: "Responsable",
     unassignedManager: "Pendiente de asignación",
+    assignedManager: "Asignado",
     rate: "Tarifa vigente",
     actions: "Acciones",
     view: "Ver detalle",
@@ -160,6 +165,17 @@ const es: AccountCopy = {
   },
   detail: {
     kicker: "Detalle de solicitud",
+    now: "Ahora",
+    openReceipt: "Comprobante enviado · ver",
+    nextSteps: {
+      new: { title: "Solicitud recibida", text: "En breve un responsable la tomará y se pondrá en contacto contigo." },
+      in_progress: { title: "Envía el material y sube el comprobante", text: "Envía el material de la forma acordada y sube una foto del comprobante o del albarán de envío. Así sabremos que está en camino." },
+      sent: { title: "Material en camino", text: "Hemos recibido tu comprobante. Confirmaremos la recepción en cuanto llegue el material." },
+      accepted: { title: "Material recibido", text: "En breve empezaremos a pesarlo y revisarlo." },
+      verification: { title: "En revisión", text: "Estamos pesando el material y verificando su composición. Después confirmaremos el importe final." },
+      payment: { title: "Preparando el pago", text: "La revisión ha terminado y la transferencia está en curso." },
+      paid: { title: "Pagado", text: "Hemos enviado el pago. ¡Gracias por trabajar con nosotros!" },
+    },
     title: "Seguimiento de la operación",
     createdSuccess: "Solicitud guardada correctamente.",
     summary: "Resumen",
@@ -242,6 +258,7 @@ const ru: AccountCopy = {
     status: "Статус",
     manager: "Ответственный",
     unassignedManager: "Сотрудник ещё не назначен",
+    assignedManager: "Назначен",
     rate: "Действующая ставка",
     actions: "Действия",
     view: "Открыть",
@@ -274,6 +291,17 @@ const ru: AccountCopy = {
   },
   detail: {
     kicker: "Детали заявки",
+    now: "Сейчас",
+    openReceipt: "Чек загружен · открыть",
+    nextSteps: {
+      new: { title: "Заявка получена", text: "Скоро её возьмёт в работу сотрудник и свяжется с вами." },
+      in_progress: { title: "Отправьте материал и загрузите чек", text: "Отправьте материал удобным способом и загрузите фото чека или накладной об отправке — так мы узнаем, что груз в пути." },
+      sent: { title: "Материал в пути", text: "Мы получили ваш чек. Как только материал прибудет, подтвердим получение." },
+      accepted: { title: "Материал получен", text: "Скоро начнём взвешивание и проверку." },
+      verification: { title: "Идёт проверка", text: "Взвешиваем материал и проверяем состав. После этого подтвердим итоговую сумму." },
+      payment: { title: "Готовим оплату", text: "Проверка завершена, перевод уже в процессе." },
+      paid: { title: "Оплачено", text: "Деньги отправлены. Спасибо, что работаете с нами!" },
+    },
     title: "Ход операции",
     createdSuccess: "Заявка успешно сохранена.",
     summary: "Сводка",

@@ -12,6 +12,7 @@ const TEMPLATE_EVENT_TYPES: NotificationEventType[] = [
   "payment_started",
   "application_paid",
   "payment_overdue",
+  "application_auto_assigned",
 ];
 
 type Copy = {
@@ -29,6 +30,7 @@ const es: Record<NotificationEventType, Copy> = {
   payment_started: { subject: "La solicitud ha pasado a la etapa de pago", eyebrow: "Etapa de pago", title: "Hemos iniciado la etapa de pago", intro: "La comprobación ha finalizado y la solicitud está ahora en la etapa de pago.", action: "Ver solicitud" },
   application_paid: { subject: "Envío de dinero registrado", eyebrow: "Pago registrado", title: "Hemos registrado la confirmación del envío de dinero", intro: "El equipo ha marcado la solicitud como pagada. Este mensaje confirma el estado registrado en Metalduro.", action: "Ver solicitud" },
   payment_overdue: { subject: "Plazo de pago superado", eyebrow: "Revisión necesaria", title: "Una solicitud ha superado el plazo de pago", intro: "La solicitud continúa en la etapa de pago después del plazo de dos horas.", action: "Revisar solicitud" },
+  application_auto_assigned: { subject: "Se te ha asignado una solicitud", eyebrow: "Asignación automática", title: "Tienes una nueva solicitud asignada", intro: "Nadie tomó esta solicitud en 4 horas laborables, así que se te ha asignado automáticamente por tener menos solicitudes en curso. El cliente ya ha sido avisado.", action: "Abrir solicitud" },
 };
 
 const ru: Record<NotificationEventType, Copy> = {
@@ -38,6 +40,7 @@ const ru: Record<NotificationEventType, Copy> = {
   payment_started: { subject: "Заявка перешла на этап оплаты", eyebrow: "Этап оплаты", title: "Мы начали этап оплаты", intro: "Проверка завершена, и заявка перешла на этап оплаты.", action: "Открыть заявку" },
   application_paid: { subject: "Отправка денег подтверждена", eyebrow: "Оплата зарегистрирована", title: "Мы зарегистрировали подтверждение отправки денег", intro: "Сотрудник отметил заявку как оплаченную. Это письмо подтверждает статус, зарегистрированный в Metalduro.", action: "Открыть заявку" },
   payment_overdue: { subject: "Срок оплаты превышен", eyebrow: "Требуется проверка", title: "Заявка превысила срок оплаты", intro: "Заявка всё ещё находится на этапе оплаты после истечения двухчасового срока.", action: "Проверить заявку" },
+  application_auto_assigned: { subject: "Вам назначена заявка", eyebrow: "Автоматическое назначение", title: "На вас назначена новая заявка", intro: "Заявку никто не взял за 4 рабочих часа, поэтому она автоматически назначена вам: у вас меньше всего заявок в работе. Клиент уже получил уведомление.", action: "Открыть заявку" },
 };
 
 function escapeHtml(value: string) {
@@ -89,7 +92,7 @@ export function renderNotificationEmail(job: NotificationJob, siteUrl: string): 
   const locale = job.recipient_locale === "ru" ? "ru" : "es";
   const copy = (locale === "ru" ? ru : es)[job.event_type];
   const baseUrl = normalizedSiteOrigin(siteUrl);
-  const isAdminDestination = ["application_created", "receipt_uploaded", "payment_overdue"].includes(job.event_type);
+  const isAdminDestination = ["application_created", "receipt_uploaded", "payment_overdue", "application_auto_assigned"].includes(job.event_type);
   const destination = isAdminDestination ? `${baseUrl}/admin/applications/${job.application_id}` : `${baseUrl}/account/applications/${job.application_id}`;
   const greetingName = job.recipient_name?.trim();
   const greeting = greetingName ? (locale === "ru" ? `Здравствуйте, ${greetingName}.` : `Hola, ${greetingName}.`) : (locale === "ru" ? "Здравствуйте." : "Hola.");

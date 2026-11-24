@@ -31,6 +31,7 @@ type ApplicationRow = {
   payment_iban?: string | null;
   preferred_visit_dates?: string[];
   material: MaterialRelation;
+  manager_id?: string | null;
   manager?: ManagerRelation;
 };
 
@@ -107,7 +108,7 @@ export async function getClientApplicationDetail(
   const { data, error } = await supabase
     .from("applications")
     .select(
-      "id,material_id,declared_weight_kg,rate_snapshot_eur,estimated_amount_eur,status,payment_started_at,payment_due_at,created_at,city,delivery_method,contact_phone,repeat_customer,payment_recipient_name,payment_iban,preferred_visit_dates,material:materials!applications_material_id_fkey(name),manager:profiles!applications_manager_id_fkey(display_name)",
+      "id,material_id,declared_weight_kg,rate_snapshot_eur,estimated_amount_eur,status,payment_started_at,payment_due_at,created_at,city,delivery_method,contact_phone,repeat_customer,payment_recipient_name,payment_iban,preferred_visit_dates,manager_id,material:materials!applications_material_id_fkey(name),manager:profiles!applications_manager_id_fkey(display_name)",
     )
     .eq("id", applicationId)
     .eq("client_id", auth.userId)
@@ -183,7 +184,9 @@ export async function getClientApplicationDetail(
     profile: auth.profile,
     application: {
       ...toListItem(row),
-      managerName: relationOne(row.manager)?.display_name ?? null,
+      managerName: relationOne(row.manager)?.display_name?.trim() || null,
+      // Status is past "new" ⇒ a manager is assigned even if they have no display name.
+      managerAssigned: Boolean(row.manager_id) || row.status !== "new",
       paymentStartedAt: row.payment_started_at,
       history,
       receiptStoragePath: finalizedStoragePath,

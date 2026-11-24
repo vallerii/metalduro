@@ -28,6 +28,7 @@ export type ApplicationHistoryEntry = {
 
 export type ClientApplicationDetail = ClientApplicationListItem & {
   managerName: string | null;
+  managerAssigned: boolean;
   paymentStartedAt: string | null;
   history: ApplicationHistoryEntry[];
   receiptStoragePath: string | null;

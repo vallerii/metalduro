@@ -12,7 +12,7 @@
 .ref-home p{line-height:1.55}
 .ref-home .muted{color:var(--muted)}
 .ref-home .accent-text{color:var(--accent)}
-.ref-home .wrap{max-width:1440px;margin:auto;padding-left:clamp(20px,5vw,72px);padding-right:clamp(20px,5vw,72px)}
+.ref-home .wrap{max-width:var(--page-max);margin:auto;padding-left:var(--page-pad);padding-right:var(--page-pad)}
 .ref-home .section{padding-top:clamp(100px,11vw,172px);padding-bottom:20px}
 .ref-home .eyebrow{text-transform:uppercase;letter-spacing:.13em;font-weight:700;font-size:11px;color:var(--accent)}
 .ref-home .section-head{display:flex;justify-content:space-between;gap:32px;align-items:end;margin-bottom:42px}
@@ -35,7 +35,7 @@
 .ref-home .header .btn{min-height:42px;font-size:12px;padding:0 18px}
 .ref-home .hero{position:relative;min-height:790px;overflow:hidden;background:#111;display:flex;align-items:center}
 .ref-home .hero-photo{position:absolute;inset:0;background-image:linear-gradient(90deg,#070708ee 0%,#070708b8 35%,#07070891 56%,#070708a0 100%),linear-gradient(0deg,#0b0b0c 0%,transparent 28%),url('/photos/inserts-3.jpg');background-position:center,center,center 48%;background-size:cover;filter:saturate(.78)}
-.ref-home .hero-inner{width:100%;max-width:1440px;margin:0 auto;padding:160px clamp(20px,5vw,72px) 110px;position:relative;display:grid;grid-template-columns:minmax(0,1.04fr) minmax(410px,.86fr);gap:clamp(48px,5vw,96px);align-items:center}
+.ref-home .hero-inner{width:100%;max-width:var(--page-max);margin:0 auto;padding:160px var(--page-pad) 110px;position:relative;display:grid;grid-template-columns:minmax(0,1.04fr) minmax(410px,.86fr);gap:clamp(48px,5vw,96px);align-items:center}
 .ref-home .hero-copy{max-width:730px}
 .ref-home .hero-copy h1{font-size:clamp(56px,5.5vw,93px);line-height:.99;letter-spacing:-.065em;margin:22px 0 30px}
 .ref-home .hero-bullets{display:grid;gap:14px;margin-top:34px;color:#e5e5e5;font-size:15px}
@@ -170,7 +170,7 @@
 .ref-home .header .btn{min-height:37px}
 .ref-home .lang{display:none}
 .ref-home .hero{min-height:0}
-.ref-home .hero-inner{display:flex;flex-direction:column;padding:140px 20px 72px;gap:38px;align-items:stretch}
+.ref-home .hero-inner{display:flex;flex-direction:column;padding:140px var(--page-pad) 72px;gap:38px;align-items:stretch}
 .ref-home .hero-copy h1{font-size:clamp(49px,11vw,72px);margin:15px 0 22px}
 .ref-home .hero-bullets{gap:10px;font-size:13px}
 .ref-home .hero-proof{margin-top:25px}
@@ -378,7 +378,7 @@
 
 .ref-home .case-controls button{display:grid;place-items:center;line-height:1;padding:0;flex:none}
 
-.ref-home .scroll-note{left:0;right:0;max-width:1440px;margin:0 auto;padding-left:clamp(20px,5vw,72px)}
+.ref-home .scroll-note{left:0;right:0;max-width:var(--page-max);margin:0 auto;padding-left:var(--page-pad)}
 .ref-home .calc-body{min-height:600px}
 @media (max-width:1023px){.ref-home .calc-body{min-height:0}}
 

@@ -9,8 +9,7 @@ export default async function ApplicationNotFound() {
   return (
     <main className="wrap pb-20 pt-36 md:pb-28 md:pt-44">
       <section className="rounded-3xl border border-white/10 bg-surface p-7 md:p-10">
-        <div className="label-mono text-accent">{copy.common.account}</div>
-        <h1 className="mt-4 text-[clamp(36px,5vw,64px)] font-medium tracking-tight">
+        <h1 className="text-[clamp(36px,5vw,64px)] font-medium tracking-tight">
           {copy.detail.notFoundTitle}
         </h1>
         <p className="mt-5 max-w-2xl text-[17px] leading-relaxed text-muted">
