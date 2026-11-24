@@ -13,7 +13,7 @@ const es = {
   proof: "5,0 / 5 en Google · 34 reseñas",
   publicPrice: {
     label: "Precio actual",
-    note: "Mismo precio para todo el metal duro. El importe final se confirma tras la revisión.",
+    note: "El importe final se confirma tras la revisión.",
   },
 
   manifesto: ["De piezas que ya no utilizas", " a un material que todavía tiene mucho valor. ", "Nosotros nos ocupamos del resto."],
@@ -175,7 +175,7 @@ const ru: HomeCopy = {
   proof: "5,0 / 5 в Google · 34 отзыва",
   publicPrice: {
     label: "Цена сейчас",
-    note: "Одна цена для всего твёрдого сплава. Итоговую сумму подтверждаем после проверки.",
+    note: "Итоговую сумму подтверждаем после проверки.",
   },
 
   manifesto: ["От ненужных деталей", " к материалу, который всё ещё многого стоит. ", "Остальное берём на себя."],
