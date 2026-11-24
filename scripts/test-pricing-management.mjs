@@ -4,6 +4,7 @@ import {
   formatRateInput,
   materialRateFormSchema,
   publicPricingFormSchema,
+  unifiedPriceFormSchema,
 } from "../src/lib/pricing-management.ts";
 import { formatPricePerKg, formatPublicPriceDate } from "../src/lib/pricing-types.ts";
 
@@ -37,6 +38,18 @@ for (const priceDate of ["", "2026-02-30", "1999-12-31", "2101-01-01", "09-11-20
   assert.equal(publicPricingFormSchema.safeParse({ priceEurPerKg: "25", priceDate }).success, false);
 }
 pass("public price validation requires a real bounded ISO date");
+
+assert.deepEqual(unifiedPriceFormSchema.parse({ priceEurPerKg: "25,50" }), { priceEurPerKg: 25.5 });
+for (const priceEurPerKg of ["0", "-1", "25.001", "10000.01", "abc"]) {
+  assert.equal(unifiedPriceFormSchema.safeParse({ priceEurPerKg }).success, false);
+}
+const unifiedMigration = await readFile(new URL("../supabase/migrations/20261124000100_unified_price.sql", import.meta.url), "utf8");
+assert.match(unifiedMigration, /create function public\.update_unified_price/);
+assert.match(unifiedMigration, /update public\.materials[\s\S]*set rate_eur = v_new_price/);
+assert.match(unifiedMigration, /private\.is_admin\(\)/);
+const cardSource = await readFile(new URL("../src/components/PublicPriceCard.tsx", import.meta.url), "utf8");
+assert.doesNotMatch(cardSource, /hasta|до /);
+pass("single price: one admin field updates every material rate; no 'up to' wording");
 
 assert.equal(formatPricePerKg(25, "es"), "25 €/kg");
 assert.equal(formatPublicPriceDate("2026-11-09", "es"), "9 de noviembre de 2026");

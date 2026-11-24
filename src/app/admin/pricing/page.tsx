@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { signOutAction } from "@/app/auth/actions";
-import { MaterialRateForms } from "@/components/admin/AdminPricingForms";
+import { UnifiedPriceForm } from "@/components/admin/AdminPricingForms";
 import { AdminSectionNav } from "@/components/admin/AdminSectionNav";
 import { SupabaseSetupNotice } from "@/components/auth/SupabaseSetupNotice";
 import { getAdminCopy } from "@/content/admin";
@@ -8,7 +8,7 @@ import { getAuthCopy } from "@/content/auth";
 import { getLocale } from "@/i18n/server";
 import { getAdminPricingData } from "@/lib/admin-pricing";
 import { requireAdmin } from "@/lib/auth";
-import { formatPricePerKg, formatPublicPriceDate } from "@/lib/pricing-types";
+import { formatPricePerKg } from "@/lib/pricing-types";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export const instant = false;
@@ -48,13 +48,7 @@ export default async function AdminPricingPage() {
       <AdminSectionNav active="pricing" applicationsLabel={copy.navigation.applications} pricingLabel={copy.navigation.pricing} />
 
       <div className="mt-10 space-y-10">
-        <section>
-          <h2 className="text-3xl font-semibold">{copy.pricing.materialsTitle}</h2>
-          <p className="mt-3 max-w-3xl leading-relaxed text-muted">{copy.pricing.materialsLead}</p>
-          <div className="mt-6">
-            <MaterialRateForms materials={data.materials} copy={copy.pricing} locale={locale} />
-          </div>
-        </section>
+        <UnifiedPriceForm price={data.publicPrice} copy={copy.pricing} locale={locale} />
 
         <section className="rounded-[28px] border border-white/10 bg-surface p-6 md:p-8">
           <h2 className="text-3xl font-semibold">{copy.pricing.historyTitle}</h2>
@@ -75,13 +69,12 @@ export default async function AdminPricingPage() {
                   {data.history.map((item) => (
                     <tr key={item.id} className="border-b border-white/7 align-top">
                       <td className="py-4 pr-5 font-mono text-xs text-muted">{new Date(item.createdAt).toISOString()}</td>
-                      <td className="py-4 pr-5">{item.materialId ?? copy.pricing.publicTarget}</td>
+                      <td className="py-4 pr-5">{item.targetKind === "public_price" ? copy.pricing.publicTarget : `${copy.pricing.materialId}: ${item.materialId}`}</td>
                       <td className="py-4 pr-5">
                         <span className="text-muted">{formatPricePerKg(item.oldRateEur, locale)}</span>
                         <span className="px-2 text-accent">→</span>
                         <strong>{formatPricePerKg(item.newRateEur, locale)}</strong>
-                        {item.newPriceDate ? <small className="mt-1 block text-muted">{formatPublicPriceDate(item.oldPriceDate ?? item.newPriceDate, locale)} → {formatPublicPriceDate(item.newPriceDate, locale)}</small> : null}
-                      </td>
+                                              </td>
                       <td className="py-4 font-mono text-xs">{item.changedByLabel}</td>
                     </tr>
                   ))}

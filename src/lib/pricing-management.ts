@@ -31,3 +31,8 @@ export const publicPricingFormSchema = z.object({
 export function formatRateInput(value: number) {
   return value.toFixed(2);
 }
+
+/** One price per kg for every material (admin → "Цены"). */
+export const unifiedPriceFormSchema = z.object({
+  priceEurPerKg: rateText,
+});

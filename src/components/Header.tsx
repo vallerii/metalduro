@@ -7,6 +7,7 @@ import { getT } from "@/i18n/server";
 import { getAuthenticatedUser } from "@/lib/auth";
 import { getPublicPricingSnapshot } from "@/lib/pricing";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { HeaderMenuDismiss } from "./HeaderMenuDismiss";
 import { HeaderSignOutButton } from "./HeaderSignOutButton";
 import { LangSwitch } from "./LangSwitch";
 import { PublicPriceCard } from "./PublicPriceCard";
@@ -112,6 +113,7 @@ export async function Header() {
           </div>
         </div>
       </header>
+      <HeaderMenuDismiss />
     </div>
   );
 }

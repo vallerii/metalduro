@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
-import { ApplicationStatusBadge } from "@/components/account/ApplicationStatusBadge";
 import { AttachedReceipt, ReceiptUpload } from "@/components/account/ReceiptUpload";
 import { PaymentCountdown } from "@/components/account/PaymentCountdown";
 import { StatusTimeline } from "@/components/account/StatusTimeline";
@@ -89,21 +88,14 @@ export default async function ApplicationDetailPage({
         </p>
       ) : null}
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
-        <div>
-          <div className="label-mono flex items-center gap-2 text-accent">
-            <span className="size-2 rounded-full bg-accent" />
-            {copy.detail.kicker}
-          </div>
-          <h1 className="display mt-5 text-[clamp(42px,6vw,82px)]">
-            {applicationNumber(application.id)}
-          </h1>
-          <p className="mt-4 break-all font-mono text-[12px] text-muted">{application.id}</p>
+      <div className="mt-8">
+        <div className="label-mono flex items-center gap-2 text-accent">
+          <span className="size-2 rounded-full bg-accent" />
+          {copy.detail.kicker}
         </div>
-        <ApplicationStatusBadge
-          status={application.status}
-          label={copy.statuses[application.status]}
-        />
+        <h1 className="display mt-5 text-[clamp(42px,6vw,82px)]">
+          {applicationNumber(application.id)}
+        </h1>
       </div>
 
       <div className="mt-10 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
@@ -130,26 +122,19 @@ export default async function ApplicationDetailPage({
           </dl>
         </section>
 
-        {application.status === "payment" && application.paymentDueAt ? (
-          <PaymentCountdown
-            dueAt={application.paymentDueAt}
-            serverNow={application.serverNow}
-            copy={copy}
-          />
-        ) : (
+        <div className="flex flex-col gap-6">
+          {application.status === "payment" && application.paymentDueAt ? (
+            <PaymentCountdown
+              dueAt={application.paymentDueAt}
+              serverNow={application.serverNow}
+              copy={copy}
+            />
+          ) : null}
           <section className="rounded-3xl border border-white/10 bg-ink-2 p-6 md:p-8">
-            <div className="label-mono text-muted">{copy.common.status}</div>
-            <div className="mt-5">
-              <ApplicationStatusBadge
-                status={application.status}
-                label={copy.statuses[application.status]}
-              />
-            </div>
-            <p className="mt-5 text-[14px] leading-relaxed text-muted">
-              {copy.detail.historyLead}
-            </p>
+            <div className="label-mono text-muted">{copy.detail.history}</div>
+            <StatusTimeline history={application.history} copy={copy} locale={locale} />
           </section>
-        )}
+        </div>
       </div>
 
       {application.status === "in_progress" || application.receiptSignedUrl ? (
@@ -176,17 +161,6 @@ export default async function ApplicationDetailPage({
         </section>
       ) : null}
 
-      <section className="mt-8 rounded-3xl border border-white/10 bg-surface p-6 md:p-8">
-        <div className="grid gap-4 lg:grid-cols-[0.7fr_1.3fr]">
-          <div>
-            <div className="label-mono text-accent">{copy.detail.history}</div>
-            <p className="mt-4 max-w-md leading-relaxed text-muted">
-              {copy.detail.historyLead}
-            </p>
-          </div>
-          <StatusTimeline history={application.history} copy={copy} locale={locale} />
-        </div>
-      </section>
     </main>
   );
 }
