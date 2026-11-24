@@ -5,6 +5,7 @@ import { Pic } from "@/components/Pic";
 import { photo } from "@/lib/photos";
 import { getDict } from "@/content/dict";
 import { getT } from "@/i18n/server";
+import { OG_IMAGE, SITE_URL, ORGANIZATION_ID, jsonLdScript, metaDescription } from "@/lib/seo";
 
 // Старые русские адреса гайдов → новые испанские
 const legacySlugs: Record<string, string> = {
@@ -21,7 +22,20 @@ export async function generateMetadata({ params }: PageProps<"/guides/[slug]">):
   const { slug } = await params;
   const { t } = await getT();
   const g = t.guides.find((x) => x.slug === slug);
-  return g ? { title: g.title, description: g.lead, alternates: { canonical: `/guides/${g.slug}` } } : {};
+  if (!g) return {};
+  const image = photo(g.photo);
+  return {
+    title: g.title,
+    description: metaDescription(g.lead),
+    alternates: { canonical: `/guides/${g.slug}` },
+    openGraph: {
+      title: g.title,
+      description: metaDescription(g.lead),
+      url: `/guides/${g.slug}`,
+      type: "article",
+      images: [image ? { url: image, alt: g.title } : OG_IMAGE],
+    },
+  };
 }
 
 export default async function GuidePage({ params }: PageProps<"/guides/[slug]">) {
@@ -32,9 +46,35 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
   const g = guides.find((x) => x.slug === slug);
   if (!g) notFound();
   const others = guides.filter((x) => x.slug !== g.slug);
+  const url = `${SITE_URL}/guides/${g.slug}`;
+  const image = photo(g.photo);
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        headline: g.title,
+        description: g.lead,
+        url,
+        mainEntityOfPage: url,
+        inLanguage: t.htmlLang,
+        image: `${SITE_URL}${image ?? OG_IMAGE.url}`,
+        author: { "@id": ORGANIZATION_ID },
+        publisher: { "@id": ORGANIZATION_ID, "@type": "Organization", name: "Metalduro", logo: `${SITE_URL}/logo-mark.png` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: t.nav.home, item: `${SITE_URL}/` },
+          { "@type": "ListItem", position: 2, name: g.title, item: url },
+        ],
+      },
+    ],
+  };
 
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(jsonLd)} />
       <article className="wrap py-12 md:py-20">
         <Link href="/" className="label-mono text-ink-2 hover:text-accent-deep">{t.guidePage.back}</Link>
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-end">

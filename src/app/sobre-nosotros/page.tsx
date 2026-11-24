@@ -6,6 +6,7 @@ import { Rich } from "@/components/Rich";
 import { photo } from "@/lib/photos";
 import { cities, contacts } from "@/content/site";
 import { getT } from "@/i18n/server";
+import { OG_IMAGE, jsonLdScript, organizationJsonLd } from "@/lib/seo";
 
 // SEO-страница «О компании» (Sobre nosotros). Тексты — в словарях, поле `about`.
 
@@ -18,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { absolute: a.metaTitle },
     description: a.metaDescription,
     alternates: { canonical: a.path },
-    openGraph: { title: a.metaTitle, description: a.metaDescription, url: a.path, type: "website" },
+    openGraph: { title: a.metaTitle, description: a.metaDescription, url: a.path, type: "website", images: [OG_IMAGE] },
   };
 }
 
@@ -51,17 +52,7 @@ export default async function AboutPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
-      {
-        "@type": "Organization",
-        "@id": `${base}/#organization`,
-        name: contacts.brand,
-        url: base,
-        logo: `${base}/logo-mark.png`,
-        telephone: contacts.phone,
-        address: { "@type": "PostalAddress", addressLocality: contacts.city, addressCountry: "ES" },
-        areaServed: { "@type": "Country", name: "España" },
-        description: a.metaDescription,
-      },
+      organizationJsonLd(a.metaDescription),
       {
         "@type": "AboutPage",
         name: a.metaTitle,
@@ -81,7 +72,7 @@ export default async function AboutPage() {
 
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(jsonLd)} />
 
       <article className="wrap py-12 md:py-20">
         <nav aria-label="breadcrumb" className="label-mono text-ink-2">
