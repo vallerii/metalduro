@@ -136,12 +136,12 @@ const es = {
       ] },
       { title: "INFORMACIÓN", links: [
         { label: "Cómo funciona", href: "/#proceso" },
-        { label: "Cómo enviar el material", href: "/#proceso" },
-        { label: "Cómo identificar metal duro", href: "/#materiales" },
+        { label: "Cómo embalar y enviar el material", href: "/guides/como-embalar-chatarra-metal-duro" },
+        { label: "Cómo identificar el metal duro", href: "/guides/como-identificar-metal-duro" },
         { label: "Preguntas frecuentes", href: "/#faq" },
       ] },
       { title: "METALDURO", links: [
-        { label: "Sobre nosotros", href: "/#blog" },
+        { label: "Sobre nosotros", href: "/sobre-nosotros" },
         { label: "Contacto", href: "/#calculator" },
         { label: "Aviso legal", href: "/legal/aviso-legal" },
         { label: "Política de privacidad", href: "/legal/privacidad" },
@@ -298,12 +298,12 @@ const ru: HomeCopy = {
       ] },
       { title: "ИНФОРМАЦИЯ", links: [
         { label: "Как это работает", href: "/#proceso" },
-        { label: "Как отправить материал", href: "/#proceso" },
-        { label: "Как определить твёрдый сплав", href: "/#materiales" },
+        { label: "Как упаковать и отправить материал", href: "/guides/como-embalar-chatarra-metal-duro" },
+        { label: "Как определить твёрдый сплав", href: "/guides/como-identificar-metal-duro" },
         { label: "Вопросы", href: "/#faq" },
       ] },
       { title: "METALDURO", links: [
-        { label: "О нас", href: "/#blog" },
+        { label: "О нас", href: "/sobre-nosotros" },
         { label: "Связаться", href: "/#calculator" },
         { label: "Правовая информация", href: "/legal/aviso-legal" },
         { label: "Политика конфиденциальности", href: "/legal/privacidad" },

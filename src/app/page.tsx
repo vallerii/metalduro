@@ -11,6 +11,24 @@ import { getT } from "@/i18n/server";
 import { getAuthenticatedUser } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { getPublicPricingSnapshot } from "@/lib/pricing";
+import type { Metadata } from "next";
+import { OG_IMAGE, SITE_URL, jsonLdScript, organizationJsonLd } from "@/lib/seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT();
+  return {
+    alternates: { canonical: "/" },
+    openGraph: {
+      title: t.meta.title,
+      description: t.meta.description,
+      url: "/",
+      locale: t.meta.ogLocale,
+      siteName: "Metalduro",
+      type: "website",
+      images: [OG_IMAGE],
+    },
+  };
+}
 
 // Разметка и классы перенесены из index.html (референс). Тексты — из home-copy.ts (ES + RU).
 // Калькулятор — наш компонент с прежней логикой, вставлен в блок hero.
@@ -30,9 +48,33 @@ export default async function Home() {
   const c = homeCopy[locale];
   const { history } = t;
   const [proofA, proofB] = c.proof.split(" · ");
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      organizationJsonLd(t.meta.description),
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: "Metalduro",
+        inLanguage: t.htmlLang,
+        publisher: { "@id": `${SITE_URL}/#organization` },
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${SITE_URL}/#faq`,
+        mainEntity: c.faq.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
+      },
+    ],
+  };
 
   return (
     <div className="ref-home">
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(jsonLd)} />
       <main>
         {/* HERO */}
         <section className="hero">

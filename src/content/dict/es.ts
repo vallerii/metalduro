@@ -9,7 +9,7 @@ export const es: Dict = {
     title: "Metalduro — Compramos chatarra de metal duro en toda España",
     template: "%s · Metalduro",
     description:
-      "Compramos chatarra de metal duro (carburo de tungsteno) y wolframio puro en toda España. Calcula el precio online, envío a nuestro cargo y pago en una media de 2 horas tras la recepción.",
+      "Compramos chatarra de metal duro y wolframio en toda España. Calcula el precio online, envío a nuestro cargo y pago en unas 2 horas tras recibir el material.",
     ogLocale: "es_ES",
   },
 
@@ -235,7 +235,7 @@ export const es: Dict = {
     path: "/sobre-nosotros",
     metaTitle: "Sobre Metalduro — Compra de chatarra de metal duro en España",
     metaDescription:
-      "Metalduro compra chatarra de metal duro, plaquitas, herramienta enteriza y wolframio puro a particulares y empresas de toda España. Almacén en Barcelona, envío a nuestro cargo y pago en una media de 2 horas tras la recepción.",
+      "Compramos chatarra de metal duro, plaquitas, herramienta enteriza y wolframio en toda España. Almacén en Barcelona, envío a nuestro cargo y pago rápido.",
     crumb: "Sobre nosotros",
     kicker: "Sobre la empresa",
     h1: "Metalduro: compramos chatarra de metal duro en toda España",
