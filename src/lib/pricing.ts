@@ -15,12 +15,6 @@ type MaterialRow = {
   updated_at: string;
 };
 
-type PublicPriceRow = {
-  price_eur_per_kg: number | string;
-  price_date: string;
-  updated_at: string | null;
-};
-
 const materialIds = new Set<MaterialId>(["inserts", "solid", "scrap", "mixed"]);
 
 function toMaterial(row: MaterialRow): MaterialPricing | null {
@@ -36,14 +30,17 @@ function toMaterial(row: MaterialRow): MaterialPricing | null {
   };
 }
 
-function toPublicPrice(row: PublicPriceRow | null): PublicPrice | null {
-  if (!row) return null;
-  const priceEurPerKg = Number(row.price_eur_per_kg);
-  if (!Number.isFinite(priceEurPerKg) || priceEurPerKg <= 0) return null;
+function publicPriceFromMaterials(materials: MaterialPricing[]): PublicPrice | null {
+  if (materials.length === 0) return null;
+  const maxRate = Math.max(...materials.map((material) => material.rateEur));
+  const latest = materials
+    .map((material) => material.updatedAt)
+    .sort()
+    .at(-1) ?? null;
   return {
-    priceEurPerKg,
-    priceDate: row.price_date,
-    updatedAt: row.updated_at,
+    priceEurPerKg: maxRate,
+    priceDate: latest ? latest.slice(0, 10) : new Date().toISOString().slice(0, 10),
+    updatedAt: latest,
   };
 }
 
@@ -57,18 +54,12 @@ export const getPublicPricingSnapshot = cache(async (): Promise<PricingSnapshot>
   // this read within the current React render via cache().
   await connection();
   const supabase = await createServerSupabaseClient();
-  const [materialsResult, publicPriceResult] = await Promise.all([
+  const materialsResult = await
     supabase
       .from("materials")
       .select("id,name,rate_eur,active,updated_at")
       .eq("active", true)
-      .order("id"),
-    supabase
-      .from("site_public_pricing")
-      .select("price_eur_per_kg,price_date,updated_at")
-      .eq("id", "default")
-      .maybeSingle<PublicPriceRow>(),
-  ]);
+      .order("id");
 
   const materials = materialsResult.error
     ? []
@@ -80,7 +71,9 @@ export const getPublicPricingSnapshot = cache(async (): Promise<PricingSnapshot>
   ) as Partial<Record<MaterialId, number>>;
 
   return {
-    publicPrice: publicPriceResult.error ? null : toPublicPrice(publicPriceResult.data),
+    // The headline price is derived from the admin-managed material rates so the
+    // header, hero and calculator always show the same source of truth.
+    publicPrice: publicPriceFromMaterials(materials),
     materials,
     materialRates,
   };

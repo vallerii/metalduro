@@ -12,7 +12,7 @@ const es = {
   ],
   proof: "5,0 / 5 en Google · 34 reseñas",
   publicPrice: {
-    label: "Precio público informativo",
+    label: "Precio máximo actual",
     note: "La tarifa final depende del tipo de material y de su revisión.",
   },
 
@@ -174,7 +174,7 @@ const ru: HomeCopy = {
   ],
   proof: "5,0 / 5 в Google · 34 отзыва",
   publicPrice: {
-    label: "Публичная справочная цена",
+    label: "Максимальная ставка сейчас",
     note: "Итоговая ставка зависит от типа материала и результатов проверки.",
   },
 
