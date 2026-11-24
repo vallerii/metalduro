@@ -30,7 +30,7 @@ export default async function AdminApplicationPage({ params, searchParams }: Pag
     <main className="wrap pb-20 pt-36 md:pb-28 md:pt-44">
       <Link href="/admin" className="text-[14px] text-muted underline decoration-accent decoration-2 underline-offset-4 hover:text-paper">← {copy.detail.back}</Link>
       <div className="mt-8 flex flex-wrap items-end justify-between gap-5">
-        <div><div className="label-mono flex items-center gap-2 text-accent"><span className="size-2 rounded-full bg-accent" />{copy.detail.kicker}</div><h1 className="display mt-5 text-[clamp(42px,6vw,76px)]">#{application.referenceCode}</h1><p className="mt-2 font-mono text-[13px] text-muted">{application.id}</p></div>
+        <div><h1 className="display text-[clamp(42px,6vw,76px)]">#{application.referenceCode}</h1><p className="mt-2 font-mono text-[13px] text-muted">{application.id}</p></div>
         <ApplicationStatusBadge status={application.status} label={accountCopy.statuses[application.status]} />
       </div>
       {query.notice === "advanced" ? <p className="mt-7 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 px-5 py-4 text-emerald-200" role="status">{copy.detail.noticeAdvanced}</p> : null}

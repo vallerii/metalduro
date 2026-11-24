@@ -79,11 +79,7 @@ export function AuthForm({
   return (
     <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-20">
       <div className="pt-3">
-        <div className="label-mono flex items-center gap-2 text-accent">
-          <span className="size-2 rounded-full bg-accent" />
-          {section.kicker}
-        </div>
-        <h1 className="display mt-5 max-w-2xl text-[clamp(42px,5.6vw,76px)] text-paper">
+        <h1 className="display max-w-2xl text-[clamp(42px,5.6vw,76px)] text-paper">
           {section.title}
         </h1>
         <p className="mt-6 max-w-xl text-[18px] leading-relaxed text-muted">{section.lead}</p>

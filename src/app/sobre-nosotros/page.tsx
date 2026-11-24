@@ -92,11 +92,7 @@ export default async function AboutPage() {
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-end">
           <div>
-            <div className="label-mono flex items-center gap-2 text-ink-2">
-              <span className="size-2 bg-accent" />
-              {a.kicker}
-            </div>
-            <h1 className="display mt-5 text-[clamp(40px,5.6vw,80px)]">{a.h1}</h1>
+            <h1 className="display text-[clamp(40px,5.6vw,80px)]">{a.h1}</h1>
           </div>
           <p className="text-[19px] leading-relaxed text-ink-2">{a.lead}</p>
         </div>

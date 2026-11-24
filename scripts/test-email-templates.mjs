@@ -10,6 +10,7 @@ const events = [
   "payment_started",
   "application_paid",
   "payment_overdue",
+  "application_auto_assigned",
 ];
 let passed = 0;
 

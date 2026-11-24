@@ -39,11 +39,7 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
         <Link href="/" className="label-mono text-ink-2 hover:text-accent-deep">{t.guidePage.back}</Link>
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-end">
           <div>
-            <div className="label-mono flex items-center gap-2 text-ink-2">
-              <span className="size-2 bg-accent" />
-              {g.kind}
-            </div>
-            <h1 className="display mt-5 text-[clamp(40px,5.6vw,80px)]">{g.title}</h1>
+            <h1 className="display text-[clamp(40px,5.6vw,80px)]">{g.title}</h1>
           </div>
           <p className="text-[19px] leading-relaxed text-ink-2">{g.lead}</p>
         </div>

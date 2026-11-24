@@ -5,6 +5,7 @@ export const NOTIFICATION_EVENT_TYPES = [
   "payment_started",
   "application_paid",
   "payment_overdue",
+  "application_auto_assigned",
 ] as const;
 
 export type NotificationEventType = (typeof NOTIFICATION_EVENT_TYPES)[number];
